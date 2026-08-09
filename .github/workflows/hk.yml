@@ -11,4 +11,14 @@ on: # yamllint disable-line rule:truthy
 
 jobs:
   check:
-    uses: hugoh/gh-workflows/.github/workflows/hk.yml@7f6ae4423777a09c3ba629a602345d69624b7420 # v1.7.2
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+    steps:
+      - uses: hugoh/gh-workflows/setup@7f6ae4423777a09c3ba629a602345d69624b7420 # v1.7.2
+      - uses: hugoh/gh-workflows/hk-check@7f6ae4423777a09c3ba629a602345d69624b7420 # v1.7.2
+        env:
+          PINACT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
