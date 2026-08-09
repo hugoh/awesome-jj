@@ -24,18 +24,6 @@ sections:
     title: Official Resources
     kind: list
 
-  - key: articles
-    title: Articles
-    kind: dated
-
-  - key: books
-    title: Books
-    kind: book
-
-  - key: videos
-    title: Videos
-    kind: dated_video
-
   - key: tools
     title: Tools
     kind: tools
@@ -54,6 +42,18 @@ sections:
         title: Shell Integration
       - key: misc_tools
         title: Misc Tools
+
+  - key: articles
+    title: Articles
+    kind: dated
+
+  - key: books
+    title: Books
+    kind: book
+
+  - key: videos
+    title: Videos
+    kind: dated_video
 
   - key: forges
     title: Forges
