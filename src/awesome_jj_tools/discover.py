@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import asyncio
-import json
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -11,7 +10,14 @@ from pathlib import Path
 from typing import Any
 
 import httpx
+import yaml
 
+from awesome_jj_tools.candidates import (
+    filter_missing,
+    load_url_snapshot,
+    save_url_snapshot,
+    split_new_vs_outstanding,
+)
 from awesome_jj_tools.entries import (
     DEFAULT_ENTRIES_PATH,
     GitHubRepoRef,
@@ -23,6 +29,7 @@ from awesome_jj_tools.http import get_json, gh_repo_info, gh_search_repos, new_c
 from awesome_jj_tools.progress import parallel_map
 
 DEFAULT_CANDIDATES_SNAPSHOT_PATH = DEFAULT_ENTRIES_PATH.parent / "candidates-snapshot.json"
+DEFAULT_IGNORED_PATH = DEFAULT_ENTRIES_PATH.parent / "ignored.yaml"
 
 STALE_AFTER = timedelta(days=365)
 
@@ -119,51 +126,45 @@ async def fetch_crates_candidates(
     result = await fetcher(
         client, f"https://crates.io/api/v1/crates/{CRATES_RDEP_CRATE}/reverse_dependencies"
     )
-    candidates = []
+    crate_names: list[str] = []
     for dep in result.get("versions", result.get("dependencies", [])):
         crate_id = dep.get("crate") or dep.get("crate_id")
-        if not crate_id:
-            continue
-        candidates.append(
-            Candidate(
-                name=crate_id,
-                url=f"https://crates.io/crates/{crate_id}",
-                description="",
-                source="crates.io",
-            )
-        )
-    return candidates
+        if crate_id and crate_id not in crate_names:
+            crate_names.append(crate_id)
+
+    async def resolve(name: str) -> Candidate:
+        # crates.io's own crate page is almost never the useful link — most of these
+        # are already listed here by their GitHub repo (e.g. `lumen`), just not
+        # reachable from a bare reverse-deps entry. Resolve to `repository`/`homepage`
+        # so filter_missing can actually recognize "already have this one."
+        crates_io_url = f"https://crates.io/crates/{name}"
+        try:
+            info = await fetcher(client, f"https://crates.io/api/v1/crates/{name}")
+        except Exception:  # noqa: BLE001 - fall back to the crates.io page itself
+            return Candidate(name=name, url=crates_io_url, description="", source="crates.io")
+
+        crate = info.get("crate", {})
+        url = crate.get("repository") or crate.get("homepage") or crates_io_url
+        return Candidate(name=name, url=url, description="", source="crates.io")
+
+    return await parallel_map(resolve, crate_names, description="Resolving crates.io repos")
 
 
 def load_candidates_snapshot(path: Path = DEFAULT_CANDIDATES_SNAPSHOT_PATH) -> set[str]:
-    if not path.exists():
-        return set()
-    return set(json.loads(path.read_text(encoding="utf-8")))
+    return load_url_snapshot(path)
 
 
 def save_candidates_snapshot(urls: set[str], path: Path = DEFAULT_CANDIDATES_SNAPSHOT_PATH) -> None:
-    path.write_text(json.dumps(sorted(urls), indent=2) + "\n", encoding="utf-8")
+    save_url_snapshot(urls, path)
 
 
-def filter_missing(candidates: list[Candidate], known_urls: set[str]) -> list[Candidate]:
-    """Candidates not already in entries.yaml — i.e. still missing from the list."""
-    known = {u.rstrip("/") for u in known_urls}
-    return [c for c in candidates if c.url.rstrip("/") not in known]
-
-
-def split_new_vs_outstanding(
-    candidates: list[Candidate], previous_snapshot_urls: set[str]
-) -> tuple[list[Candidate], list[Candidate]]:
-    """Split currently-missing candidates into (new since last run, still outstanding).
-
-    Unlike a permanent seen/suppress list, this never drops a candidate from the
-    report just because it was mentioned once — only actually adding it to
-    entries.yaml (or it falling out of the sweep entirely) makes it stop showing.
-    """
-    previous = {u.rstrip("/") for u in previous_snapshot_urls}
-    new = [c for c in candidates if c.url.rstrip("/") not in previous]
-    outstanding = [c for c in candidates if c.url.rstrip("/") in previous]
-    return new, outstanding
+def load_ignored_urls(path: Path = DEFAULT_IGNORED_PATH) -> set[str]:
+    """URLs that legitimately keep surfacing but should never be reported — see ignored.yaml."""
+    if not path.exists():
+        return set()
+    with path.open(encoding="utf-8") as f:
+        data = yaml.safe_load(f) or {}
+    return {item["url"] for item in data.get("ignored", [])}
 
 
 def filter_low_signal(
@@ -252,10 +253,11 @@ def render_report(
 async def run(
     entries_path: Path = DEFAULT_ENTRIES_PATH,
     snapshot_path: Path = DEFAULT_CANDIDATES_SNAPSHOT_PATH,
+    ignored_path: Path = DEFAULT_IGNORED_PATH,
 ) -> tuple[str, bool]:
     """Returns (report_text, has_findings)."""
     data = load_entries(entries_path)
-    known_urls = all_urls(data)
+    excluded_urls = all_urls(data) | load_ignored_urls(ignored_path)
     previous_snapshot_urls = load_candidates_snapshot(snapshot_path)
 
     async with new_client() as client:
@@ -267,7 +269,7 @@ async def run(
         )
         all_candidates = filter_low_signal([*github, *gitlab, *codeberg, *crates])
 
-        missing = filter_missing(all_candidates, known_urls)
+        missing = filter_missing(all_candidates, excluded_urls)
         new_candidates, outstanding_candidates = split_new_vs_outstanding(
             missing, previous_snapshot_urls
         )

@@ -18,8 +18,8 @@ on the pipeline to fix it.
 
 `.github/workflows/discovery.yml` runs every two weeks (and on-demand via
 `workflow_dispatch`), driven by `src/awesome_jj_tools/discover.py`,
-`releases.py`, and `stars.py`. It opens or updates a single issue labeled
-`discovery-report` with four sections:
+`media.py`, `releases.py`, and `stars.py`. It opens or updates a single issue
+labeled `discovery-report` with these sections:
 
 1. **New candidates** — repos from GitHub/GitLab/Codeberg topic sweeps and
    crates.io's `jj-lib` reverse-dependencies that aren't in `entries.yaml`
@@ -33,7 +33,34 @@ on the pipeline to fix it.
    is archived or hasn't been pushed to in 12+ months. This is separate from
    the dead-link check `lychee` already runs in CI — a repo can 404 (caught
    by `lychee`) or just go quiet while still resolving (caught here).
-4. **New releases** / **Star movers** — informational, not
+4. **New/outstanding articles and videos** (`media.py`) — popular recent jj
+   content from Hacker News, plus Reddit and YouTube once their credentials
+   are configured (see below). Lobste.rs was considered and dropped: it has
+   no "jujutsu" tag and no working public full-text search API. Unlike the
+   tool sweep, this doesn't report everything unlisted: "popular" has no
+   natural cutoff, so it caps each run to a handful (round-robin across
+   sources) rather than trying to score things comparably across HN
+   points/Reddit upvotes/view counts. Target is roughly 2-3
+   genuinely-worth-adding items a month, not exhaustive coverage — a quiet
+   run reporting nothing is expected, not a bug. Triage the same way as tool
+   candidates: add what clears `CONTRIBUTING.md`'s bar to the
+   `articles`/`videos` section of `entries.yaml`, and use `ignored.yaml` for
+   anything (a channel, a recurring low-quality source) that should stop
+   surfacing entirely.
+   - **YouTube setup (optional, repo-owner only)**: create a Google Cloud
+     project, enable the YouTube Data API v3, create an API key, and add it
+     as the `YOUTUBE_API_KEY` repo secret. Without it, `media.py` silently
+     skips the YouTube sweep. **Currently configured.**
+   - **Reddit setup (optional, repo-owner only)**: register a "script" app
+     at reddit.com/prefs/apps, add its client ID/secret as the
+     `REDDIT_CLIENT_ID`/`REDDIT_CLIENT_SECRET` repo secrets.
+     `fetch_reddit_candidates` uses client-credentials OAuth against
+     `oauth.reddit.com` — Reddit blocks anonymous requests to its public
+     JSON endpoints from datacenter IPs (including GitHub Actions runners)
+     outright, so there's no unauthenticated fallback worth keeping. Without
+     both secrets, `media.py` silently skips the Reddit sweep. **Not yet
+     configured** — app verification is pending on the repo owner's side.
+5. **New releases** / **Star movers** — informational, not
    inclusion/exclusion signals on their own.
 
 When asked to update this list, or asked proactively to check it:
@@ -48,6 +75,18 @@ When asked to update this list, or asked proactively to check it:
    in one pass — anything left untriaged simply reappears next run
    (`data/candidates-snapshot.json` is a last-run snapshot, not a permanent
    suppress list), so nothing gets lost by deferring a judgment call.
+   - If a candidate will **never** qualify — a competing/unrelated list, a
+     name-collision false positive — add it to
+     [`data/ignored.yaml`](data/ignored.yaml) with a one-line reason instead
+     of leaving it to resurface every run. Don't use this for "too
+     early-stage, maybe later" candidates (see `SOURCES.md`'s Active-project
+     sweep) — those should keep reappearing in "Still outstanding" so they
+     get revisited as they mature; `ignored.yaml` is only for things that
+     structurally can never become a list entry.
+   - If the same project name legitimately collides with something already
+     listed (two different repos named `jujutsu.nvim`, say), disambiguate
+     both entries' `name` as `<author>/<repo>` rather than picking one
+     arbitrarily or leaving them indistinguishable.
 3. **Triage each staleness flag.** A rename just needs the URL updated in
    `entries.yaml`; a genuine abandonment means removing the entry. Don't
    remove solely because the workflow flagged it — skim the repo first (a

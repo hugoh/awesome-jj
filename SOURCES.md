@@ -59,3 +59,17 @@ new discoveries are logged below under "Re-sweeps" as they're triaged, not
 folded back into the "Active-project sweep" section above.
 
 ### Re-sweeps
+
+- **2026-08-09**: Added `0xferrous/jj-conflict.nvim`, `larpios/jj-conflict.nvim`,
+  `algmyr/vcsigns.nvim` (VCS-agnostic Neovim sign gutter, borderline against
+  the jj-specific bar but included), `doprz/jujutsu.nvim`,
+  `krisajenkins/neojj`, and `martint/kata`, all from the "Still outstanding"
+  discovery report. Two name collisions with already-listed entries
+  (`jujutsu.nvim`, `jj-conflict.nvim`) — disambiguated all four affected
+  entries as `<author>/<repo>`. Also created
+  [`data/ignored.yaml`](data/ignored.yaml) and added the "Lists considered
+  and excluded" repos from above (`chawyehsu/awesome-jj`, `KANE-99/awesome-jj`,
+  `jianzi123/awesomeJJ`, `gwongibeom/awesome-jjambbong`) so they stop
+  resurfacing in every discovery report — deliberately *not* added: the
+  "too early-stage" repos from the Active-project sweep above, which should
+  keep reappearing until revisited.

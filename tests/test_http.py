@@ -4,7 +4,13 @@ from unittest.mock import patch
 import httpx
 import pytest
 
-from awesome_jj_tools.http import gh_repo_info, gh_search_repos, github_headers, github_token
+from awesome_jj_tools.http import (
+    gh_repo_info,
+    gh_search_repos,
+    github_headers,
+    github_token,
+    reddit_access_token,
+)
 
 
 @pytest.fixture(autouse=True)
@@ -112,3 +118,20 @@ async def test_gh_repo_info_sends_authenticated_request(monkeypatch):
     assert result == {"archived": False, "pushed_at": "2026-01-01T00:00:00Z"}
     assert seen_requests[0].headers["Authorization"] == "Bearer t"
     assert str(seen_requests[0].url) == "https://api.github.com/repos/owner/repo"
+
+
+async def test_reddit_access_token_sends_basic_auth_and_returns_token():
+    seen_requests = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen_requests.append(request)
+        return httpx.Response(200, json={"access_token": "reddit-token", "expires_in": 3600})
+
+    async with _mock_client(handler) as client:
+        token = await reddit_access_token(client, "client-id", "client-secret")
+
+    assert token == "reddit-token"
+    request = seen_requests[0]
+    assert str(request.url) == "https://www.reddit.com/api/v1/access_token"
+    assert request.headers["Authorization"].startswith("Basic ")
+    assert request.content == b"grant_type=client_credentials"

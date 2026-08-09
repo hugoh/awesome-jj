@@ -9,10 +9,28 @@ from awesome_jj_tools.discover import (
     fetch_gitlab_candidates,
     filter_low_signal,
     filter_missing,
+    load_ignored_urls,
     render_report,
     split_new_vs_outstanding,
 )
 from awesome_jj_tools.entries import GitHubRepoRef
+
+
+def test_load_ignored_urls_reads_real_file():
+    urls = load_ignored_urls()
+    assert "https://github.com/chawyehsu/awesome-jj" in urls
+
+
+def test_load_ignored_urls_returns_empty_set_when_file_missing(tmp_path):
+    assert load_ignored_urls(tmp_path / "does-not-exist.yaml") == set()
+
+
+def test_load_ignored_urls_parses_yaml(tmp_path):
+    path = tmp_path / "ignored.yaml"
+    path.write_text(
+        "ignored:\n  - url: https://github.com/x/y\n    reason: test\n", encoding="utf-8"
+    )
+    assert load_ignored_urls(path) == {"https://github.com/x/y"}
 
 
 def test_filter_missing_excludes_known_urls():
@@ -20,7 +38,7 @@ def test_filter_missing_excludes_known_urls():
         Candidate(name="a", url="https://github.com/x/a", description="", source="github"),
         Candidate(name="b", url="https://github.com/x/b", description="", source="github"),
     ]
-    result = filter_missing(candidates, known_urls={"https://github.com/x/a"})
+    result = filter_missing(candidates, excluded_urls={"https://github.com/x/a"})
     assert [c.name for c in result] == ["b"]
 
 
@@ -28,7 +46,7 @@ def test_filter_missing_ignores_trailing_slash_differences():
     candidates = [
         Candidate(name="a", url="https://github.com/x/a/", description="", source="github")
     ]
-    result = filter_missing(candidates, known_urls={"https://github.com/x/a"})
+    result = filter_missing(candidates, excluded_urls={"https://github.com/x/a"})
     assert result == []
 
 
@@ -152,13 +170,56 @@ async def test_fetch_codeberg_candidates(client):
     assert result[0].source == "codeberg"
 
 
-async def test_fetch_crates_candidates(client):
+async def test_fetch_crates_candidates_resolves_to_repository_url(client):
     async def fake_fetcher(client, url):
-        return {"versions": [{"crate": "some-jj-plugin"}]}
+        if "reverse_dependencies" in url:
+            return {"versions": [{"crate": "lumen"}]}
+        assert url == "https://crates.io/api/v1/crates/lumen"
+        return {"crate": {"repository": "https://github.com/jnsahaj/lumen", "homepage": None}}
 
     result = await fetch_crates_candidates(client, fake_fetcher)
-    assert result[0].name == "some-jj-plugin"
-    assert result[0].url == "https://crates.io/crates/some-jj-plugin"
+    assert result[0].name == "lumen"
+    assert result[0].url == "https://github.com/jnsahaj/lumen"
+
+
+async def test_fetch_crates_candidates_falls_back_to_homepage(client):
+    async def fake_fetcher(client, url):
+        if "reverse_dependencies" in url:
+            return {"versions": [{"crate": "some-plugin"}]}
+        return {"crate": {"repository": None, "homepage": "https://example.com/some-plugin"}}
+
+    result = await fetch_crates_candidates(client, fake_fetcher)
+    assert result[0].url == "https://example.com/some-plugin"
+
+
+async def test_fetch_crates_candidates_falls_back_to_crates_io_page_when_no_links(client):
+    async def fake_fetcher(client, url):
+        if "reverse_dependencies" in url:
+            return {"versions": [{"crate": "some-plugin"}]}
+        return {"crate": {"repository": None, "homepage": None}}
+
+    result = await fetch_crates_candidates(client, fake_fetcher)
+    assert result[0].url == "https://crates.io/crates/some-plugin"
+
+
+async def test_fetch_crates_candidates_falls_back_when_metadata_fetch_fails(client):
+    async def fake_fetcher(client, url):
+        if "reverse_dependencies" in url:
+            return {"versions": [{"crate": "some-plugin"}]}
+        raise Exception("404")
+
+    result = await fetch_crates_candidates(client, fake_fetcher)
+    assert result[0].url == "https://crates.io/crates/some-plugin"
+
+
+async def test_fetch_crates_candidates_dedups_crate_names(client):
+    async def fake_fetcher(client, url):
+        if "reverse_dependencies" in url:
+            return {"versions": [{"crate": "dup"}, {"crate": "dup"}]}
+        return {"crate": {}}
+
+    result = await fetch_crates_candidates(client, fake_fetcher)
+    assert len(result) == 1
 
 
 async def test_check_staleness_flags_archived(client):

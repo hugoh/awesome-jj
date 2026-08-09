@@ -17,6 +17,7 @@ import httpx
 
 USER_AGENT = "awesome-jj-tools (https://github.com/hugoh/awesome-jj)"
 GITHUB_API = "https://api.github.com"
+REDDIT_TOKEN_URL = "https://www.reddit.com/api/v1/access_token"
 
 # Keep well under GitHub's secondary (abuse-detection) rate limit, which
 # throttles bursts of concurrent requests independently of the 5000/hr quota.
@@ -97,3 +98,18 @@ async def gh_search_repos(client: httpx.AsyncClient, topic: str) -> list[dict[st
 
 async def gh_repo_info(client: httpx.AsyncClient, owner: str, repo: str) -> dict[str, Any]:
     return await get_json(client, f"{GITHUB_API}/repos/{owner}/{repo}", headers=github_headers())
+
+
+async def reddit_access_token(client: httpx.AsyncClient, client_id: str, client_secret: str) -> str:
+    """Client-credentials OAuth token for oauth.reddit.com — Reddit blocks anonymous
+    requests to www.reddit.com's public JSON endpoints from datacenter IPs (like CI
+    runners) outright, so the unauthenticated path isn't a fallback, just broken there.
+    """
+    response = await client.post(
+        REDDIT_TOKEN_URL,
+        data={"grant_type": "client_credentials"},
+        auth=(client_id, client_secret),
+        headers={"User-Agent": USER_AGENT},
+    )
+    response.raise_for_status()
+    return response.json()["access_token"]

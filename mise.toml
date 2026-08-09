@@ -46,6 +46,10 @@ run = "uv run awesome-jj releases"
 description = "Refresh star snapshot and report notable movers"
 run = "uv run awesome-jj stars"
 
+[tasks.media]
+description = "Sweep HN/Lobsters/Reddit/YouTube for popular new jj articles and videos"
+run = "uv run awesome-jj media"
+
 [tasks."discovery-report"]
-description = "Run discover+releases+stars combined, as CI does (exits 1 if nothing found)"
+description = "Run discover+media+releases+stars combined, as CI does (exits 1 if nothing found)"
 run = "uv run awesome-jj discovery-report"
