@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from pathlib import Path
 
+import httpx
+
 from awesome_jj_tools.entries import DEFAULT_ENTRIES_PATH, GitHubRepoRef, github_repos, load_entries
-from awesome_jj_tools.http import gh_repo_info
+from awesome_jj_tools.http import gh_repo_info, new_client
+from awesome_jj_tools.progress import parallel_map
 
 DEFAULT_STARS_SNAPSHOT_PATH = DEFAULT_ENTRIES_PATH.parent / "stars-snapshot.json"
 
@@ -39,10 +42,17 @@ def save_snapshot(data: dict[str, int], path: Path = DEFAULT_STARS_SNAPSHOT_PATH
     path.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
-def fetch_current_stars(
-    repo_refs: list[GitHubRepoRef], fetcher: Callable[[str, str], dict] = gh_repo_info
+async def fetch_current_stars(
+    client: httpx.AsyncClient,
+    repo_refs: list[GitHubRepoRef],
+    fetcher: Callable[[httpx.AsyncClient, str, str], Awaitable[dict]] = gh_repo_info,
 ) -> dict[str, int]:
-    return {ref.url: fetcher(ref.owner, ref.repo)["stargazers_count"] for ref in repo_refs}
+    async def fetch_one(ref: GitHubRepoRef) -> tuple[str, int]:
+        info = await fetcher(client, ref.owner, ref.repo)
+        return ref.url, info["stargazers_count"]
+
+    results = await parallel_map(fetch_one, repo_refs, description="Fetching star counts")
+    return dict(results)
 
 
 def compute_movers(
@@ -77,13 +87,17 @@ def render_report(movers: list[StarMover]) -> str:
     return "\n".join(lines)
 
 
-def run(
+async def run(
     entries_path: Path = DEFAULT_ENTRIES_PATH, snapshot_path: Path = DEFAULT_STARS_SNAPSHOT_PATH
-) -> str:
+) -> tuple[str, bool]:
+    """Returns (report_text, has_findings)."""
     data = load_entries(entries_path)
     repo_refs = github_repos(data)
     previous = load_snapshot(snapshot_path)
-    current = fetch_current_stars(repo_refs)
+
+    async with new_client() as client:
+        current = await fetch_current_stars(client, repo_refs)
+
     movers = compute_movers(repo_refs, previous, current)
     save_snapshot(current, snapshot_path)
-    return render_report(movers)
+    return render_report(movers), bool(movers)

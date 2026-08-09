@@ -1,8 +1,9 @@
-"""Entry points: `awesome-jj generate|check|generate-site|discover|releases|stars`."""
+"""Entry points: generate, check, generate-site, discover, releases, stars, discovery-report."""
 
 from __future__ import annotations
 
 import argparse
+import asyncio
 import sys
 
 
@@ -17,6 +18,13 @@ def main(argv: list[str] | None = None) -> int:
     subparsers.add_parser("discover", help="Sweep for new candidates and stale existing entries")
     subparsers.add_parser("releases", help="Check for new releases among listed repos")
     subparsers.add_parser("stars", help="Refresh star snapshot and report notable movers")
+    subparsers.add_parser(
+        "discovery-report",
+        help=(
+            "Run discover+releases+stars, print the combined report. "
+            "Exits 1 (like grep) if nothing was found, for CI to skip filing an issue."
+        ),
+    )
 
     args = parser.parse_args(argv)
 
@@ -46,22 +54,41 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "discover":
         from awesome_jj_tools.discover import run
 
-        print(run())
+        report, _has_findings = asyncio.run(run())
+        print(report)
         return 0
 
     if args.command == "releases":
         from awesome_jj_tools.releases import run
 
-        print(run())
+        report, _has_findings = asyncio.run(run())
+        print(report)
         return 0
 
     if args.command == "stars":
         from awesome_jj_tools.stars import run
 
-        print(run())
+        report, _has_findings = asyncio.run(run())
+        print(report)
         return 0
 
+    if args.command == "discovery-report":
+        return asyncio.run(_discovery_report())
+
     return 1
+
+
+async def _discovery_report() -> int:
+    from awesome_jj_tools.discover import run as discover_run
+    from awesome_jj_tools.releases import run as releases_run
+    from awesome_jj_tools.stars import run as stars_run
+
+    discover_text, discover_found = await discover_run()
+    releases_text, releases_found = await releases_run()
+    stars_text, stars_found = await stars_run()
+
+    print("\n\n".join([discover_text, releases_text, stars_text]))
+    return 0 if (discover_found or releases_found or stars_found) else 1
 
 
 if __name__ == "__main__":

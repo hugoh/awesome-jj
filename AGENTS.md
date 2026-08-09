@@ -19,16 +19,21 @@ on the pipeline to fix it.
 `.github/workflows/discovery.yml` runs every two weeks (and on-demand via
 `workflow_dispatch`), driven by `src/awesome_jj_tools/discover.py`,
 `releases.py`, and `stars.py`. It opens or updates a single issue labeled
-`discovery-report` with three sections:
+`discovery-report` with four sections:
 
 1. **New candidates** — repos from GitHub/GitLab/Codeberg topic sweeps and
    crates.io's `jj-lib` reverse-dependencies that aren't in `entries.yaml`
-   yet. Grouped by source.
-2. **Possibly stale, consider removing** — existing entries whose GitHub repo
+   yet, and weren't in the previous run's sweep either. Grouped by source.
+2. **Still outstanding** — candidates that showed up as "new" in some earlier
+   run and *still* aren't in `entries.yaml`. This list only shrinks when a
+   candidate is actually added (or genuinely drops out of the sweep, e.g.
+   archived) — a candidate mentioned once and never triaged keeps
+   reappearing here indefinitely, it never silently disappears.
+3. **Possibly stale, consider removing** — existing entries whose GitHub repo
    is archived or hasn't been pushed to in 12+ months. This is separate from
    the dead-link check `lychee` already runs in CI — a repo can 404 (caught
    by `lychee`) or just go quiet while still resolving (caught here).
-3. **New releases** / **Star movers** — informational, not
+4. **New releases** / **Star movers** — informational, not
    inclusion/exclusion signals on their own.
 
 When asked to update this list, or asked proactively to check it:
@@ -36,12 +41,13 @@ When asked to update this list, or asked proactively to check it:
 1. **Read the open `discovery-report` issue first** rather than re-running
    `gh search` by hand — that's what the workflow is for. If it's stale or
    you need a fresh read, trigger it: `gh workflow run discovery.yml`.
-2. **Triage each new candidate** against `CONTRIBUTING.md`'s bar (jj-specific,
-   maintained, substantive — not a dotfiles repo or a vague WIP). Add ones
-   that clear it to `data/entries.yaml`; for ones you're unsure about, leave
-   them off for now rather than adding speculatively — they'll resurface
-   naturally since `discover.py` only suppresses candidates it's already
-   reported once (`data/seen-candidates.json`), not ones you deferred.
+2. **Triage every candidate in both "New" and "Still outstanding"** against
+   `CONTRIBUTING.md`'s bar (jj-specific, maintained, substantive — not a
+   dotfiles repo or a vague WIP). Add ones that clear it to
+   `data/entries.yaml`. Don't feel pressure to resolve "Still outstanding"
+   in one pass — anything left untriaged simply reappears next run
+   (`data/candidates-snapshot.json` is a last-run snapshot, not a permanent
+   suppress list), so nothing gets lost by deferring a judgment call.
 3. **Triage each staleness flag.** A rename just needs the URL updated in
    `entries.yaml`; a genuine abandonment means removing the entry. Don't
    remove solely because the workflow flagged it — skim the repo first (a

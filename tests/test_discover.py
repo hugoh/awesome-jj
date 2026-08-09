@@ -7,47 +7,82 @@ from awesome_jj_tools.discover import (
     fetch_crates_candidates,
     fetch_github_candidates,
     fetch_gitlab_candidates,
-    filter_new_candidates,
+    filter_low_signal,
+    filter_missing,
     render_report,
+    split_new_vs_outstanding,
 )
 from awesome_jj_tools.entries import GitHubRepoRef
 
 
-def test_filter_new_candidates_excludes_known_urls():
+def test_filter_missing_excludes_known_urls():
     candidates = [
         Candidate(name="a", url="https://github.com/x/a", description="", source="github"),
         Candidate(name="b", url="https://github.com/x/b", description="", source="github"),
     ]
-    result = filter_new_candidates(
-        candidates, known_urls={"https://github.com/x/a"}, seen_urls=set()
-    )
+    result = filter_missing(candidates, known_urls={"https://github.com/x/a"})
     assert [c.name for c in result] == ["b"]
 
 
-def test_filter_new_candidates_excludes_seen_urls():
-    candidates = [
-        Candidate(name="a", url="https://github.com/x/a", description="", source="github")
-    ]
-    result = filter_new_candidates(
-        candidates, known_urls=set(), seen_urls={"https://github.com/x/a"}
-    )
-    assert result == []
-
-
-def test_filter_new_candidates_ignores_trailing_slash_differences():
+def test_filter_missing_ignores_trailing_slash_differences():
     candidates = [
         Candidate(name="a", url="https://github.com/x/a/", description="", source="github")
     ]
-    result = filter_new_candidates(
-        candidates, known_urls={"https://github.com/x/a"}, seen_urls=set()
-    )
+    result = filter_missing(candidates, known_urls={"https://github.com/x/a"})
     assert result == []
 
 
-def test_fetch_github_candidates_dedups_across_topics():
+def test_split_new_vs_outstanding_new_candidate_not_in_previous_snapshot():
+    candidates = [
+        Candidate(name="a", url="https://github.com/x/a", description="", source="github")
+    ]
+    new, outstanding = split_new_vs_outstanding(candidates, previous_snapshot_urls=set())
+    assert [c.name for c in new] == ["a"]
+    assert outstanding == []
+
+
+def test_split_new_vs_outstanding_candidate_in_previous_snapshot_is_outstanding():
+    candidates = [
+        Candidate(name="a", url="https://github.com/x/a", description="", source="github")
+    ]
+    new, outstanding = split_new_vs_outstanding(
+        candidates, previous_snapshot_urls={"https://github.com/x/a"}
+    )
+    assert new == []
+    assert [c.name for c in outstanding] == ["a"]
+
+
+def test_split_new_vs_outstanding_never_drops_a_candidate_across_repeated_runs():
+    """A candidate mentioned once must keep appearing (as outstanding) every run after,
+    not silently vanish — that's the whole point of dropping the old permanent-suppress list."""
+    candidate = Candidate(name="a", url="https://github.com/x/a", description="", source="github")
+    previous_urls: set[str] = set()
+
+    for _ in range(5):
+        new, outstanding = split_new_vs_outstanding([candidate], previous_urls)
+        assert new or outstanding  # always shows up somewhere
+        previous_urls = {candidate.url}
+
+    # after the first run it should always land in "outstanding," never disappear
+    new, outstanding = split_new_vs_outstanding([candidate], previous_urls)
+    assert [c.name for c in outstanding] == ["a"]
+
+
+def test_split_new_vs_outstanding_ignores_trailing_slash_differences():
+    candidates = [
+        Candidate(name="a", url="https://github.com/x/a/", description="", source="github")
+    ]
+    new, outstanding = split_new_vs_outstanding(
+        candidates, previous_snapshot_urls={"https://github.com/x/a"}
+    )
+    assert new == []
+    assert [c.name for c in outstanding] == ["a"]
+
+
+async def test_fetch_github_candidates_dedups_across_topics(client):
     calls = []
 
-    def fake_fetcher(topic):
+    async def fake_fetcher(client, topic):
         calls.append(topic)
         return [
             {
@@ -55,90 +90,158 @@ def test_fetch_github_candidates_dedups_across_topics():
                 "url": "https://github.com/x/a",
                 "description": "desc",
                 "pushedAt": "2026-01-01T00:00:00Z",
+                "stargazersCount": 5,
             }
         ]
 
-    result = fetch_github_candidates(fake_fetcher)
+    result = await fetch_github_candidates(client, fake_fetcher)
     assert len(calls) == 2  # jujutsu + jj-vcs
     assert len(result) == 1
     assert result[0].source == "github"
+    assert result[0].stars == 5
 
 
-def test_fetch_gitlab_candidates():
-    def fake_fetcher(url):
+async def test_fetch_github_candidates_defaults_stars_to_zero_when_missing(client):
+    async def fake_fetcher(client, topic):
+        return [{"fullName": "x/a", "url": "https://github.com/x/a", "description": ""}]
+
+    result = await fetch_github_candidates(client, fake_fetcher)
+    assert result[0].stars == 0
+
+
+def test_filter_low_signal_drops_low_star_github_candidates():
+    candidates = [
+        Candidate(name="a", url="https://github.com/x/a", description="", source="github", stars=0),
+        Candidate(name="b", url="https://github.com/x/b", description="", source="github", stars=5),
+    ]
+    result = filter_low_signal(candidates, min_github_stars=2)
+    assert [c.name for c in result] == ["b"]
+
+
+def test_filter_low_signal_keeps_candidates_at_exact_threshold():
+    candidates = [
+        Candidate(name="a", url="https://github.com/x/a", description="", source="github", stars=2)
+    ]
+    result = filter_low_signal(candidates, min_github_stars=2)
+    assert len(result) == 1
+
+
+def test_filter_low_signal_does_not_apply_star_filter_to_non_github_sources():
+    candidates = [
+        Candidate(name="a", url="https://gitlab.com/x/a", description="", source="gitlab", stars=0)
+    ]
+    result = filter_low_signal(candidates, min_github_stars=2)
+    assert len(result) == 1
+
+
+async def test_fetch_gitlab_candidates(client):
+    async def fake_fetcher(client, url):
         assert "topic=jujutsu" in url
         return [{"name_with_namespace": "ns / proj", "web_url": "https://gitlab.com/ns/proj"}]
 
-    result = fetch_gitlab_candidates(fake_fetcher)
+    result = await fetch_gitlab_candidates(client, fake_fetcher)
     assert result[0].source == "gitlab"
     assert result[0].url == "https://gitlab.com/ns/proj"
 
 
-def test_fetch_codeberg_candidates():
-    def fake_fetcher(url):
+async def test_fetch_codeberg_candidates(client):
+    async def fake_fetcher(client, url):
         return {"data": [{"full_name": "ns/proj", "html_url": "https://codeberg.org/ns/proj"}]}
 
-    result = fetch_codeberg_candidates(fake_fetcher)
+    result = await fetch_codeberg_candidates(client, fake_fetcher)
     assert result[0].source == "codeberg"
 
 
-def test_fetch_crates_candidates():
-    def fake_fetcher(url):
+async def test_fetch_crates_candidates(client):
+    async def fake_fetcher(client, url):
         return {"versions": [{"crate": "some-jj-plugin"}]}
 
-    result = fetch_crates_candidates(fake_fetcher)
+    result = await fetch_crates_candidates(client, fake_fetcher)
     assert result[0].name == "some-jj-plugin"
     assert result[0].url == "https://crates.io/crates/some-jj-plugin"
 
 
-def test_check_staleness_flags_archived():
+async def test_check_staleness_flags_archived(client):
     ref = GitHubRepoRef(
         owner="x", repo="a", url="https://github.com/x/a", entry_name="a", section_path=()
     )
 
-    def fake_fetcher(owner, repo):
+    async def fake_fetcher(client, owner, repo):
         return {"archived": True, "pushed_at": "2026-01-01T00:00:00Z"}
 
-    stale = check_staleness([ref], fake_fetcher, now=datetime(2026, 6, 1, tzinfo=UTC))
+    stale = await check_staleness(client, [ref], fake_fetcher, now=datetime(2026, 6, 1, tzinfo=UTC))
     assert len(stale) == 1
     assert stale[0].reason == "archived"
 
 
-def test_check_staleness_flags_no_push_in_a_year():
+async def test_check_staleness_flags_no_push_in_a_year(client):
     ref = GitHubRepoRef(
         owner="x", repo="a", url="https://github.com/x/a", entry_name="a", section_path=()
     )
 
-    def fake_fetcher(owner, repo):
+    async def fake_fetcher(client, owner, repo):
         return {"archived": False, "pushed_at": "2024-01-01T00:00:00Z"}
 
-    stale = check_staleness([ref], fake_fetcher, now=datetime(2026, 6, 1, tzinfo=UTC))
+    stale = await check_staleness(client, [ref], fake_fetcher, now=datetime(2026, 6, 1, tzinfo=UTC))
     assert len(stale) == 1
     assert "no push since" in stale[0].reason
 
 
-def test_check_staleness_ignores_recently_active_repo():
+async def test_check_staleness_ignores_recently_active_repo(client):
     ref = GitHubRepoRef(
         owner="x", repo="a", url="https://github.com/x/a", entry_name="a", section_path=()
     )
 
-    def fake_fetcher(owner, repo):
+    async def fake_fetcher(client, owner, repo):
         return {"archived": False, "pushed_at": "2026-05-01T00:00:00Z"}
 
-    stale = check_staleness([ref], fake_fetcher, now=datetime(2026, 6, 1, tzinfo=UTC))
+    stale = await check_staleness(client, [ref], fake_fetcher, now=datetime(2026, 6, 1, tzinfo=UTC))
     assert stale == []
 
 
-def test_render_report_no_candidates_or_stale():
-    output = render_report([], [])
-    assert "No new candidates this run." in output
+async def test_check_staleness_handles_multiple_refs_concurrently(client):
+    refs = [
+        GitHubRepoRef(
+            owner="x",
+            repo=f"r{i}",
+            url=f"https://github.com/x/r{i}",
+            entry_name=f"r{i}",
+            section_path=(),
+        )
+        for i in range(5)
+    ]
+
+    async def fake_fetcher(client, owner, repo):
+        return {"archived": repo == "r2", "pushed_at": "2026-05-01T00:00:00Z"}
+
+    stale = await check_staleness(client, refs, fake_fetcher, now=datetime(2026, 6, 1, tzinfo=UTC))
+    assert [s.name for s in stale] == ["r2"]
+
+
+def test_render_report_nothing_found():
+    output = render_report([], [], [])
+    assert "None since last run." in output
+    assert "Nothing outstanding." in output
     assert "No existing entries flagged as stale this run." in output
 
 
-def test_render_report_groups_by_source():
+def test_render_report_groups_new_by_source():
     candidates = [
         Candidate(name="b", url="https://github.com/x/b", description="", source="github"),
         Candidate(name="a", url="https://gitlab.com/x/a", description="", source="gitlab"),
     ]
-    output = render_report(candidates, [])
+    output = render_report(candidates, [], [])
     assert output.index("#### github") < output.index("#### gitlab")
+
+
+def test_render_report_shows_outstanding_separately_from_new():
+    new = [
+        Candidate(name="new-one", url="https://github.com/x/new", description="", source="github")
+    ]
+    outstanding = [
+        Candidate(name="old-one", url="https://github.com/x/old", description="", source="github")
+    ]
+    output = render_report(new, outstanding, [])
+    assert output.index("### New candidates") < output.index("new-one")
+    assert output.index("### Still outstanding") < output.index("old-one")
+    assert output.index("new-one") < output.index("### Still outstanding")

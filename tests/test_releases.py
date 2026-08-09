@@ -40,35 +40,67 @@ def _ref():
     )
 
 
-def test_check_releases_detects_new_release_when_none_seen_before():
-    new_releases, updated = check_releases([_ref()], last_seen={}, fetcher=lambda url: SAMPLE_ATOM)
+async def _sample_fetcher(client, url):
+    return SAMPLE_ATOM
+
+
+async def _empty_fetcher(client, url):
+    return EMPTY_ATOM
+
+
+async def test_check_releases_detects_new_release_when_none_seen_before(client):
+    new_releases, updated = await check_releases(
+        client, [_ref()], last_seen={}, fetcher=_sample_fetcher
+    )
     assert len(new_releases) == 1
     assert new_releases[0].release_title == "v1.2.0"
     assert updated["https://github.com/x/a"] == "tag:github.com,2008:Repository/1/v1.2.0"
 
 
-def test_check_releases_idempotent_on_second_run():
+async def test_check_releases_idempotent_on_second_run(client):
     last_seen = {"https://github.com/x/a": "tag:github.com,2008:Repository/1/v1.2.0"}
-    new_releases, updated = check_releases(
-        [_ref()], last_seen=last_seen, fetcher=lambda url: SAMPLE_ATOM
+    new_releases, updated = await check_releases(
+        client, [_ref()], last_seen=last_seen, fetcher=_sample_fetcher
     )
     assert new_releases == []
     assert updated == last_seen
 
 
-def test_check_releases_ignores_repo_with_no_releases_feed():
-    def fetcher(url):
+async def test_check_releases_ignores_repo_with_no_releases_feed(client):
+    async def fetcher(client, url):
         raise Exception("404")
 
-    new_releases, updated = check_releases([_ref()], last_seen={}, fetcher=fetcher)
+    new_releases, updated = await check_releases(client, [_ref()], last_seen={}, fetcher=fetcher)
     assert new_releases == []
     assert updated == {}
 
 
-def test_check_releases_ignores_repo_with_empty_feed():
-    new_releases, updated = check_releases([_ref()], last_seen={}, fetcher=lambda url: EMPTY_ATOM)
+async def test_check_releases_ignores_repo_with_empty_feed(client):
+    new_releases, updated = await check_releases(
+        client, [_ref()], last_seen={}, fetcher=_empty_fetcher
+    )
     assert new_releases == []
     assert updated == {}
+
+
+async def test_check_releases_handles_multiple_refs_concurrently(client):
+    refs = [
+        GitHubRepoRef(
+            owner="x",
+            repo=f"r{i}",
+            url=f"https://github.com/x/r{i}",
+            entry_name=f"r{i}",
+            section_path=(),
+        )
+        for i in range(5)
+    ]
+
+    async def fetcher(client, url):
+        return SAMPLE_ATOM
+
+    new_releases, updated = await check_releases(client, refs, last_seen={}, fetcher=fetcher)
+    assert len(new_releases) == 5
+    assert len(updated) == 5
 
 
 def test_render_report_empty():

@@ -45,3 +45,7 @@ run = "uv run awesome-jj releases"
 [tasks.stars]
 description = "Refresh star snapshot and report notable movers"
 run = "uv run awesome-jj stars"
+
+[tasks."discovery-report"]
+description = "Run discover+releases+stars combined, as CI does (exits 1 if nothing found)"
+run = "uv run awesome-jj discovery-report"

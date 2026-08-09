@@ -4,12 +4,15 @@ from __future__ import annotations
 
 import json
 import xml.etree.ElementTree as ET
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from pathlib import Path
 
+import httpx
+
 from awesome_jj_tools.entries import DEFAULT_ENTRIES_PATH, GitHubRepoRef, github_repos, load_entries
-from awesome_jj_tools.http import get_text
+from awesome_jj_tools.http import get_text, new_client
+from awesome_jj_tools.progress import parallel_map
 
 DEFAULT_LAST_SEEN_PATH = DEFAULT_ENTRIES_PATH.parent / "last-seen-releases.json"
 
@@ -48,28 +51,40 @@ def save_last_seen(data: dict[str, str], path: Path = DEFAULT_LAST_SEEN_PATH) ->
     path.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
-def check_releases(
+async def check_releases(
+    client: httpx.AsyncClient,
     repo_refs: list[GitHubRepoRef],
     last_seen: dict[str, str],
-    fetcher: Callable[[str], str] = get_text,
+    fetcher: Callable[[httpx.AsyncClient, str], Awaitable[str]] = get_text,
 ) -> tuple[list[Release], dict[str, str]]:
     """Returns (new releases since last_seen, updated last_seen map)."""
-    new_releases = []
-    updated = dict(last_seen)
 
-    for ref in repo_refs:
+    async def check_one(
+        ref: GitHubRepoRef,
+    ) -> tuple[GitHubRepoRef, str, bool, str, str] | None:
         feed_url = f"https://github.com/{ref.owner}/{ref.repo}/releases.atom"
         try:
-            atom_xml = fetcher(feed_url)
+            atom_xml = await fetcher(client, feed_url)
         except Exception:  # noqa: BLE001 - a repo with no releases page is not a hard failure
-            continue
+            return None
 
         latest = parse_latest_release(atom_xml)
         if latest is None:
-            continue
+            return None
 
         entry_id, title, link = latest
-        if last_seen.get(ref.url) != entry_id:
+        is_new = last_seen.get(ref.url) != entry_id
+        return ref, entry_id, is_new, title, link
+
+    results = await parallel_map(check_one, repo_refs, description="Checking releases")
+
+    new_releases = []
+    updated = dict(last_seen)
+    for result in results:
+        if result is None:
+            continue
+        ref, entry_id, is_new, title, link = result
+        if is_new:
             new_releases.append(
                 Release(
                     repo_name=ref.entry_name,
@@ -95,11 +110,16 @@ def render_report(new_releases: list[Release]) -> str:
     return "\n".join(lines)
 
 
-def run(
+async def run(
     entries_path: Path = DEFAULT_ENTRIES_PATH, last_seen_path: Path = DEFAULT_LAST_SEEN_PATH
-) -> str:
+) -> tuple[str, bool]:
+    """Returns (report_text, has_findings)."""
     data = load_entries(entries_path)
     last_seen = load_last_seen(last_seen_path)
-    new_releases, updated = check_releases(github_repos(data), last_seen)
+    repo_refs = github_repos(data)
+
+    async with new_client() as client:
+        new_releases, updated = await check_releases(client, repo_refs, last_seen)
+
     save_last_seen(updated, last_seen_path)
-    return render_report(new_releases)
+    return render_report(new_releases), bool(new_releases)

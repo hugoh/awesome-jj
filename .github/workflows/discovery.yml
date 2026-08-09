@@ -35,17 +35,21 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set +e
+          if report=$(uv run awesome-jj discovery-report); then
+            echo "has_findings=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_findings=false" >> "$GITHUB_OUTPUT"
+          fi
+          set -e
           {
             echo 'report<<DISCOVERY_EOF'
-            uv run awesome-jj discover
-            echo ""
-            uv run awesome-jj releases
-            echo ""
-            uv run awesome-jj stars
+            echo "$report"
             echo 'DISCOVERY_EOF'
           } >> "$GITHUB_OUTPUT"
 
       - name: Ensure discovery-report label exists
+        if: steps.discover.outputs.has_findings == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -55,6 +59,7 @@ jobs:
             --force
 
       - name: Open or update tracking issue
+        if: steps.discover.outputs.has_findings == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPORT: ${{ steps.discover.outputs.report }}

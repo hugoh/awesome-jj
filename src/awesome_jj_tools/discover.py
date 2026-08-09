@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
+
+import httpx
 
 from awesome_jj_tools.entries import (
     DEFAULT_ENTRIES_PATH,
@@ -16,9 +19,10 @@ from awesome_jj_tools.entries import (
     github_repos,
     load_entries,
 )
-from awesome_jj_tools.http import get_json, gh_repo_info, gh_search_repos
+from awesome_jj_tools.http import get_json, gh_repo_info, gh_search_repos, new_client
+from awesome_jj_tools.progress import parallel_map
 
-DEFAULT_SEEN_CANDIDATES_PATH = DEFAULT_ENTRIES_PATH.parent / "seen-candidates.json"
+DEFAULT_CANDIDATES_SNAPSHOT_PATH = DEFAULT_ENTRIES_PATH.parent / "candidates-snapshot.json"
 
 STALE_AFTER = timedelta(days=365)
 
@@ -27,6 +31,14 @@ GITLAB_TOPIC = "jujutsu"
 CODEBERG_QUERY = "jujutsu"
 CRATES_RDEP_CRATE = "jj-lib"
 
+# GitHub's jujutsu/jj-vcs topics are tagged on plenty of dotfiles repos,
+# personal experiments, and agent-generated toys with zero real traction —
+# a real run against this topic found 111 candidates, 53 of them at 0-1
+# stars. This is a coarse, easily-explained proxy for "has anyone but the
+# author looked at this," not a judgment on quality — CONTRIBUTING.md's
+# actual bar still applies to whatever clears it.
+MIN_GITHUB_STARS = 2
+
 
 @dataclass(frozen=True)
 class Candidate:
@@ -34,6 +46,7 @@ class Candidate:
     url: str
     description: str
     source: str
+    stars: int = 0
 
 
 @dataclass(frozen=True)
@@ -43,25 +56,32 @@ class StaleEntry:
     reason: str
 
 
-def fetch_github_candidates(
-    fetcher: Callable[[str], list[dict[str, Any]]] = gh_search_repos,
+async def fetch_github_candidates(
+    client: httpx.AsyncClient,
+    fetcher: Callable[[httpx.AsyncClient, str], Awaitable[list[dict[str, Any]]]] = gh_search_repos,
 ) -> list[Candidate]:
     candidates: dict[str, Candidate] = {}
-    for topic in GITHUB_TOPICS:
-        for repo in fetcher(topic):
+    results = await asyncio.gather(*(fetcher(client, topic) for topic in GITHUB_TOPICS))
+    for repos in results:
+        for repo in repos:
             url = repo["url"]
             candidates[url] = Candidate(
                 name=repo["fullName"],
                 url=url,
                 description=repo.get("description") or "",
                 source="github",
+                stars=repo.get("stargazersCount") or 0,
             )
     return list(candidates.values())
 
 
-def fetch_gitlab_candidates(fetcher: Callable[[str], Any] = get_json) -> list[Candidate]:
-    projects = fetcher(
-        f"https://gitlab.com/api/v4/projects?topic={GITLAB_TOPIC}&order_by=last_activity_at&per_page=100"
+async def fetch_gitlab_candidates(
+    client: httpx.AsyncClient,
+    fetcher: Callable[[httpx.AsyncClient, str], Awaitable[Any]] = get_json,
+) -> list[Candidate]:
+    projects = await fetcher(
+        client,
+        f"https://gitlab.com/api/v4/projects?topic={GITLAB_TOPIC}&order_by=last_activity_at&per_page=100",
     )
     return [
         Candidate(
@@ -74,8 +94,13 @@ def fetch_gitlab_candidates(fetcher: Callable[[str], Any] = get_json) -> list[Ca
     ]
 
 
-def fetch_codeberg_candidates(fetcher: Callable[[str], Any] = get_json) -> list[Candidate]:
-    result = fetcher(f"https://codeberg.org/api/v1/repos/search?q={CODEBERG_QUERY}&limit=50")
+async def fetch_codeberg_candidates(
+    client: httpx.AsyncClient,
+    fetcher: Callable[[httpx.AsyncClient, str], Awaitable[Any]] = get_json,
+) -> list[Candidate]:
+    result = await fetcher(
+        client, f"https://codeberg.org/api/v1/repos/search?q={CODEBERG_QUERY}&limit=50"
+    )
     return [
         Candidate(
             name=r["full_name"],
@@ -87,8 +112,13 @@ def fetch_codeberg_candidates(fetcher: Callable[[str], Any] = get_json) -> list[
     ]
 
 
-def fetch_crates_candidates(fetcher: Callable[[str], Any] = get_json) -> list[Candidate]:
-    result = fetcher(f"https://crates.io/api/v1/crates/{CRATES_RDEP_CRATE}/reverse_dependencies")
+async def fetch_crates_candidates(
+    client: httpx.AsyncClient,
+    fetcher: Callable[[httpx.AsyncClient, str], Awaitable[Any]] = get_json,
+) -> list[Candidate]:
+    result = await fetcher(
+        client, f"https://crates.io/api/v1/crates/{CRATES_RDEP_CRATE}/reverse_dependencies"
+    )
     candidates = []
     for dep in result.get("versions", result.get("dependencies", [])):
         crate_id = dep.get("crate") or dep.get("crate_id")
@@ -105,58 +135,78 @@ def fetch_crates_candidates(fetcher: Callable[[str], Any] = get_json) -> list[Ca
     return candidates
 
 
-def load_seen_candidates(path: Path = DEFAULT_SEEN_CANDIDATES_PATH) -> set[str]:
+def load_candidates_snapshot(path: Path = DEFAULT_CANDIDATES_SNAPSHOT_PATH) -> set[str]:
     if not path.exists():
         return set()
     return set(json.loads(path.read_text(encoding="utf-8")))
 
 
-def save_seen_candidates(urls: set[str], path: Path = DEFAULT_SEEN_CANDIDATES_PATH) -> None:
+def save_candidates_snapshot(urls: set[str], path: Path = DEFAULT_CANDIDATES_SNAPSHOT_PATH) -> None:
     path.write_text(json.dumps(sorted(urls), indent=2) + "\n", encoding="utf-8")
 
 
-def filter_new_candidates(
-    candidates: list[Candidate], known_urls: set[str], seen_urls: set[str]
+def filter_missing(candidates: list[Candidate], known_urls: set[str]) -> list[Candidate]:
+    """Candidates not already in entries.yaml — i.e. still missing from the list."""
+    known = {u.rstrip("/") for u in known_urls}
+    return [c for c in candidates if c.url.rstrip("/") not in known]
+
+
+def split_new_vs_outstanding(
+    candidates: list[Candidate], previous_snapshot_urls: set[str]
+) -> tuple[list[Candidate], list[Candidate]]:
+    """Split currently-missing candidates into (new since last run, still outstanding).
+
+    Unlike a permanent seen/suppress list, this never drops a candidate from the
+    report just because it was mentioned once — only actually adding it to
+    entries.yaml (or it falling out of the sweep entirely) makes it stop showing.
+    """
+    previous = {u.rstrip("/") for u in previous_snapshot_urls}
+    new = [c for c in candidates if c.url.rstrip("/") not in previous]
+    outstanding = [c for c in candidates if c.url.rstrip("/") in previous]
+    return new, outstanding
+
+
+def filter_low_signal(
+    candidates: list[Candidate], min_github_stars: int = MIN_GITHUB_STARS
 ) -> list[Candidate]:
-    """Candidates not already in entries.yaml and not already reported before."""
-    seen = {u.rstrip("/") for u in known_urls | seen_urls}
-    return [c for c in candidates if c.url.rstrip("/") not in seen]
+    """Drop near-zero-traction GitHub noise. Other sources have no comparable signal yet."""
+    return [c for c in candidates if c.source != "github" or c.stars >= min_github_stars]
 
 
-def check_staleness(
+async def check_staleness(
+    client: httpx.AsyncClient,
     repo_refs: list[GitHubRepoRef],
-    fetcher: Callable[[str, str], dict[str, Any]] = gh_repo_info,
+    fetcher: Callable[[httpx.AsyncClient, str, str], Awaitable[dict[str, Any]]] = gh_repo_info,
     now: datetime | None = None,
 ) -> list[StaleEntry]:
     now = now or datetime.now(UTC)
-    stale = []
-    for ref in repo_refs:
-        info = fetcher(ref.owner, ref.repo)
+
+    async def check_one(ref: GitHubRepoRef) -> StaleEntry | None:
+        info = await fetcher(client, ref.owner, ref.repo)
         if info.get("archived"):
-            stale.append(StaleEntry(name=ref.entry_name, url=ref.url, reason="archived"))
-            continue
+            return StaleEntry(name=ref.entry_name, url=ref.url, reason="archived")
         pushed_at = info.get("pushed_at")
         if pushed_at:
             pushed = datetime.fromisoformat(pushed_at.replace("Z", "+00:00"))
             if now - pushed > STALE_AFTER:
-                stale.append(
-                    StaleEntry(
-                        name=ref.entry_name,
-                        url=ref.url,
-                        reason=f"no push since {pushed.date().isoformat()}",
-                    )
+                return StaleEntry(
+                    name=ref.entry_name,
+                    url=ref.url,
+                    reason=f"no push since {pushed.date().isoformat()}",
                 )
-    return stale
+        return None
+
+    results = await parallel_map(check_one, repo_refs, description="Checking existing entries")
+    return [s for s in results if s is not None]
 
 
-def render_report(new_candidates: list[Candidate], stale_entries: list[StaleEntry]) -> str:
-    lines = ["## Discovery report", ""]
-
-    lines.append("### New candidates")
-    lines.append("")
-    if new_candidates:
+def _render_candidate_group(
+    heading: str, candidates: list[Candidate], empty_message: str
+) -> list[str]:
+    lines = [f"### {heading}", ""]
+    if candidates:
         by_source: dict[str, list[Candidate]] = {}
-        for c in new_candidates:
+        for c in candidates:
             by_source.setdefault(c.source, []).append(c)
         for source, items in sorted(by_source.items()):
             lines.append(f"#### {source}")
@@ -166,8 +216,26 @@ def render_report(new_candidates: list[Candidate], stale_entries: list[StaleEntr
                 lines.append(f"- [{c.name}]({c.url}){desc}")
             lines.append("")
     else:
-        lines.append("No new candidates this run.")
+        lines.append(empty_message)
         lines.append("")
+    return lines
+
+
+def render_report(
+    new_candidates: list[Candidate],
+    outstanding_candidates: list[Candidate],
+    stale_entries: list[StaleEntry],
+) -> str:
+    lines = ["## Discovery report", ""]
+
+    lines.extend(_render_candidate_group("New candidates", new_candidates, "None since last run."))
+    lines.extend(
+        _render_candidate_group(
+            "Still outstanding (missing, not yet triaged)",
+            outstanding_candidates,
+            "Nothing outstanding.",
+        )
+    )
 
     lines.append("### Possibly stale, consider removing")
     lines.append("")
@@ -181,22 +249,33 @@ def render_report(new_candidates: list[Candidate], stale_entries: list[StaleEntr
     return "\n".join(lines)
 
 
-def run(
-    entries_path: Path = DEFAULT_ENTRIES_PATH, seen_path: Path = DEFAULT_SEEN_CANDIDATES_PATH
-) -> str:
+async def run(
+    entries_path: Path = DEFAULT_ENTRIES_PATH,
+    snapshot_path: Path = DEFAULT_CANDIDATES_SNAPSHOT_PATH,
+) -> tuple[str, bool]:
+    """Returns (report_text, has_findings)."""
     data = load_entries(entries_path)
     known_urls = all_urls(data)
-    seen_urls = load_seen_candidates(seen_path)
+    previous_snapshot_urls = load_candidates_snapshot(snapshot_path)
 
-    all_candidates: list[Candidate] = []
-    all_candidates.extend(fetch_github_candidates())
-    all_candidates.extend(fetch_gitlab_candidates())
-    all_candidates.extend(fetch_codeberg_candidates())
-    all_candidates.extend(fetch_crates_candidates())
+    async with new_client() as client:
+        github, gitlab, codeberg, crates = await asyncio.gather(
+            fetch_github_candidates(client),
+            fetch_gitlab_candidates(client),
+            fetch_codeberg_candidates(client),
+            fetch_crates_candidates(client),
+        )
+        all_candidates = filter_low_signal([*github, *gitlab, *codeberg, *crates])
 
-    new_candidates = filter_new_candidates(all_candidates, known_urls, seen_urls)
-    save_seen_candidates(seen_urls | {c.url for c in new_candidates}, seen_path)
+        missing = filter_missing(all_candidates, known_urls)
+        new_candidates, outstanding_candidates = split_new_vs_outstanding(
+            missing, previous_snapshot_urls
+        )
+        save_candidates_snapshot({c.url for c in missing}, snapshot_path)
 
-    stale_entries = check_staleness(github_repos(data))
+        repo_refs = github_repos(data)
+        stale_entries = await check_staleness(client, repo_refs)
 
-    return render_report(new_candidates, stale_entries)
+    report = render_report(new_candidates, outstanding_candidates, stale_entries)
+    has_findings = bool(new_candidates or outstanding_candidates or stale_entries)
+    return report, has_findings

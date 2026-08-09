@@ -58,12 +58,22 @@ def test_compute_movers_sorted_descending_by_growth():
     assert [m.name for m in movers] == ["b", "a"]
 
 
-def test_fetch_current_stars():
-    def fake_fetcher(owner, repo):
+async def test_fetch_current_stars(client):
+    async def fake_fetcher(client, owner, repo):
         return {"stargazers_count": 42}
 
     ref = _ref()
-    assert fetch_current_stars([ref], fake_fetcher) == {ref.url: 42}
+    assert await fetch_current_stars(client, [ref], fake_fetcher) == {ref.url: 42}
+
+
+async def test_fetch_current_stars_handles_multiple_refs_concurrently(client):
+    refs = [_ref(owner="x", repo=f"r{i}", name=f"r{i}") for i in range(5)]
+
+    async def fake_fetcher(client, owner, repo):
+        return {"stargazers_count": int(repo[1:])}
+
+    result = await fetch_current_stars(client, refs, fake_fetcher)
+    assert result == {r.url: i for i, r in enumerate(refs)}
 
 
 def test_render_report_empty():
