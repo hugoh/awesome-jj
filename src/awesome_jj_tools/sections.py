@@ -111,5 +111,6 @@ def build_context(data: dict[str, Any], config: dict[str, Any] | None = None) ->
         "title": config["title"],
         "description": config["description"],
         "intro": config["intro"],
+        "url": config["url"],
         "sections": sections,
     }

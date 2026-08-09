@@ -17,6 +17,32 @@ def test_pagefind_hooks_present():
     assert "pagefind-ui.css" in output
 
 
+def test_pagefind_focus_on_slash_enabled():
+    output = render(MINIMAL)
+    assert "focusOnSlash: true" in output
+
+
+def test_pagefind_asset_paths_are_relative():
+    # Absolute (leading-slash) paths resolve to the domain root, not the
+    # /awesome-jj/ project-site subpath GitHub Pages serves this under —
+    # that mismatch is what left PagefindUI undefined on the live site.
+    output = render(MINIMAL)
+    assert 'href="pagefind/pagefind-ui.css"' in output
+    assert 'src="pagefind/pagefind-ui.js"' in output
+    assert 'href="/pagefind' not in output
+    assert 'src="/pagefind' not in output
+
+
+def test_seo_tags_present():
+    output = render(MINIMAL)
+    assert '<link rel="canonical" href="https://hugoh.github.io/awesome-jj/">' in output
+    assert '<meta name="robots" content="index, follow">' in output
+    assert 'property="og:title" content="Awesome JJ"' in output
+    assert 'property="og:description"' in output
+    assert 'property="og:url" content="https://hugoh.github.io/awesome-jj/"' in output
+    assert 'name="twitter:card" content="summary"' in output
+
+
 def test_entries_get_unique_anchor_ids():
     output = render(MINIMAL)
     assert 'id="jujutsu-homepage"' in output

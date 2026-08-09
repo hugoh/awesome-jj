@@ -4,6 +4,7 @@ MINIMAL_CONFIG = {
     "title": "Test Title",
     "description": "Test description.",
     "intro": "Test intro sentence.",
+    "url": "https://example.com/",
     "sections": [
         {"key": "official_resources", "title": "Official Resources", "kind": "list"},
         {"key": "articles", "title": "Articles", "kind": "dated"},
@@ -62,6 +63,7 @@ def test_build_context_exposes_title_description_intro():
     assert context["title"] == "Test Title"
     assert context["description"] == "Test description."
     assert context["intro"] == "Test intro sentence."
+    assert context["url"] == "https://example.com/"
 
 
 def test_build_context_uses_injected_config_not_real_file():
