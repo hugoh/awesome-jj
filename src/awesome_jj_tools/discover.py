@@ -119,20 +119,28 @@ async def fetch_crates_candidates(
     result = await fetcher(
         client, f"https://crates.io/api/v1/crates/{CRATES_RDEP_CRATE}/reverse_dependencies"
     )
-    candidates = []
+    crate_names: list[str] = []
     for dep in result.get("versions", result.get("dependencies", [])):
         crate_id = dep.get("crate") or dep.get("crate_id")
-        if not crate_id:
-            continue
-        candidates.append(
-            Candidate(
-                name=crate_id,
-                url=f"https://crates.io/crates/{crate_id}",
-                description="",
-                source="crates.io",
-            )
-        )
-    return candidates
+        if crate_id and crate_id not in crate_names:
+            crate_names.append(crate_id)
+
+    async def resolve(name: str) -> Candidate:
+        # crates.io's own crate page is almost never the useful link — most of these
+        # are already listed here by their GitHub repo (e.g. `lumen`), just not
+        # reachable from a bare reverse-deps entry. Resolve to `repository`/`homepage`
+        # so filter_missing can actually recognize "already have this one."
+        crates_io_url = f"https://crates.io/crates/{name}"
+        try:
+            info = await fetcher(client, f"https://crates.io/api/v1/crates/{name}")
+        except Exception:  # noqa: BLE001 - fall back to the crates.io page itself
+            return Candidate(name=name, url=crates_io_url, description="", source="crates.io")
+
+        crate = info.get("crate", {})
+        url = crate.get("repository") or crate.get("homepage") or crates_io_url
+        return Candidate(name=name, url=url, description="", source="crates.io")
+
+    return await parallel_map(resolve, crate_names, description="Resolving crates.io repos")
 
 
 def load_candidates_snapshot(path: Path = DEFAULT_CANDIDATES_SNAPSHOT_PATH) -> set[str]:

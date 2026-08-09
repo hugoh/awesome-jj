@@ -152,13 +152,56 @@ async def test_fetch_codeberg_candidates(client):
     assert result[0].source == "codeberg"
 
 
-async def test_fetch_crates_candidates(client):
+async def test_fetch_crates_candidates_resolves_to_repository_url(client):
     async def fake_fetcher(client, url):
-        return {"versions": [{"crate": "some-jj-plugin"}]}
+        if "reverse_dependencies" in url:
+            return {"versions": [{"crate": "lumen"}]}
+        assert url == "https://crates.io/api/v1/crates/lumen"
+        return {"crate": {"repository": "https://github.com/jnsahaj/lumen", "homepage": None}}
 
     result = await fetch_crates_candidates(client, fake_fetcher)
-    assert result[0].name == "some-jj-plugin"
-    assert result[0].url == "https://crates.io/crates/some-jj-plugin"
+    assert result[0].name == "lumen"
+    assert result[0].url == "https://github.com/jnsahaj/lumen"
+
+
+async def test_fetch_crates_candidates_falls_back_to_homepage(client):
+    async def fake_fetcher(client, url):
+        if "reverse_dependencies" in url:
+            return {"versions": [{"crate": "some-plugin"}]}
+        return {"crate": {"repository": None, "homepage": "https://example.com/some-plugin"}}
+
+    result = await fetch_crates_candidates(client, fake_fetcher)
+    assert result[0].url == "https://example.com/some-plugin"
+
+
+async def test_fetch_crates_candidates_falls_back_to_crates_io_page_when_no_links(client):
+    async def fake_fetcher(client, url):
+        if "reverse_dependencies" in url:
+            return {"versions": [{"crate": "some-plugin"}]}
+        return {"crate": {"repository": None, "homepage": None}}
+
+    result = await fetch_crates_candidates(client, fake_fetcher)
+    assert result[0].url == "https://crates.io/crates/some-plugin"
+
+
+async def test_fetch_crates_candidates_falls_back_when_metadata_fetch_fails(client):
+    async def fake_fetcher(client, url):
+        if "reverse_dependencies" in url:
+            return {"versions": [{"crate": "some-plugin"}]}
+        raise Exception("404")
+
+    result = await fetch_crates_candidates(client, fake_fetcher)
+    assert result[0].url == "https://crates.io/crates/some-plugin"
+
+
+async def test_fetch_crates_candidates_dedups_crate_names(client):
+    async def fake_fetcher(client, url):
+        if "reverse_dependencies" in url:
+            return {"versions": [{"crate": "dup"}, {"crate": "dup"}]}
+        return {"crate": {}}
+
+    result = await fetch_crates_candidates(client, fake_fetcher)
+    assert len(result) == 1
 
 
 async def test_check_staleness_flags_archived(client):
