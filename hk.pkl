@@ -10,7 +10,7 @@ local linters = new Mapping<String, Step> {
     check = "npx --yes awesome-lint"
   }
   ["lychee"] {
-    check = "lychee --no-progress --accept 100..=103,200..=299,403,429 README.md SOURCES.md CONTRIBUTING.md CODE_OF_CONDUCT.md AGENTS.md"
+    check = "lychee --no-progress --max-retries 3 --retry-wait-time 5 --accept 100..=103,200..=299,403,429 README.md SOURCES.md CONTRIBUTING.md CODE_OF_CONDUCT.md AGENTS.md"
     profiles = List("!ci")
   }
   // README.md is generated from data/entries.yaml (see CONTRIBUTING.md) —
