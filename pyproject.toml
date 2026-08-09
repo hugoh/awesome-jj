@@ -1,0 +1,65 @@
+[project]
+name = "awesome-jj-tools"
+description = "Maintenance tooling for the awesome-jj list: README generation, discovery sweeps, release/star tracking"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "CC0-1.0"
+authors = [
+  { name = "Hugo Haas" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Documentation",
+]
+dynamic = ["version"]
+
+dependencies = [
+  "pyyaml>=6.0.2",
+  "requests>=2.32.3",
+]
+
+[project.urls]
+Homepage = "https://github.com/hugoh/awesome-jj"
+Issues = "https://github.com/hugoh/awesome-jj/issues"
+Repository = "https://github.com/hugoh/awesome-jj"
+
+[project.scripts]
+awesome-jj = "awesome_jj_tools.cli:main"
+
+[dependency-groups]
+dev = [
+  "pytest>=9.1.1",
+  "responses>=0.25.6",
+  "ruff>=0.15.20",
+  "ty>=0.0.57",
+  "types-pyyaml>=6.0.12",
+  "types-requests>=2.32.0",
+]
+
+[build-system]
+requires = ["hatch-vcs", "hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/awesome_jj_tools"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+# HEADER/FOOTER are markdown templates (long URLs/links), not prose to wrap.
+"src/awesome_jj_tools/generate.py" = ["E501"]

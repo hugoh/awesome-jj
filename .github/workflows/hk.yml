@@ -1,0 +1,14 @@
+name: hk
+
+permissions: {}
+
+on: # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - main
+      - renovate/**
+  pull_request:
+
+jobs:
+  check:
+    uses: hugoh/gh-workflows/.github/workflows/hk.yml@7f6ae4423777a09c3ba629a602345d69624b7420 # v1.7.2

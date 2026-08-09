@@ -1,0 +1,431 @@
+# Source of record for README.md. Do not edit README.md directly — edit this
+# file, then run `python -m cli generate` (hk's `fix` hook does this for you).
+official_resources:
+  - name: Jujutsu homepage
+    url: https://www.jj-vcs.dev
+  - name: GitHub repository
+    url: https://github.com/jj-vcs/jj
+  - name: Official tutorial
+    url: https://docs.jj-vcs.dev/latest/tutorial
+  - name: Official documentation
+    url: https://docs.jj-vcs.dev/latest
+  - name: Frequently Asked Questions
+    url: https://docs.jj-vcs.dev/latest/FAQ/
+  - name: '"The jj workshop: A Zero-to-Hero Speedrun"'
+    url: https://github.com/jkoppel/jj-workshop
+    description: A hands-on workshop repo.
+
+articles:
+  - name: jj init
+    url: https://v5.chriskrycho.com/essays/jj-init/
+    date: "2023-07"
+    author: Chris Krycho
+  - name: "Jujutsu: a new, Git-compatible version control system"
+    url: https://lwn.net/Articles/958468/
+    date: "2024-01"
+    author: Daroc Alden
+  - name: A Better Merge Workflow with Jujutsu
+    url: https://ofcr.se/jujutsu-merge-workflow
+    date: "2024-04"
+    author: Benjamin Tan
+  - name: Jujutsu Strategies
+    url: https://reasonablypolymorphic.com/blog/jj-strategy/
+    date: "2024-05"
+    author: Sandy Maguire
+  - name: Basic jj workflows
+    url: https://blog.chay.dev/basic-jj-workflows/
+    date: "2024-06"
+    author: Chay Choong
+  - name: Understanding Revsets for a Better JJ Log Output
+    url: https://willhbr.net/2024/08/18/understanding-revsets-for-a-better-jj-log-output/
+    date: "2024-08"
+    author: Will Richardson
+  - name: "Jujutsu: A Haven for Mercurial Users at Mozilla"
+    url: https://ahal.ca/blog/2024/jujutsu-mercurial-haven/
+    date: "2024-11"
+    author: Andrew Halberstadt
+  - name: Jujutsu Megamerges and `jj absorb`
+    url: https://v5.chriskrycho.com/journal/jujutsu-megamerges-and-jj-absorb/
+    date: "2024-12"
+    author: Chris Krycho
+  - name: Jujutsu VCS Introduction and Patterns
+    url: https://kubamartin.com/posts/introduction-to-the-jujutsu-vcs/
+    date: "2025-01"
+    author: Kuba Martin
+  - name: Why are Jujutsu's ID Prefixes So Short?
+    url: https://jonathan-frere.com/posts/jujutsu-shortest-ids/
+    date: "2025-02"
+    author: Jonathan Frere
+  - name: jj tips and tricks
+    url: https://zerowidth.com/2025/jj-tips-and-tricks/
+    date: "2025-05"
+    author: Nathan Witmer
+  - name: Overengineering PR create with jj
+    url: https://crespo.business/posts/overeng-pr-create-jj/
+    date: "2025-05"
+    author: David Crespo
+  - name: Configuring Jujutsu
+    url: https://oppi.li/posts/configuring_jujutsu/
+    date: "2025-05"
+    author: Akshay
+  - name: Jujutsu on Tangled
+    url: https://blog.tangled.org/stacking/
+    date: "2025-06"
+    author: Akshay
+  - name: Jujutsu For Busy Devs
+    url: https://maddie.wtf/posts/2025-07-21-jujutsu-for-busy-devs
+    date: "2025-07"
+    author: Madeleine Mortensen
+  - name: Jujutsu with Radicle
+    url: https://radicle.dev/2025/08/14/jujutsu-with-radicle
+    date: "2025-08"
+    author: Fintan Halpenny
+  - name: Understanding Jujutsu bookmarks
+    url: https://neugierig.org/software/blog/2025/08/jj-bookmarks.html
+    date: "2025-08"
+    author: Evan Martin
+  - name: "Switch to Jujutsu already: a tutorial"
+    url: https://www.stavros.io/posts/switch-to-jujutsu-already-a-tutorial/
+    date: "2025-10"
+    author: Stavros
+  - name: I see a future in jj
+    url: https://steveklabnik.com/writing/i-see-a-future-in-jj/
+    date: "2025-10"
+    author: Steve Klabnik
+  - name: More Commands in the JJ Toolbox
+    url: https://willhbr.net/2025/11/22/more-commands-in-the-jj-toolbox/
+    date: "2025-11"
+    author: Will Richardson
+  - name: why i think jj-vcs is worth your time
+    url: https://schpet.com/note/why-i-think-jj-vcs-is-worth-your-time
+    date: "2025-12"
+    author: Peter Schilling
+  - name: How I use Jujutsu
+    url: https://abhinavsarkar.net/posts/jj-usage/
+    date: "2026-01"
+    author: Abhinav Sarkar
+  - name: "Jujutsu: Managing workspaces"
+    url: https://pksunkara.com/tech-notes/jujutsu-managing-workspaces/
+    date: "2026-02"
+    author: Pavan Sunkara
+  - name: Reviewing large changes with Jujutsu
+    url: https://ben.gesoff.uk/posts/reviewing-large-changes-with-jj/
+    date: "2026-03"
+    author: Ben Gesoff
+  - name: Jujutsu megamerges for fun and profit
+    url: https://isaaccorbrey.com/notes/jujutsu-megamerges-for-fun-and-profit
+    date: "2026-04"
+    author: Isaac Corbrey
+  - name: "Jujutsu: The Git Upgrade You Didn't Know You Needed"
+    url: https://www.git-tower.com/blog/jujutsu
+    date: "2026-06"
+    author: Bruno Brito
+
+books:
+  - name: Jujutsu for Everyone
+    url: https://jj-for-everyone.github.io/
+    author: Remo Senekowitsch
+  - name: Steve's Jujutsu tutorial
+    url: https://steveklabnik.github.io/jujutsu-tutorial/
+    author: Steve Klabnik
+  - name: Evan's Jujutsu Tutorial
+    url: https://evmar.github.io/jjtut/
+    author: Evan Martin
+  - name: Ju! Ju! Tsu!
+    url: https://arialdo.codeberg.page/ju-ju-tsu/
+    author: Arialdo Martini
+  - name: "Juju-chu! — Starting Your Jujutsu × AI Workflow with `jj new`"
+    url: https://leanpub.com/juju-chu
+    author: Yuka Ooka
+
+videos:
+  - name: "Jujutsu: A Git-Compatible VCS - Git Merge 2022"
+    url: https://www.youtube.com/watch?v=bx_LGilOuE4
+    date: "2022-10"
+  - name: What if version control was AWESOME?
+    url: https://www.youtube.com/watch?v=2otjrTzRfVk
+    date: "2024-03"
+  - name: Jujutsu - A Git-compatible VCS - Martin von Zweigbergk | GitMerge 2024
+    url: https://www.youtube.com/watch?v=LV0JzI8IcCY
+    date: "2024-10"
+  - name: Jujutsu | Ep. 5 Bits and Booze
+    url: https://www.youtube.com/watch?v=dwyMlLYIrPk
+    date: "2024-11"
+  - name: JJ With Git is My New Favorite Workflow
+    url: https://www.youtube.com/watch?v=ou4ZNRFXkO0
+    date: "2025-06"
+  - name: How Jujutsu Uses Git - Martin von Zweigbergk
+    url: https://www.youtube.com/watch?v=XPtvvfGX3UQ
+    date: "2025-10"
+  - name: Solving Git's Pain Points with Jujutsu (with Martin von Zweigbergk)
+    url: https://www.youtube.com/watch?v=ulJ_Pw8qqsE
+    date: "2025-10"
+  - name: JJ Con 2025
+    url: https://www.youtube.com/playlist?list=PLOU2XLYxmsILM5cRwAK6yKdtKnCK6Y4Oh
+    date: "2025-10"
+    suffix: (playlist)
+  - name: JJ and How to Evolve an Open Source Ecosystem
+    url: https://www.youtube.com/watch?v=JGAszo6Ud-U
+    date: "2025-10"
+  - name: Goodbye Git? Why JJ Might Be the Future of Version Control
+    url: https://www.youtube.com/watch?v=J2f3Pj58wTg
+    date: "2025-11"
+  - name: Jujutsu Megamerges & Git History Preview | Ep. 23 Bits and Booze
+    url: https://www.youtube.com/watch?v=PsiXflgIC8Q
+    date: "2025-12"
+  - name: Stacked Diffs with Git and Jujutsu
+    url: https://www.youtube.com/watch?v=Er3dqH-lloY
+    date: "2025-12"
+  - name: Hands-on Introduction to jujutsu (jj) | Rawkode Live
+    url: https://www.youtube.com/watch?v=bECcod9ZMl0
+    date: "2026-01"
+  - name: Jujutsu Version Control Explained
+    url: https://www.youtube.com/watch?v=mM4nrhDenC8
+    date: "2026-01"
+  - name: Make code changes without committing. Better than Git?
+    url: https://www.youtube.com/watch?v=ZiqFGZASSKs
+    date: "2026-02"
+  - name: "TokioConf 2026 - jj: Simpler and More Powerful Than Git by Steve Klabnik"
+    url: https://www.youtube.com/watch?v=n8KzCUyId_Y
+    date: "2026-05"
+  - name: JJ Version Control System | Simpler Git Alternative
+    url: https://www.youtube.com/watch?v=LPQJEyr4El8
+    date: "2026-07"
+
+tools:
+  gui:
+    - name: gg
+      url: https://github.com/gulbanana/gg
+      description: GUI for jj.
+    - name: jayjay
+      url: https://github.com/hewigovens/jayjay
+      description: A native macOS GUI for Jujutsu (jj).
+    - name: jjewel
+      url: https://checksimsoftware.com/jjewel
+      description: A native Mac client for the Jujutsu version control system.
+    - name: lightjj
+      url: https://github.com/chronologos/lightjj
+      description: A fast, powerful, single-binary Jujutsu client.
+
+  tui:
+    - name: jj-fzf
+      url: https://github.com/tim-janik/jj-fzf
+      description: Text UI for Jujutsu based on fzf.
+    - name: jk
+      url: https://github.com/joshka/jk
+      description: A jj-native terminal UI for Jujutsu.
+    - name: jjui
+      url: https://github.com/idursun/jjui
+      description: TUI designed for interacting with the Jujutsu version control system.
+    - name: jj_tui
+      url: https://github.com/faldor20/jj_tui
+      description: A TUI for the Jujutsu version control system.
+    - name: lazyjj
+      url: https://github.com/Cretezy/lazyjj
+      description: TUI for Jujutsu/jj, built in Rust with Ratatui.
+    - name: jif
+      url: https://github.com/jrpat/jif
+      description: A moldable Jujutsu TUI.
+    - name: blazingjj
+      url: https://github.com/blazingjj/blazingjj
+      description: TUI for Jujutsu/jj.
+    - name: jutsu
+      url: https://github.com/AliQ80/jutsu
+      description: A TUI command composer for Jujutsu that teaches you the CLI instead of hiding it.
+    - name: jujutsu-gi
+      url: https://github.com/daeh/jujutsu-gi
+      description: TUI and CLI for creating, managing, and merging Jujutsu workspaces.
+
+  editor_integration:
+    - name: jiejie.nvim
+      url: https://github.com/jceb/jiejie.nvim
+      description: Neovim frontend for Jujutsu in the style of vim-fugitive.
+    - name: jj-idea
+      url: https://github.com/kkkev/jj-idea
+      description: Jujutsu VCS Plugin for IntelliJ IDEA.
+    - name: jj-mode.el
+      url: https://github.com/bolivier/jj-mode.el
+      description: Jujutsu version control mode for Emacs inspired by Magit.
+    - name: jj.nvim
+      url: https://github.com/NicolasGB/jj.nvim
+      description: Drive Jujutsu (jj) VCS from Neovim.
+    - name: JJ View
+      url: https://github.com/brychanrobot/jj-view
+      description: Integrates Jujutsu (jj) version control into VS Code.
+    - name: Jujutsu Kaizen (jjk)
+      url: https://github.com/keanemind/jjk
+      description: Jujutsu (jj) VCS support for VS Code.
+    - name: jjx
+      url: https://github.com/Christoph-D/jjx
+      description: Jujutsu (jj) VCS support for VS Code.
+    - name: jujutsu.nvim
+      url: https://github.com/mistweaverco/jujutsu.nvim
+      description: A Magit-style Jujutsu interface for Neovim.
+    - name: jjwsm.nvim
+      url: https://github.com/vapourismo/jjwsm.nvim
+      description: Neovim Jujutsu Workspace Manager.
+    - name: juju
+      url: https://github.com/waddie/juju
+      description: A Git/jj interface for the Helix editor.
+    - name: Majutsu
+      url: https://github.com/0WD0/majutsu
+      description: Magit-inspired Emacs interface for the Jujutsu.
+    - name: Selvejj
+      url: https://selvejj.com/
+      description: JetBrains IDEs plugin for integrating Jujutsu as a first-class VCS.
+    - name: VisualJJ
+      url: https://www.visualjj.com/
+      description: Visual interface for Jujutsu and Git inside VS Code.
+
+  diff_merge_drivers:
+    - name: diffedit3
+      url: https://github.com/ilyagr/diffedit3
+      description: Edit diffs in a 3-pane view.
+    - name: hunk.nvim
+      url: https://github.com/julienvincent/hunk.nvim
+      description: A tool for splitting diffs in Neovim.
+    - name: jj-diffconflicts
+      url: https://github.com/rafikdraoui/jj-diffconflicts
+      description: A conflict resolution merge tool for Jujutsu VCS that runs in Neovim.
+    - name: scm-record
+      url: https://github.com/arxanas/scm-record
+      description: The built-in diff editor for Jujutsu.
+    - name: Meld
+      url: https://meldmerge.org/
+      description: Visual diff and merge tool.
+    - name: Mergiraf
+      url: https://mergiraf.org/
+      description: A syntax-aware merge driver.
+    - name: Oyui
+      url: https://github.com/emilien-jegou/oyui
+      description: A modern TUI merge tool and staging interface for Jujutsu and Git.
+    - name: Weave
+      url: https://github.com/Ataraxy-Labs/weave
+      description: Entity-level semantic merge driver.
+
+  workflows:
+    - name: jj-ryu
+      url: https://github.com/dmmulroy/jj-ryu
+      description: Stacked PRs for Jujutsu. Push bookmark stacks to GitHub and GitLab as chained pull requests.
+    - name: jj-spr
+      url: https://github.com/jennings/jj-spr
+      description: Super Pull Requests (SPR) is the power tool for Jujutsu + GitHub workflows.
+    - name: jj-stack
+      url: https://github.com/keanemind/jj-stack
+      description: Stacked PRs on GitHub for Jujutsu.
+    - name: jj-vine
+      url: https://codeberg.org/abrenneke/jj-vine
+      description: A tool for submitting stacked Pull/Merge Requests from Jujutsu bookmarks.
+    - name: jj-navi
+      url: https://github.com/eersnington/jj-navi
+      description: Workspace navigation and management for Jujutsu.
+    - name: jj-gh
+      url: https://github.com/mrjones2014/jj-gh
+      description: GitHub PR tools for jj, usable from your terminal.
+    - name: stakk
+      url: https://github.com/glennib/stakk
+      description: A tool that bridges Jujutsu bookmarks to GitHub stacked pull requests.
+    - name: jip
+      url: https://github.com/omarkohl/jip
+      description: Tool for managing pull requests with jj.
+    - name: jx
+      url: https://github.com/solodov/jx
+      description: Opinionated Jujutsu companion for GitHub PR workflows, safe syncing, and layout-aware multi-repository work.
+
+  shell_integration:
+    - name: zsh-jj
+      url: https://github.com/rkh/zsh-jj
+      description: Jujutsu support for Z Shell.
+
+  misc_tools:
+    - name: diffsoup
+      url: https://github.com/junglerobba/diffsoup
+      description: A Gerrit-style patchset diff viewer for pull requests, using Jujutsu.
+    - name: hunk
+      url: https://github.com/modem-dev/hunk
+      description: A review-first terminal diff viewer for agent-authored changesets.
+    - name: jj-hunk
+      url: https://github.com/laulauland/jj-hunk
+      description: Programmatic hunk selection for Jujutsu.
+    - name: jj-pre-push
+      url: https://github.com/acarapetis/jj-pre-push
+      description: Run pre-commit before `jj git push`.
+    - name: jj-run
+      url: https://github.com/neongreen/mono/tree/main/jj-run
+      description: A tool to execute shell commands across multiple repository changes in isolated workspaces using jj.
+    - name: jj-starship
+      url: https://github.com/dmmulroy/jj-starship
+      description: Unified Starship prompt module for Git and Jujutsu.
+    - name: lumen
+      url: https://github.com/jnsahaj/lumen
+      description: A diff viewer and code review TUI and CLI to generate commit messages with AI.
+    - name: majjit
+      url: https://github.com/anthrofract/majjit
+      description: A TUI to manipulate the Jujutsu DAG.
+    - name: jjq
+      url: https://github.com/paulsmith/jjq
+      description: A local merge queue for jj.
+    - name: jj-commit
+      url: https://github.com/Odonno/jj-commit
+      description: Simplify the `jj commit` experience.
+    - name: sesh
+      url: https://github.com/amnn/sesh
+      description: A tmux-native session switcher for navigating between and opening new sessions based on Jujutsu repositories and workspaces.
+    - name: weiff
+      url: https://github.com/isgj/weiff
+      description: "A local web interface for exploring and managing Jujutsu repositories: revision graphs, diffs, files, bookmarks, workspaces, and operation history."
+    - name: renri
+      url: https://github.com/yukimemi/renri
+      description: Unified manager for Git worktrees and Jujutsu workspaces.
+    - name: vcs-toolkit-rs
+      url: https://github.com/ZelAnton/vcs-toolkit-rs
+      description: A Rust toolkit for automating Git, Jujutsu, and GitHub through CLI process execution.
+    - name: hrd
+      url: https://github.com/hugoh/hrd
+      description: Multi-repo manager (TUI & CLI) for Git and jj with parallel dispatch and live status.
+    - name: jj-trim
+      url: https://github.com/hugoh/jj-trim
+      description: Clean up merged bookmarks and abandoned anonymous commits in a jj repository.
+
+forges:
+  - name: ERSC
+    url: https://ersc.io/
+    description: Source control that scales as you grow ([Early Access](https://ersc.io/blog/ersc-availability)).
+  - name: Jujubi
+    url: https://juju.bi/
+    description: Modern code forge built for speed (Early Access).
+  - name: Radicle
+    url: https://radicle.dev/
+    description: The sovereign forge.
+  - name: Revset
+    url: https://www.revset.dev/
+    description: Commit First Code Forge (Early Access).
+  - name: Tangled
+    url: https://tangled.org/
+    description: The next-generation social coding platform ([announcement](https://blog.tangled.org/stacking)).
+  - name: garami
+    url: https://github.com/garami-vcs/garami
+    description: Experimental native hosting and collaboration infrastructure for Jujutsu repositories (early-stage).
+
+miscellaneous:
+  - name: JJ Cheat Sheet
+    url: https://justinpombrio.net/2025/02/11/jj-cheat-sheet.html
+  - name: List of popular Jujutsu aliases
+    url: https://www.lysator.liu.se/~axl/jj-aliases/
+
+community:
+  - name: Bluesky
+    url: https://bsky.app/profile/jj-vcs.dev
+    description: Official Jujutsu account.
+  - name: Discord
+    url: https://discord.gg/dkmfj3aGQN
+    description: Community chat server.
+  - name: GitHub Discussions
+    url: https://github.com/jj-vcs/jj/discussions
+    description: Q&A and design discussions.
+  - name: Libera Chat
+    url: "https://web.libera.chat/?channel=#jujutsu"
+    description: IRC channel `#jujutsu`.
+  - name: Reddit
+    url: https://www.reddit.com/r/jjvcs/
+    description: Community subreddit.

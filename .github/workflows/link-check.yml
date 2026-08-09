@@ -1,0 +1,45 @@
+name: link-check
+
+permissions:
+  contents: read
+  issues: write
+
+on: # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1" # weekly, Monday 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  lychee:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Link check
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: --no-progress --accept 100..=103,200..=299,403,429 README.md SOURCES.md CONTRIBUTING.md CODE_OF_CONDUCT.md AGENTS.md
+          fail: true
+          jobSummary: true
+      - name: Open/update issue on scheduled failure
+        if: failure() && github.event_name == 'schedule'
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: --no-progress --accept 100..=103,200..=299,403,429 README.md SOURCES.md CONTRIBUTING.md CODE_OF_CONDUCT.md AGENTS.md
+          jobSummary: false
+          fail: false
+          format: markdown
+          output: /tmp/lychee-report.md
+      - name: Create issue for dead links
+        if: failure() && github.event_name == 'schedule'
+        uses: peter-evans/create-issue-from-file@fca9117c27cdc29c6c4db3b86c48e4115a786710 # v6.0.0
+        with:
+          title: Weekly link check found dead links
+          content-filepath: /tmp/lychee-report.md
+          labels: link-check

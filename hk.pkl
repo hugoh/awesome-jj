@@ -1,0 +1,70 @@
+amends "package://github.com/jdx/hk/releases/download/v1.54.1/hk@1.54.1#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.54.1/hk@1.54.1#/Builtins.pkl"
+import "package://github.com/hugoh/hk-config/releases/download/v1.4.0/hk-config@1.4.0#/base.pkl" as Base
+
+min_hk_version = Base.min_hk_version
+
+local linters = new Mapping<String, Step> {
+  ...Base.base
+  ["awesome_lint"] {
+    check = "npx --yes awesome-lint"
+  }
+  ["lychee"] {
+    check = "lychee --no-progress --accept 100..=103,200..=299,403,429 README.md SOURCES.md CONTRIBUTING.md CODE_OF_CONDUCT.md AGENTS.md"
+    profiles = List("!ci")
+  }
+  // README.md is generated from data/entries.yaml (see CONTRIBUTING.md) —
+  // this keeps them in sync even at commit time, the same "generated output
+  // must match committed output" pattern as mise's own fmt --check above.
+  ["readme_drift"] {
+    check = "uv run awesome-jj check"
+    fix = "uv run awesome-jj generate"
+  }
+}
+
+// Python tooling (src/awesome_jj_tools + tests/) is slower than the base
+// markdown/link checks, so it's deliberately left out of pre-commit and only
+// runs on check/pre-push/fix.
+local slowChecks = new Mapping<String, Step> {
+  ...linters
+  ...Base.python
+
+  // Python - run via this project's own uv-managed tools, not PATH binaries
+  ["ruff"] = (Builtins.ruff) {
+    check = "uv run ruff check --force-exclude {{ files }}"
+    fix = "uv run ruff check --force-exclude --fix {{ files }}"
+  }
+  ["ruff_format"] = (Builtins.ruff_format) {
+    check_diff = "uv run ruff format --quiet --force-exclude --diff {{ files }}"
+    fix = "uv run ruff format --quiet --force-exclude {{ files }}"
+  }
+  ["ty"] = (Builtins.ty) {
+    check = "uv run ty check {{ files }}"
+  }
+  ["pytest"] {
+    check = "uv run pytest"
+  }
+}
+
+hooks {
+  ["pre-commit"] {
+    fix = true
+    stash = "git"
+    steps = linters
+  }
+  ["pre-push"] {
+    steps = slowChecks
+  }
+  ["check"] {
+    steps = slowChecks
+  }
+  ["fix"] {
+    fix = true
+    steps = slowChecks
+  }
+  ["commit-msg"] {
+    steps = new Mapping<String, Step> {
+      ...Base.commit_msg
+    }
+  }
+}

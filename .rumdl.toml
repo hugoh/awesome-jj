@@ -1,0 +1,5 @@
+# rumdl configuration file
+
+[MD013]
+# link-heavy list entries routinely exceed a prose line-length limit
+enabled = false
