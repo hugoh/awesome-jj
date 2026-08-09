@@ -4,7 +4,7 @@
 
 Jujutsu (also known as jj) is a Git-compatible version control system.
 
-This list merges and supersedes the previously separate [Necior/awesome-jj](https://github.com/Necior/awesome-jj) and [chawyehsu/awesome-jj](https://github.com/chawyehsu/awesome-jj) lists — see [SOURCES.md](SOURCES.md) for provenance and what was merged.
+This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](SOURCES.md) for provenance and what was merged.
 
 ## Contents
 

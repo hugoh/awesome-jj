@@ -23,9 +23,9 @@ entry, or adding a new one.
 - Prefer a project that is maintained: has commits or releases within the
   last ~12 months, or is stable and complete enough not to need them. Dead
   links or archived/abandoned projects will be removed.
-- Run `uv run awesome-jj generate` (or `mise run test` / `hk fix`, which do
-  this for you) to render `README.md` from your `entries.yaml` change before
-  committing both files together.
+- Run `mise run generate` (or `hk fix`, which does this for you) to render
+  `README.md` from your `entries.yaml` change before committing both files
+  together.
 - One entry per pull request makes review easier, but batching a few related
   additions is fine.
 
@@ -44,7 +44,7 @@ a link checker, and a Python test suite in CI. Run `hk check --all` locally
 before opening a PR — see the repo's `mise.toml`/`hk.pkl` for the tool
 versions used. In particular, `hk` runs a `readme_drift` check that fails if
 `README.md` doesn't match what `data/entries.yaml` would generate — running
-`hk fix` (or `uv run awesome-jj generate`) resolves it.
+`hk fix` (or `mise run generate`) resolves it.
 
 ## Code of Conduct
 

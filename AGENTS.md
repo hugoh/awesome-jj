@@ -6,10 +6,13 @@ and [SOURCES.md](SOURCES.md) first — this file assumes both.
 ## `README.md` is generated — never hand-edit it
 
 Entries live in [`data/entries.yaml`](data/entries.yaml). `README.md` is
-rendered from it by `uv run awesome-jj generate`. Any change to the list —
+rendered from it by `mise run generate`. Any change to the list —
 whether you're adding a candidate from a discovery report or fixing a typo —
 goes into `entries.yaml`, followed by regenerating. `hk`'s `readme_drift`
-check (`uv run awesome-jj check`) fails the build if the two ever diverge.
+check (`mise run check-readme`) fails the build if the two ever diverge —
+and only fails it: CI never regenerates or auto-commits `README.md` itself,
+so the next step is always a local `mise run generate` + push, not waiting
+on the pipeline to fix it.
 
 ## Discovery is automated — read the report, don't re-run the sweep by hand
 
@@ -43,7 +46,7 @@ When asked to update this list, or asked proactively to check it:
    `entries.yaml`; a genuine abandonment means removing the entry. Don't
    remove solely because the workflow flagged it — skim the repo first (a
    stable, feature-complete tool can legitimately go quiet).
-4. **Regenerate and record.** Run `uv run awesome-jj generate`, then append a
+4. **Regenerate and record.** Run `mise run generate`, then append a
    dated note to `SOURCES.md` under "Re-sweeps" (create the section if this is
    the first one) — what you added, removed, and why. Append, don't overwrite
    `SOURCES.md`'s existing history.

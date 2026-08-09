@@ -1,0 +1,56 @@
+% macro entry_line(entry, kind)
+% if kind in ("list", "list_sorted")
+- [{{ entry.name }}]({{ entry.url }}){{ " - " ~ entry.description if entry.description }}
+% elif kind == "book"
+- [{{ entry.name }}]({{ entry.url }}) - By {{ entry.author }}.
+% elif kind == "dated"
+- {{ entry.month }}/{{ entry.year }} [{{ entry.name }}]({{ entry.url }}) by {{ entry.author }}
+% elif kind == "dated_video"
+- {{ entry.month }}/{{ entry.year }} [{{ entry.name }}]({{ entry.url }}){{ " " ~ entry.suffix if entry.suffix }}
+% endif
+% endmacro
+# Awesome JJ [![Awesome](https://awesome.re/badge-flat.svg)](https://awesome.re)
+
+> A curated, actively-maintained list of awesome Jujutsu (jj) VCS resources.
+
+Jujutsu (also known as jj) is a Git-compatible version control system.
+
+This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](SOURCES.md) for provenance and what was merged.
+
+## Contents
+
+% for section in sections
+- [{{ section.title }}](#{{ section.slug }})
+% for sub in section.subsections
+  - [{{ sub.title }}](#{{ sub.slug }})
+% endfor
+% endfor
+
+% for section in sections
+## {{ section.title }}
+
+% if section.kind == "tools"
+% for sub in section.subsections
+### {{ sub.title }}
+
+% for entry in sub.entries
+{{ entry_line(entry, "list_sorted") | trim }}
+% endfor
+% endfor
+% else
+% if section.key == "forges"
+While Jujutsu works with Git compatible forges like GitHub, there are also some new forges/platforms worth mentioning, and some of them are exploring/offering a better integration and support for Jujutsu.
+
+% endif
+% for entry in section.entries
+{{ entry_line(entry, section.kind) | trim }}
+% endfor
+% endif
+% endfor
+## Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. Please read the [Code of Conduct](CODE_OF_CONDUCT.md) first.
+
+[![CC0](https://i.creativecommons.org/p/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)
+
+To the extent possible under law, the authors have waived all copyright and related or neighboring rights to this work under the license in [LICENSE](LICENSE).

@@ -17,3 +17,23 @@ lychee = "0.24.2"
 [tasks.test]
 description = "Run tests"
 run = "uv run pytest"
+
+[tasks.generate]
+description = "Render README.md from data/entries.yaml"
+run = "uv run awesome-jj generate"
+
+[tasks."check-readme"]
+description = "Fail if README.md is out of sync with data/entries.yaml"
+run = "uv run awesome-jj check"
+
+[tasks.discover]
+description = "Sweep for new candidates and stale existing entries"
+run = "uv run awesome-jj discover"
+
+[tasks.releases]
+description = "Check for new releases among listed repos"
+run = "uv run awesome-jj releases"
+
+[tasks.stars]
+description = "Refresh star snapshot and report notable movers"
+run = "uv run awesome-jj stars"

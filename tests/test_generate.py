@@ -131,10 +131,10 @@ def test_no_license_heading():
 
 
 def test_generate_writes_readme(tmp_path):
-    entries_path = tmp_path / "entries.yaml"
-    readme_path = tmp_path / "README.md"
     import yaml
 
+    entries_path = tmp_path / "entries.yaml"
+    readme_path = tmp_path / "README.md"
     entries_path.write_text(yaml.safe_dump(MINIMAL), encoding="utf-8")
 
     content = generate(entries_path, readme_path)
@@ -144,10 +144,10 @@ def test_generate_writes_readme(tmp_path):
 
 
 def test_check_detects_drift(tmp_path):
-    entries_path = tmp_path / "entries.yaml"
-    readme_path = tmp_path / "README.md"
     import yaml
 
+    entries_path = tmp_path / "entries.yaml"
+    readme_path = tmp_path / "README.md"
     entries_path.write_text(yaml.safe_dump(MINIMAL), encoding="utf-8")
     generate(entries_path, readme_path)
 
@@ -157,10 +157,10 @@ def test_check_detects_drift(tmp_path):
 
 
 def test_check_false_when_readme_missing(tmp_path):
-    entries_path = tmp_path / "entries.yaml"
-    readme_path = tmp_path / "README.md"
     import yaml
 
+    entries_path = tmp_path / "entries.yaml"
+    readme_path = tmp_path / "README.md"
     entries_path.write_text(yaml.safe_dump(MINIMAL), encoding="utf-8")
 
     assert check(entries_path, readme_path) is False
