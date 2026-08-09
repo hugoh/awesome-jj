@@ -258,18 +258,27 @@ tools:
     - name: jjx
       url: https://github.com/Christoph-D/jjx
       description: Jujutsu (jj) VCS support for VS Code.
-    - name: jujutsu.nvim
+    - name: mistweaverco/jujutsu.nvim
       url: https://github.com/mistweaverco/jujutsu.nvim
       description: A Magit-style Jujutsu interface for Neovim.
+    - name: doprz/jujutsu.nvim
+      url: https://github.com/doprz/jujutsu.nvim
+      description: A Neovim plugin for jujutsu integration, inspired by lazygit.nvim.
     - name: jjwsm.nvim
       url: https://github.com/vapourismo/jjwsm.nvim
       description: Neovim Jujutsu Workspace Manager.
     - name: juju
       url: https://github.com/waddie/juju
       description: A Git/jj interface for the Helix editor.
+    - name: neojj
+      url: https://github.com/krisajenkins/neojj
+      description: A Magit/Neogit-style plugin for the Jujutsu version control system.
     - name: Majutsu
       url: https://github.com/0WD0/majutsu
       description: Magit-inspired Emacs interface for the Jujutsu.
+    - name: vcsigns.nvim
+      url: https://github.com/algmyr/vcsigns.nvim
+      description: Neovim sign gutter, designed to be mostly VCS-agnostic (works with Jujutsu).
     - name: Selvejj
       url: https://selvejj.com/
       description: JetBrains IDEs plugin for integrating Jujutsu as a first-class VCS.
@@ -284,6 +293,14 @@ tools:
     - name: hunk.nvim
       url: https://github.com/julienvincent/hunk.nvim
       description: A tool for splitting diffs in Neovim.
+    - name: 0xferrous/jj-conflict.nvim
+      url: https://github.com/0xferrous/jj-conflict.nvim
+      description: >-
+        Neovim plugin for highlighting and resolving Jujutsu (jj) file
+        conflicts, with multi-sided conflict support.
+    - name: larpios/jj-conflict.nvim
+      url: https://github.com/larpios/jj-conflict.nvim
+      description: Neovim plugin for resolving and visualizing Jujutsu conflicts.
     - name: jj-diffconflicts
       url: https://github.com/rafikdraoui/jj-diffconflicts
       description: A conflict resolution merge tool for Jujutsu VCS that runs in Neovim.
@@ -316,6 +333,12 @@ tools:
     - name: jj-vine
       url: https://codeberg.org/abrenneke/jj-vine
       description: A tool for submitting stacked Pull/Merge Requests from Jujutsu bookmarks.
+    - name: kata
+      url: https://github.com/martint/kata
+      description: >-
+        Code review for jj workflows: revset-defined reviews,
+        patchset-anchored comments that survive branch movement, with web,
+        HTTP, and MCP surfaces.
     - name: jj-navi
       url: https://github.com/eersnington/jj-navi
       description: Workspace navigation and management for Jujutsu.

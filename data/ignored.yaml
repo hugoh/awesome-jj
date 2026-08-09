@@ -1,0 +1,18 @@
+# URLs that legitimately keep showing up in discovery sweeps but should
+# never be reported as candidates or added to entries.yaml -- not omissions
+# to fix, just permanent false positives (competing/unrelated lists, name
+# collisions). Distinct from "too early-stage, revisit later" candidates
+# (see SOURCES.md's Active-project sweep) -- those are meant to keep
+# resurfacing in "Still outstanding" until they mature or get triaged, not
+# be silenced here.
+ignored:
+  - url: https://github.com/chawyehsu/awesome-jj
+    reason: One of the lists this repo merged and supersedes — see SOURCES.md.
+  - url: https://github.com/KANE-99/awesome-jj
+    reason: >-
+      Despite the name, a personal jj workflow guide/script repo, not a
+      curated list — see SOURCES.md.
+  - url: https://github.com/jianzi123/awesomeJJ
+    reason: Unrelated to Jujutsu VCS, name collision only — see SOURCES.md.
+  - url: https://github.com/gwongibeom/awesome-jjambbong
+    reason: Unrelated to Jujutsu VCS, name collision only — see SOURCES.md.

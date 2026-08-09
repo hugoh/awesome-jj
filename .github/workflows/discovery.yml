@@ -34,6 +34,12 @@ jobs:
         id: discover
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Optional — unset means media.py skips the YouTube sweep gracefully.
+          # Only the repo owner can provision this (Google Cloud Data API v3 key).
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          # REDDIT_CLIENT_ID/REDDIT_CLIENT_SECRET intentionally not set yet — Reddit
+          # requires app verification the repo owner hasn't done. media.py skips the
+          # Reddit sweep gracefully without them; add both secrets here once ready.
         run: |
           set +e
           if report=$(uv run awesome-jj discovery-report); then

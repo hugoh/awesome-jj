@@ -9,10 +9,28 @@ from awesome_jj_tools.discover import (
     fetch_gitlab_candidates,
     filter_low_signal,
     filter_missing,
+    load_ignored_urls,
     render_report,
     split_new_vs_outstanding,
 )
 from awesome_jj_tools.entries import GitHubRepoRef
+
+
+def test_load_ignored_urls_reads_real_file():
+    urls = load_ignored_urls()
+    assert "https://github.com/chawyehsu/awesome-jj" in urls
+
+
+def test_load_ignored_urls_returns_empty_set_when_file_missing(tmp_path):
+    assert load_ignored_urls(tmp_path / "does-not-exist.yaml") == set()
+
+
+def test_load_ignored_urls_parses_yaml(tmp_path):
+    path = tmp_path / "ignored.yaml"
+    path.write_text(
+        "ignored:\n  - url: https://github.com/x/y\n    reason: test\n", encoding="utf-8"
+    )
+    assert load_ignored_urls(path) == {"https://github.com/x/y"}
 
 
 def test_filter_missing_excludes_known_urls():
@@ -20,7 +38,7 @@ def test_filter_missing_excludes_known_urls():
         Candidate(name="a", url="https://github.com/x/a", description="", source="github"),
         Candidate(name="b", url="https://github.com/x/b", description="", source="github"),
     ]
-    result = filter_missing(candidates, known_urls={"https://github.com/x/a"})
+    result = filter_missing(candidates, excluded_urls={"https://github.com/x/a"})
     assert [c.name for c in result] == ["b"]
 
 
@@ -28,7 +46,7 @@ def test_filter_missing_ignores_trailing_slash_differences():
     candidates = [
         Candidate(name="a", url="https://github.com/x/a/", description="", source="github")
     ]
-    result = filter_missing(candidates, known_urls={"https://github.com/x/a"})
+    result = filter_missing(candidates, excluded_urls={"https://github.com/x/a"})
     assert result == []
 
 

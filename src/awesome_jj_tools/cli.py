@@ -19,6 +19,9 @@ def main(argv: list[str] | None = None) -> int:
     subparsers.add_parser("releases", help="Check for new releases among listed repos")
     subparsers.add_parser("stars", help="Refresh star snapshot and report notable movers")
     subparsers.add_parser(
+        "media", help="Sweep HN/Lobsters/Reddit/YouTube for popular new jj articles and videos"
+    )
+    subparsers.add_parser(
         "discovery-report",
         help=(
             "Run discover+releases+stars, print the combined report. "
@@ -72,6 +75,13 @@ def main(argv: list[str] | None = None) -> int:
         print(report)
         return 0
 
+    if args.command == "media":
+        from awesome_jj_tools.media import run
+
+        report, _has_findings = asyncio.run(run())
+        print(report)
+        return 0
+
     if args.command == "discovery-report":
         return asyncio.run(_discovery_report())
 
@@ -80,15 +90,17 @@ def main(argv: list[str] | None = None) -> int:
 
 async def _discovery_report() -> int:
     from awesome_jj_tools.discover import run as discover_run
+    from awesome_jj_tools.media import run as media_run
     from awesome_jj_tools.releases import run as releases_run
     from awesome_jj_tools.stars import run as stars_run
 
     discover_text, discover_found = await discover_run()
+    media_text, media_found = await media_run()
     releases_text, releases_found = await releases_run()
     stars_text, stars_found = await stars_run()
 
-    print("\n\n".join([discover_text, releases_text, stars_text]))
-    return 0 if (discover_found or releases_found or stars_found) else 1
+    print("\n\n".join([discover_text, media_text, releases_text, stars_text]))
+    return 0 if (discover_found or media_found or releases_found or stars_found) else 1
 
 
 if __name__ == "__main__":

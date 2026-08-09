@@ -4,6 +4,8 @@
 
 Jujutsu (also known as jj) is a Git-compatible version control system.
 
+Last updated: 2026-08-09
+
 This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](SOURCES.md) for provenance and what was merged.
 
 ## Contents
@@ -56,6 +58,7 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 
 ### Editor Integration
 
+- [doprz/jujutsu.nvim](https://github.com/doprz/jujutsu.nvim) - A Neovim plugin for jujutsu integration, inspired by lazygit.nvim.
 - [jiejie.nvim](https://github.com/jceb/jiejie.nvim) - Neovim frontend for Jujutsu in the style of vim-fugitive.
 - [JJ View](https://github.com/brychanrobot/jj-view) - Integrates Jujutsu (jj) version control into VS Code.
 - [jj-idea](https://github.com/kkkev/jj-idea) - Jujutsu VCS Plugin for IntelliJ IDEA.
@@ -65,16 +68,20 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 - [jjx](https://github.com/Christoph-D/jjx) - Jujutsu (jj) VCS support for VS Code.
 - [juju](https://github.com/waddie/juju) - A Git/jj interface for the Helix editor.
 - [Jujutsu Kaizen (jjk)](https://github.com/keanemind/jjk) - Jujutsu (jj) VCS support for VS Code.
-- [jujutsu.nvim](https://github.com/mistweaverco/jujutsu.nvim) - A Magit-style Jujutsu interface for Neovim.
 - [Majutsu](https://github.com/0WD0/majutsu) - Magit-inspired Emacs interface for the Jujutsu.
+- [mistweaverco/jujutsu.nvim](https://github.com/mistweaverco/jujutsu.nvim) - A Magit-style Jujutsu interface for Neovim.
+- [neojj](https://github.com/krisajenkins/neojj) - A Magit/Neogit-style plugin for the Jujutsu version control system.
 - [Selvejj](https://selvejj.com/) - JetBrains IDEs plugin for integrating Jujutsu as a first-class VCS.
+- [vcsigns.nvim](https://github.com/algmyr/vcsigns.nvim) - Neovim sign gutter, designed to be mostly VCS-agnostic (works with Jujutsu).
 - [VisualJJ](https://www.visualjj.com/) - Visual interface for Jujutsu and Git inside VS Code.
 
 ### Diff and Merge Drivers
 
+- [0xferrous/jj-conflict.nvim](https://github.com/0xferrous/jj-conflict.nvim) - Neovim plugin for highlighting and resolving Jujutsu (jj) file conflicts, with multi-sided conflict support.
 - [diffedit3](https://github.com/ilyagr/diffedit3) - Edit diffs in a 3-pane view.
 - [hunk.nvim](https://github.com/julienvincent/hunk.nvim) - A tool for splitting diffs in Neovim.
 - [jj-diffconflicts](https://github.com/rafikdraoui/jj-diffconflicts) - A conflict resolution merge tool for Jujutsu VCS that runs in Neovim.
+- [larpios/jj-conflict.nvim](https://github.com/larpios/jj-conflict.nvim) - Neovim plugin for resolving and visualizing Jujutsu conflicts.
 - [Meld](https://meldmerge.org/) - Visual diff and merge tool.
 - [Mergiraf](https://mergiraf.org/) - A syntax-aware merge driver.
 - [Oyui](https://github.com/emilien-jegou/oyui) - A modern TUI merge tool and staging interface for Jujutsu and Git.
@@ -91,6 +98,7 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 - [jj-stack](https://github.com/keanemind/jj-stack) - Stacked PRs on GitHub for Jujutsu.
 - [jj-vine](https://codeberg.org/abrenneke/jj-vine) - A tool for submitting stacked Pull/Merge Requests from Jujutsu bookmarks.
 - [jx](https://github.com/solodov/jx) - Opinionated Jujutsu companion for GitHub PR workflows, safe syncing, and layout-aware multi-repository work.
+- [kata](https://github.com/martint/kata) - Code review for jj workflows: revset-defined reviews, patchset-anchored comments that survive branch movement, with web, HTTP, and MCP surfaces.
 - [stakk](https://github.com/glennib/stakk) - A tool that bridges Jujutsu bookmarks to GitHub stacked pull requests.
 
 ### Shell Integration
