@@ -26,6 +26,14 @@ run = "uv run awesome-jj generate"
 description = "Fail if README.md is out of sync with data/entries.yaml"
 run = "uv run awesome-jj check"
 
+[tasks."generate-site"]
+description = "Render site/index.html from data/entries.yaml"
+run = "uv run awesome-jj generate-site"
+
+[tasks."build-site"]
+description = "Render site/index.html and index it with Pagefind for local preview"
+run = ["mise run generate-site", "npx --yes pagefind --site site"]
+
 [tasks.discover]
 description = "Sweep for new candidates and stale existing entries"
 run = "uv run awesome-jj discover"

@@ -9,11 +9,11 @@
 - {{ entry.month }}/{{ entry.year }} [{{ entry.name }}]({{ entry.url }}){{ " " ~ entry.suffix if entry.suffix }}
 % endif
 % endmacro
-# Awesome JJ [![Awesome](https://awesome.re/badge-flat.svg)](https://awesome.re)
+# {{ title }} [![Awesome](https://awesome.re/badge-flat.svg)](https://awesome.re)
 
-> A curated, actively-maintained list of awesome Jujutsu (jj) VCS resources.
+> {{ description }}
 
-Jujutsu (also known as jj) is a Git-compatible version control system.
+{{ intro }}
 
 This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](SOURCES.md) for provenance and what was merged.
 
@@ -38,8 +38,8 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 % endfor
 % endfor
 % else
-% if section.key == "forges"
-While Jujutsu works with Git compatible forges like GitHub, there are also some new forges/platforms worth mentioning, and some of them are exploring/offering a better integration and support for Jujutsu.
+% if section.intro
+{{ section.intro }}
 
 % endif
 % for entry in section.entries

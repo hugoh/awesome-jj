@@ -1,35 +1,28 @@
-"""Section layout, sorting, and slugging feeding the README.md Jinja template.
+"""Turns data/entries.yaml + data/sections.yaml into a rendering context.
 
-Deliberately holds no prose and no string-formatting/templating logic — the
-prose (header/footer/section intros) lives in templates/readme.md.j2 itself.
-This module owns the data model: section order, sort order, slugs.
+Holds no hardcoded page title/description/intro, section list, titles, or
+prose — that's all in data/sections.yaml (see its comments). This module
+only implements the mechanics: sort order per kind, slugging, and
+assembling the two config files into the shape both Jinja templates expect.
 """
 
 from __future__ import annotations
 
 import re
+from pathlib import Path
 from typing import Any
 
-TOOLS_SUBSECTIONS = [
-    ("gui", "GUI"),
-    ("tui", "TUI"),
-    ("editor_integration", "Editor Integration"),
-    ("diff_merge_drivers", "Diff and Merge Drivers"),
-    ("workflows", "Workflows"),
-    ("shell_integration", "Shell Integration"),
-    ("misc_tools", "Misc Tools"),
-]
+import yaml
 
-TOP_SECTIONS = [
-    ("official_resources", "Official Resources", "list"),
-    ("articles", "Articles", "dated"),
-    ("books", "Books", "book"),
-    ("videos", "Videos", "dated_video"),
-    ("tools", "Tools", "tools"),
-    ("forges", "Forges", "list_sorted"),
-    ("miscellaneous", "Miscellaneous", "list"),
-    ("community", "Community", "list_sorted"),
-]
+from awesome_jj_tools.entries import DEFAULT_ENTRIES_PATH
+
+DEFAULT_SECTIONS_CONFIG_PATH = DEFAULT_ENTRIES_PATH.parent / "sections.yaml"
+
+
+def load_config(path: Path = DEFAULT_SECTIONS_CONFIG_PATH) -> dict[str, Any]:
+    """The full sections.yaml: title/description/intro plus the sections list."""
+    with path.open(encoding="utf-8") as f:
+        return yaml.safe_load(f)
 
 
 def slug(title: str) -> str:
@@ -66,10 +59,29 @@ def sorted_items(kind: str, items: list[dict[str, Any]]) -> list[dict[str, Any]]
     return [_normalize(e) for e in entries]
 
 
-def build_context(data: dict[str, Any]) -> dict[str, Any]:
+def _assign_unique_entry_slugs(sections: list[dict[str, Any]]) -> None:
+    """Give every entry a unique `slug` (for HTML anchors), de-duplicating across the whole page."""
+    seen: dict[str, int] = {}
+    entry_lists = []
+    for section in sections:
+        entry_lists.append(section["entries"])
+        entry_lists.extend(sub["entries"] for sub in section["subsections"])
+    for entries in entry_lists:
+        for entry in entries:
+            base = slug(entry["name"])
+            count = seen.get(base, 0)
+            seen[base] = count + 1
+            entry["slug"] = base if count == 0 else f"{base}-{count + 1}"
+
+
+def build_context(data: dict[str, Any], config: dict[str, Any] | None = None) -> dict[str, Any]:
     """A fully sorted, self-contained rendering context: no further logic needed downstream."""
+    if config is None:
+        config = load_config()
+
     sections = []
-    for key, title, kind in TOP_SECTIONS:
+    for section_cfg in config["sections"]:
+        key, title, kind = section_cfg["key"], section_cfg["title"], section_cfg["kind"]
         section: dict[str, Any] = {
             "key": key,
             "title": title,
@@ -77,19 +89,27 @@ def build_context(data: dict[str, Any]) -> dict[str, Any]:
             "kind": kind,
             "subsections": [],
             "entries": [],
+            "intro": section_cfg.get("intro"),
         }
         if kind == "tools":
             tools_data = data.get("tools", {})
             section["subsections"] = [
                 {
-                    "key": sub_key,
-                    "title": sub_title,
-                    "slug": slug(sub_title),
-                    "entries": sorted_items("list_sorted", tools_data.get(sub_key, [])),
+                    "key": sub_cfg["key"],
+                    "title": sub_cfg["title"],
+                    "slug": slug(sub_cfg["title"]),
+                    "entries": sorted_items("list_sorted", tools_data.get(sub_cfg["key"], [])),
                 }
-                for sub_key, sub_title in TOOLS_SUBSECTIONS
+                for sub_cfg in section_cfg.get("subsections", [])
             ]
         else:
             section["entries"] = sorted_items(kind, data.get(key, []))
         sections.append(section)
-    return {"sections": sections}
+    _assign_unique_entry_slugs(sections)
+
+    return {
+        "title": config["title"],
+        "description": config["description"],
+        "intro": config["intro"],
+        "sections": sections,
+    }

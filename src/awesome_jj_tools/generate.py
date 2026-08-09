@@ -1,8 +1,9 @@
 """Render README.md deterministically from data/entries.yaml, using a Jinja2 template.
 
-Header/footer/section-intro prose lives in templates/readme.md.j2 itself,
-not passed in from Python — the template owns all of its own text, not just
-the entries.
+Title/description/intro/section-intro prose all come from data/sections.yaml
+(see sections.py) — this template only owns its own format-specific markup
+(the awesome.re badge, the trailing sentence after `intro`, etc.), not
+content shared with templates/index.html.j2.
 
 The template uses `%`-prefixed line statements instead of `{% %}` blocks —
 Jinja's block-tag whitespace control (trim_blocks/lstrip_blocks) was built
@@ -21,27 +22,18 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from jinja2 import Environment, FileSystemLoader, StrictUndefined
-
 from awesome_jj_tools.entries import DEFAULT_ENTRIES_PATH, load_entries
 from awesome_jj_tools.format import format_markdown
 from awesome_jj_tools.sections import build_context
+from awesome_jj_tools.templating import env
 
 README_PATH = DEFAULT_ENTRIES_PATH.parents[1] / "README.md"
-TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
-
-_env = Environment(
-    loader=FileSystemLoader(TEMPLATES_DIR),
-    line_statement_prefix="%",
-    undefined=StrictUndefined,
-    keep_trailing_newline=True,
-)
 
 
 def render(data: dict[str, Any]) -> str:
     context = build_context(data)
-    template = _env.get_template("readme.md.j2")
-    content = template.render(sections=context["sections"])
+    template = env.get_template("readme.md.j2")
+    content = template.render(**context)
     return format_markdown(content)
 
 

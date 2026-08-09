@@ -1,4 +1,4 @@
-"""Entry points: `awesome-jj generate|check|discover|releases|stars`."""
+"""Entry points: `awesome-jj generate|check|generate-site|discover|releases|stars`."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ def main(argv: list[str] | None = None) -> int:
     subparsers.add_parser(
         "check", help="Exit non-zero if README.md is out of sync with entries.yaml"
     )
+    subparsers.add_parser("generate-site", help="Render site/index.html from data/entries.yaml")
     subparsers.add_parser("discover", help="Sweep for new candidates and stale existing entries")
     subparsers.add_parser("releases", help="Check for new releases among listed repos")
     subparsers.add_parser("stars", help="Refresh star snapshot and report notable movers")
@@ -35,6 +36,12 @@ def main(argv: list[str] | None = None) -> int:
             file=sys.stderr,
         )
         return 1
+
+    if args.command == "generate-site":
+        from awesome_jj_tools.site import generate as generate_site
+
+        generate_site()
+        return 0
 
     if args.command == "discover":
         from awesome_jj_tools.discover import run

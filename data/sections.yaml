@@ -1,0 +1,71 @@
+# Declares the page structure rendered from entries.yaml: site-wide title/
+# description/intro, section order, titles, sort/render "kind", and any
+# per-section intro prose. Python (sections.py) only implements what these
+# `kind` values *mean* — it doesn't hardcode any of this content.
+#
+# title/description/intro are shared verbatim by both templates (README.md
+# and index.html) — each template still owns its own trailing sentence
+# after `intro` and its own markup (badge, <h1>, etc.), since those are
+# genuinely format-specific.
+title: Awesome JJ
+description: A curated, actively-maintained list of awesome Jujutsu (jj) VCS resources.
+intro: Jujutsu (also known as jj) is a Git-compatible version control system.
+
+# kind values:
+#   list          - keep entries in the order declared in entries.yaml
+#   list_sorted   - sort entries alphabetically by name
+#   book          - like list_sorted, but rendered "By {author}."
+#   dated         - sort by date, rendered "{month}/{year} ... by {author}"
+#   dated_video   - like dated, but with an optional trailing {suffix}
+#   tools         - has `subsections` instead of `entries` directly
+sections:
+  - key: official_resources
+    title: Official Resources
+    kind: list
+
+  - key: articles
+    title: Articles
+    kind: dated
+
+  - key: books
+    title: Books
+    kind: book
+
+  - key: videos
+    title: Videos
+    kind: dated_video
+
+  - key: tools
+    title: Tools
+    kind: tools
+    subsections:
+      - key: gui
+        title: GUI
+      - key: tui
+        title: TUI
+      - key: editor_integration
+        title: Editor Integration
+      - key: diff_merge_drivers
+        title: Diff and Merge Drivers
+      - key: workflows
+        title: Workflows
+      - key: shell_integration
+        title: Shell Integration
+      - key: misc_tools
+        title: Misc Tools
+
+  - key: forges
+    title: Forges
+    kind: list_sorted
+    intro: >-
+      While Jujutsu works with Git compatible forges like GitHub, there are
+      also some new forges/platforms worth mentioning, and some of them are
+      exploring/offering a better integration and support for Jujutsu.
+
+  - key: miscellaneous
+    title: Miscellaneous
+    kind: list
+
+  - key: community
+    title: Community
+    kind: list_sorted

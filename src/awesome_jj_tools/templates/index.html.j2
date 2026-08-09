@@ -1,0 +1,114 @@
+% macro entry_row(entry, kind)
+% if kind in ("list", "list_sorted")
+<li id="{{ entry.slug }}"><a href="{{ entry.url }}">{{ entry.name }}</a>{% if entry.description %} &mdash; {{ entry.description }}{% endif %}</li>
+% elif kind == "book"
+<li id="{{ entry.slug }}"><a href="{{ entry.url }}">{{ entry.name }}</a> &mdash; By {{ entry.author }}.</li>
+% elif kind == "dated"
+<li id="{{ entry.slug }}"><span class="date">{{ entry.month }}/{{ entry.year }}</span> <a href="{{ entry.url }}">{{ entry.name }}</a> by {{ entry.author }}</li>
+% elif kind == "dated_video"
+<li id="{{ entry.slug }}"><span class="date">{{ entry.month }}/{{ entry.year }}</span> <a href="{{ entry.url }}">{{ entry.name }}</a>{% if entry.suffix %} {{ entry.suffix }}{% endif %}</li>
+% endif
+% endmacro
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }}</title>
+<meta name="description" content="{{ description }}">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/pagefind/pagefind-ui.css">
+<style>
+  :root {
+    color-scheme: light dark;
+    --fg: #1a1a1a;
+    --bg: #ffffff;
+    --muted: #666666;
+    --link: #0550ae;
+    --border: #e2e2e2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fg: #e6e6e6;
+      --bg: #14171a;
+      --muted: #9a9a9a;
+      --link: #7db4ff;
+      --border: #2b2f33;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto;
+    max-width: 46rem;
+    padding: 2rem 1.25rem 4rem;
+    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--fg);
+    background: var(--bg);
+  }
+  a { color: var(--link); }
+  h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
+  h2 { font-size: 1.15rem; margin-top: 2.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3rem; }
+  h3 { font-size: 1rem; margin-top: 1.5rem; color: var(--muted); }
+  .lede { color: var(--muted); }
+  .date { color: var(--muted); font-variant-numeric: tabular-nums; }
+  ul { padding-left: 1.1rem; }
+  li { margin: 0.35rem 0; }
+  nav.toc { columns: 2; margin: 1.5rem 0; }
+  nav.toc a { display: block; margin: 0.15rem 0; font-size: 0.9rem; }
+  footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+  #search { margin: 1.5rem 0; }
+</style>
+</head>
+<body>
+<div data-pagefind-body>
+
+<h1>{{ title }}</h1>
+<p class="lede">{{ description }}</p>
+<p>{{ intro }} Source and contribution guide: <a href="https://github.com/hugoh/awesome-jj">hugoh/awesome-jj</a>.</p>
+
+<div id="search"></div>
+
+<nav class="toc">
+% for section in sections
+<a href="#{{ section.slug }}">{{ section.title }}</a>
+% endfor
+</nav>
+
+% for section in sections
+<h2 id="{{ section.slug }}">{{ section.title }}</h2>
+% if section.kind == "tools"
+% for sub in section.subsections
+<h3 id="{{ sub.slug }}">{{ sub.title }}</h3>
+<ul>
+% for entry in sub.entries
+{{ entry_row(entry, "list_sorted") | trim }}
+% endfor
+</ul>
+% endfor
+% else
+% if section.intro
+<p>{{ section.intro }}</p>
+% endif
+<ul>
+% for entry in section.entries
+{{ entry_row(entry, section.kind) | trim }}
+% endfor
+</ul>
+% endif
+% endfor
+
+</div>
+
+<footer>
+Generated from <a href="https://github.com/hugoh/awesome-jj/blob/main/data/entries.yaml">data/entries.yaml</a>.
+Source: <a href="https://github.com/hugoh/awesome-jj">hugoh/awesome-jj</a>.
+</footer>
+
+<script src="/pagefind/pagefind-ui.js"></script>
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    new PagefindUI({ element: "#search", showSubResults: true });
+  });
+</script>
+</body>
+</html>
