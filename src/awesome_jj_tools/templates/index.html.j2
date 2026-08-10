@@ -1,6 +1,6 @@
 % macro entry_row(entry, kind)
 % if kind in ("list", "list_sorted")
-<li id="{{ entry.slug }}"><a href="{{ entry.url }}">{{ entry.name }}</a>{% if entry.description %} &mdash; {{ entry.description }}{% endif %}</li>
+<li id="{{ entry.slug }}"><a href="{{ entry.url }}">{{ entry.name }}</a>{% if entry.description %} &mdash; {{ entry.description | md_links }}{% endif %}</li>
 % elif kind == "book"
 <li id="{{ entry.slug }}"><a href="{{ entry.url }}">{{ entry.name }}</a> &mdash; By {{ entry.author }}.</li>
 % elif kind == "dated"

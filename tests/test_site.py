@@ -57,6 +57,42 @@ def test_entry_with_description_rendered():
     )
 
 
+def test_description_markdown_link_rendered_as_anchor():
+    data = {
+        **MINIMAL,
+        "official_resources": [
+            *MINIMAL["official_resources"],
+            {
+                "name": "Tangled",
+                "url": "https://tangled.org/",
+                "description": "Social coding ([announcement](https://blog.tangled.org/stacking)).",
+            },
+        ],
+    }
+    output = render(data, "2026-01-01")
+    assert (
+        "Social coding (<a href=\"https://blog.tangled.org/stacking\">announcement</a>)."
+        in output
+    )
+    assert "[announcement]" not in output
+
+
+def test_description_ampersand_escaped():
+    data = {
+        **MINIMAL,
+        "official_resources": [
+            *MINIMAL["official_resources"],
+            {
+                "name": "Multi",
+                "url": "https://example.com/multi",
+                "description": "TUI & CLI tool.",
+            },
+        ],
+    }
+    output = render(data, "2026-01-01")
+    assert "TUI &amp; CLI tool." in output
+
+
 def test_book_rendered_with_by_prefix():
     output = render(MINIMAL, "2026-01-01")
     assert "&mdash; By A Author." in output
