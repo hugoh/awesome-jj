@@ -175,11 +175,18 @@ async def test_fetch_crates_candidates_resolves_to_repository_url(client):
         if "reverse_dependencies" in url:
             return {"versions": [{"crate": "lumen"}]}
         assert url == "https://crates.io/api/v1/crates/lumen"
-        return {"crate": {"repository": "https://github.com/jnsahaj/lumen", "homepage": None}}
+        return {
+            "crate": {
+                "repository": "https://github.com/jnsahaj/lumen",
+                "homepage": None,
+                "description": "A CLI tool for AI-generated commit messages",
+            }
+        }
 
     result = await fetch_crates_candidates(client, fake_fetcher)
     assert result[0].name == "lumen"
     assert result[0].url == "https://github.com/jnsahaj/lumen"
+    assert result[0].description == "A CLI tool for AI-generated commit messages"
 
 
 async def test_fetch_crates_candidates_falls_back_to_homepage(client):
