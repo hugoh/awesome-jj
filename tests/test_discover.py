@@ -189,6 +189,26 @@ async def test_fetch_crates_candidates_resolves_to_repository_url(client):
     assert result[0].description == "A CLI tool for AI-generated commit messages"
 
 
+async def test_fetch_crates_candidates_collapses_multiline_description(client):
+    async def fake_fetcher(client, url):
+        if "reverse_dependencies" in url:
+            return {"versions": [{"crate": "tmux-sessionizer"}]}
+        return {
+            "crate": {
+                "repository": "https://github.com/jrmoulton/tmux-sessionizer",
+                "homepage": None,
+                "description": "Fuzzy find all git repositories in a list of\n"
+                "specified folders and open them as a new tmux session. \n",
+            }
+        }
+
+    result = await fetch_crates_candidates(client, fake_fetcher)
+    assert result[0].description == (
+        "Fuzzy find all git repositories in a list of "
+        "specified folders and open them as a new tmux session."
+    )
+
+
 async def test_fetch_crates_candidates_falls_back_to_homepage(client):
     async def fake_fetcher(client, url):
         if "reverse_dependencies" in url:

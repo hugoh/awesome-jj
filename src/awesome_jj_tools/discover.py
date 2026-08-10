@@ -145,9 +145,10 @@ async def fetch_crates_candidates(
 
         crate = info.get("crate", {})
         url = crate.get("repository") or crate.get("homepage") or crates_io_url
-        return Candidate(
-            name=name, url=url, description=crate.get("description") or "", source="crates.io"
-        )
+        # crates.io descriptions can be multi-line free text; collapse to one
+        # line so they don't break the markdown list they're rendered into.
+        description = " ".join((crate.get("description") or "").split())
+        return Candidate(name=name, url=url, description=description, source="crates.io")
 
     return await parallel_map(resolve, crate_names, description="Resolving crates.io repos")
 
