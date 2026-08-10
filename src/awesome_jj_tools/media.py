@@ -29,7 +29,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-import httpx
+import httpx2
 
 from awesome_jj_tools.candidates import (
     filter_missing,
@@ -75,8 +75,8 @@ def _cutoff(now: datetime) -> datetime:
 
 
 async def fetch_hn_candidates(
-    client: httpx.AsyncClient,
-    fetcher: Callable[[httpx.AsyncClient, str], Awaitable[Any]] = get_json,
+    client: httpx2.AsyncClient,
+    fetcher: Callable[[httpx2.AsyncClient, str], Awaitable[Any]] = get_json,
     now: datetime | None = None,
 ) -> list[MediaCandidate]:
     now = now or datetime.now(UTC)
@@ -98,12 +98,12 @@ async def fetch_hn_candidates(
 
 
 async def fetch_reddit_candidates(
-    client: httpx.AsyncClient,
+    client: httpx2.AsyncClient,
     fetcher: Callable[..., Awaitable[Any]] = get_json,
     now: datetime | None = None,
     client_id: str | None = None,
     client_secret: str | None = None,
-    token_fetcher: Callable[[httpx.AsyncClient, str, str], Awaitable[str]] = reddit_access_token,
+    token_fetcher: Callable[[httpx2.AsyncClient, str, str], Awaitable[str]] = reddit_access_token,
 ) -> list[MediaCandidate]:
     client_id = client_id if client_id is not None else os.environ.get("REDDIT_CLIENT_ID")
     client_secret = (
@@ -142,8 +142,8 @@ async def fetch_reddit_candidates(
 
 
 async def fetch_youtube_candidates(
-    client: httpx.AsyncClient,
-    fetcher: Callable[[httpx.AsyncClient, str], Awaitable[Any]] = get_json,
+    client: httpx2.AsyncClient,
+    fetcher: Callable[[httpx2.AsyncClient, str], Awaitable[Any]] = get_json,
     now: datetime | None = None,
     api_key: str | None = None,
 ) -> list[MediaCandidate]:
@@ -241,19 +241,19 @@ def render_media_report(
     return "\n".join(lines)
 
 
-ARTICLE_FETCHERS: dict[str, Callable[[httpx.AsyncClient], Awaitable[list[MediaCandidate]]]] = {
+ARTICLE_FETCHERS: dict[str, Callable[[httpx2.AsyncClient], Awaitable[list[MediaCandidate]]]] = {
     "hn": fetch_hn_candidates,
     "reddit": fetch_reddit_candidates,
 }
-VIDEO_FETCHERS: dict[str, Callable[[httpx.AsyncClient], Awaitable[list[MediaCandidate]]]] = {
+VIDEO_FETCHERS: dict[str, Callable[[httpx2.AsyncClient], Awaitable[list[MediaCandidate]]]] = {
     "youtube": fetch_youtube_candidates,
 }
 
 
 async def _fetch_one(
-    client: httpx.AsyncClient,
+    client: httpx2.AsyncClient,
     name: str,
-    fn: Callable[[httpx.AsyncClient], Awaitable[list[MediaCandidate]]],
+    fn: Callable[[httpx2.AsyncClient], Awaitable[list[MediaCandidate]]],
 ) -> tuple[str, list[MediaCandidate], str | None]:
     try:
         return name, await fn(client), None
@@ -262,8 +262,8 @@ async def _fetch_one(
 
 
 async def _fetch_all(
-    client: httpx.AsyncClient,
-    fetchers: dict[str, Callable[[httpx.AsyncClient], Awaitable[list[MediaCandidate]]]],
+    client: httpx2.AsyncClient,
+    fetchers: dict[str, Callable[[httpx2.AsyncClient], Awaitable[list[MediaCandidate]]]],
     description: str,
 ) -> tuple[dict[str, list[MediaCandidate]], list[tuple[str, str]]]:
     by_source: dict[str, list[MediaCandidate]] = {}

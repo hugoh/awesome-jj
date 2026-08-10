@@ -8,7 +8,7 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from pathlib import Path
 
-import httpx
+import httpx2
 
 from awesome_jj_tools.entries import DEFAULT_ENTRIES_PATH, GitHubRepoRef, github_repos, load_entries
 from awesome_jj_tools.http import get_text, new_client
@@ -52,10 +52,10 @@ def save_last_seen(data: dict[str, str], path: Path = DEFAULT_LAST_SEEN_PATH) ->
 
 
 async def check_releases(
-    client: httpx.AsyncClient,
+    client: httpx2.AsyncClient,
     repo_refs: list[GitHubRepoRef],
     last_seen: dict[str, str],
-    fetcher: Callable[[httpx.AsyncClient, str], Awaitable[str]] = get_text,
+    fetcher: Callable[[httpx2.AsyncClient, str], Awaitable[str]] = get_text,
 ) -> tuple[list[Release], dict[str, str]]:
     """Returns (new releases since last_seen, updated last_seen map)."""
 

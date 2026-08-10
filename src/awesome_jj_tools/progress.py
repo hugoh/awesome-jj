@@ -6,7 +6,7 @@ progress-bar escape codes have no business ending up in there. `rich`
 auto-disables the fancy rendering when stderr isn't a terminal (CI logs,
 piped output), so this is a no-op noise-wise outside interactive use.
 
-Concurrency itself is bounded twice over: httpx.Limits caps connections
+Concurrency itself is bounded twice over: httpx2.Limits caps connections
 (see http.py), and the semaphore here caps how many `fn(item)` coroutines
 are in flight at once — belt and suspenders against GitHub's abuse-detection
 rate limit, and it's what makes the progress bar's "in progress" count mean

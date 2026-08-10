@@ -9,7 +9,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-import httpx
+import httpx2
 import yaml
 
 from awesome_jj_tools.candidates import (
@@ -64,8 +64,8 @@ class StaleEntry:
 
 
 async def fetch_github_candidates(
-    client: httpx.AsyncClient,
-    fetcher: Callable[[httpx.AsyncClient, str], Awaitable[list[dict[str, Any]]]] = gh_search_repos,
+    client: httpx2.AsyncClient,
+    fetcher: Callable[[httpx2.AsyncClient, str], Awaitable[list[dict[str, Any]]]] = gh_search_repos,
 ) -> list[Candidate]:
     candidates: dict[str, Candidate] = {}
     results = await asyncio.gather(*(fetcher(client, topic) for topic in GITHUB_TOPICS))
@@ -83,8 +83,8 @@ async def fetch_github_candidates(
 
 
 async def fetch_gitlab_candidates(
-    client: httpx.AsyncClient,
-    fetcher: Callable[[httpx.AsyncClient, str], Awaitable[Any]] = get_json,
+    client: httpx2.AsyncClient,
+    fetcher: Callable[[httpx2.AsyncClient, str], Awaitable[Any]] = get_json,
 ) -> list[Candidate]:
     projects = await fetcher(
         client,
@@ -102,8 +102,8 @@ async def fetch_gitlab_candidates(
 
 
 async def fetch_codeberg_candidates(
-    client: httpx.AsyncClient,
-    fetcher: Callable[[httpx.AsyncClient, str], Awaitable[Any]] = get_json,
+    client: httpx2.AsyncClient,
+    fetcher: Callable[[httpx2.AsyncClient, str], Awaitable[Any]] = get_json,
 ) -> list[Candidate]:
     result = await fetcher(
         client, f"https://codeberg.org/api/v1/repos/search?q={CODEBERG_QUERY}&limit=50"
@@ -120,8 +120,8 @@ async def fetch_codeberg_candidates(
 
 
 async def fetch_crates_candidates(
-    client: httpx.AsyncClient,
-    fetcher: Callable[[httpx.AsyncClient, str], Awaitable[Any]] = get_json,
+    client: httpx2.AsyncClient,
+    fetcher: Callable[[httpx2.AsyncClient, str], Awaitable[Any]] = get_json,
 ) -> list[Candidate]:
     result = await fetcher(
         client, f"https://crates.io/api/v1/crates/{CRATES_RDEP_CRATE}/reverse_dependencies"
@@ -175,9 +175,9 @@ def filter_low_signal(
 
 
 async def check_staleness(
-    client: httpx.AsyncClient,
+    client: httpx2.AsyncClient,
     repo_refs: list[GitHubRepoRef],
-    fetcher: Callable[[httpx.AsyncClient, str, str], Awaitable[dict[str, Any]]] = gh_repo_info,
+    fetcher: Callable[[httpx2.AsyncClient, str, str], Awaitable[dict[str, Any]]] = gh_repo_info,
     now: datetime | None = None,
 ) -> list[StaleEntry]:
     now = now or datetime.now(UTC)
