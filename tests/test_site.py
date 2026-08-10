@@ -70,10 +70,7 @@ def test_description_markdown_link_rendered_as_anchor():
         ],
     }
     output = render(data, "2026-01-01")
-    assert (
-        "Social coding (<a href=\"https://blog.tangled.org/stacking\">announcement</a>)."
-        in output
-    )
+    assert 'Social coding (<a href="https://blog.tangled.org/stacking">announcement</a>).' in output
     assert "[announcement]" not in output
 
 
