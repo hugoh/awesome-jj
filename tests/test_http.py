@@ -1,7 +1,7 @@
 import subprocess
 from unittest.mock import patch
 
-import httpx
+import httpx2
 import pytest
 
 from awesome_jj_tools.http import (
@@ -61,17 +61,17 @@ def test_github_headers_include_bearer_token(monkeypatch):
     assert headers["Accept"] == "application/vnd.github+json"
 
 
-def _mock_client(handler) -> httpx.AsyncClient:
-    return httpx.AsyncClient(transport=httpx.MockTransport(handler))
+def _mock_client(handler) -> httpx2.AsyncClient:
+    return httpx2.AsyncClient(transport=httpx2.MockTransport(handler))
 
 
 async def test_gh_search_repos_maps_rest_api_fields_to_expected_names(monkeypatch):
     monkeypatch.setenv("GITHUB_TOKEN", "t")
     seen_requests = []
 
-    def handler(request: httpx.Request) -> httpx.Response:
+    def handler(request: httpx2.Request) -> httpx2.Response:
         seen_requests.append(request)
-        return httpx.Response(
+        return httpx2.Response(
             200,
             json={
                 "items": [
@@ -108,9 +108,9 @@ async def test_gh_repo_info_sends_authenticated_request(monkeypatch):
     monkeypatch.setenv("GITHUB_TOKEN", "t")
     seen_requests = []
 
-    def handler(request: httpx.Request) -> httpx.Response:
+    def handler(request: httpx2.Request) -> httpx2.Response:
         seen_requests.append(request)
-        return httpx.Response(200, json={"archived": False, "pushed_at": "2026-01-01T00:00:00Z"})
+        return httpx2.Response(200, json={"archived": False, "pushed_at": "2026-01-01T00:00:00Z"})
 
     async with _mock_client(handler) as client:
         result = await gh_repo_info(client, "owner", "repo")
@@ -123,9 +123,9 @@ async def test_gh_repo_info_sends_authenticated_request(monkeypatch):
 async def test_reddit_access_token_sends_basic_auth_and_returns_token():
     seen_requests = []
 
-    def handler(request: httpx.Request) -> httpx.Response:
+    def handler(request: httpx2.Request) -> httpx2.Response:
         seen_requests.append(request)
-        return httpx.Response(200, json={"access_token": "reddit-token", "expires_in": 3600})
+        return httpx2.Response(200, json={"access_token": "reddit-token", "expires_in": 3600})
 
     async with _mock_client(handler) as client:
         token = await reddit_access_token(client, "client-id", "client-secret")

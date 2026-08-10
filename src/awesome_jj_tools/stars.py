@@ -7,7 +7,7 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from pathlib import Path
 
-import httpx
+import httpx2
 
 from awesome_jj_tools.entries import DEFAULT_ENTRIES_PATH, GitHubRepoRef, github_repos, load_entries
 from awesome_jj_tools.http import gh_repo_info, new_client
@@ -43,9 +43,9 @@ def save_snapshot(data: dict[str, int], path: Path = DEFAULT_STARS_SNAPSHOT_PATH
 
 
 async def fetch_current_stars(
-    client: httpx.AsyncClient,
+    client: httpx2.AsyncClient,
     repo_refs: list[GitHubRepoRef],
-    fetcher: Callable[[httpx.AsyncClient, str, str], Awaitable[dict]] = gh_repo_info,
+    fetcher: Callable[[httpx2.AsyncClient, str, str], Awaitable[dict]] = gh_repo_info,
 ) -> dict[str, int]:
     async def fetch_one(ref: GitHubRepoRef) -> tuple[str, int]:
         info = await fetcher(client, ref.owner, ref.repo)
