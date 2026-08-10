@@ -93,7 +93,7 @@ jobs:
           git add data/
           git diff --cached --quiet && exit 0
 
-          branch="discovery/data-refresh-${{ github.run_id }}"
+          branch="discovery/data-refresh-${{ github.run_id }}-${{ github.run_attempt }}"
           git checkout -b "$branch"
           git commit -m "chore: refresh discovery data snapshots"
           git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}"
