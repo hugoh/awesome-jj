@@ -114,3 +114,23 @@ def build_context(data: dict[str, Any], config: dict[str, Any] | None = None) ->
         "url": config["url"],
         "sections": sections,
     }
+
+
+def page_filename(section: dict[str, Any]) -> str:
+    """The Tools section is the site's landing page; every other section
+    gets its own file named after its slug."""
+    return "index.html" if section["key"] == "tools" else f"{section['slug']}.html"
+
+
+def iter_pages(context: dict[str, Any]) -> list[dict[str, Any]]:
+    """One entry per section: its output filename, its own section data, and
+    the shared nav (title + filename for every section) so each page can
+    link to all the others."""
+    nav = [
+        {"title": section["title"], "filename": page_filename(section)}
+        for section in context["sections"]
+    ]
+    return [
+        {"filename": page_filename(section), "section": section, "nav": nav}
+        for section in context["sections"]
+    ]
