@@ -91,19 +91,19 @@ def test_pagefind_entry_name_weighted():
 
 def test_seo_tags_present():
     output = render_page(MINIMAL, "2026-01-01")
-    assert '<link rel="canonical" href="https://hugoh.github.io/awesome-jj/">' in output
+    assert '<link rel="canonical" href="https://awesome-jj.larve.net/">' in output
     assert '<meta name="robots" content="index, follow">' in output
     assert 'property="og:title" content="Awesome JJ"' in output
     assert 'property="og:description"' in output
-    assert 'property="og:url" content="https://hugoh.github.io/awesome-jj/"' in output
+    assert 'property="og:url" content="https://awesome-jj.larve.net/"' in output
     assert 'name="twitter:card" content="summary"' in output
 
 
 def test_seo_tags_present_on_non_index_page():
     output = render_page(MINIMAL, "2026-01-01", "books.html")
-    assert '<link rel="canonical" href="https://hugoh.github.io/awesome-jj/books.html">' in output
+    assert '<link rel="canonical" href="https://awesome-jj.larve.net/books.html">' in output
     assert 'property="og:title" content="Books — Awesome JJ"' in output
-    assert 'property="og:url" content="https://hugoh.github.io/awesome-jj/books.html"' in output
+    assert 'property="og:url" content="https://awesome-jj.larve.net/books.html"' in output
 
 
 def test_entries_get_unique_anchor_ids():
