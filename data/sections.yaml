@@ -10,7 +10,7 @@
 title: Awesome JJ
 description: A curated, actively-maintained list of awesome Jujutsu (jj) VCS resources.
 intro: Jujutsu (also known as jj) is a Git-compatible version control system.
-url: https://hugoh.github.io/awesome-jj/
+url: https://awesome-jj.larve.net/
 
 # kind values:
 #   list          - keep entries in the order declared in entries.yaml
