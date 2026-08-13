@@ -168,7 +168,7 @@ def test_tools_subsections_have_headings():
 def test_nav_links_to_other_pages():
     output = render_page(MINIMAL, "2026-01-01")
     assert '<a href="books.html">Books</a>' in output
-    assert '<a href="index.html" aria-current="page">Tools</a>' in output
+    assert '<a href="./" aria-current="page">Tools</a>' in output
 
 
 def test_generate_writes_one_file_per_section(tmp_path):
