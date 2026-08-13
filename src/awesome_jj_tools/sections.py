@@ -127,7 +127,11 @@ def iter_pages(context: dict[str, Any]) -> list[dict[str, Any]]:
     the shared nav (title + filename for every section) so each page can
     link to all the others."""
     nav = [
-        {"title": section["title"], "filename": page_filename(section)}
+        {
+            "title": section["title"],
+            "filename": page_filename(section),
+            "href": "./" if section["key"] == "tools" else page_filename(section),
+        }
         for section in context["sections"]
     ]
     return [
