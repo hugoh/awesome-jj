@@ -38,8 +38,12 @@ sections:
         title: Diff and Merge Drivers
       - key: workflows
         title: Workflows
+      - key: workspace_management
+        title: Multi-repo & Workspace Management
       - key: shell_integration
         title: Shell Integration
+      - key: agent_tooling
+        title: AI & Agent Tooling
       - key: misc_tools
         title: Misc Tools
 

@@ -206,6 +206,9 @@ tools:
     - name: lightjj
       url: https://github.com/chronologos/lightjj
       description: A fast, powerful, single-binary Jujutsu client.
+    - name: weiff
+      url: https://github.com/isgj/weiff
+      description: "A local web interface for exploring and managing Jujutsu repositories: revision graphs, diffs, files, bookmarks, workspaces, and operation history."
 
   tui:
     - name: jj-fzf
@@ -235,6 +238,12 @@ tools:
     - name: jujutsu-gi
       url: https://github.com/daeh/jujutsu-gi
       description: TUI and CLI for creating, managing, and merging Jujutsu workspaces.
+    - name: jj-tui
+      url: https://github.com/madicen/jj-tui
+      description: A TUI for Jujutsu that incorporates some light PR and ticket support.
+    - name: majjit
+      url: https://github.com/anthrofract/majjit
+      description: A TUI to manipulate the Jujutsu DAG.
 
   editor_integration:
     - name: jiejie.nvim
@@ -355,10 +364,38 @@ tools:
       url: https://github.com/solodov/jx
       description: Opinionated Jujutsu companion for GitHub PR workflows, safe syncing, and layout-aware multi-repository work.
 
+  workspace_management:
+    - name: sesh
+      url: https://github.com/amnn/sesh
+      description: A tmux-native session switcher for navigating between and opening new sessions based on Jujutsu repositories and workspaces.
+    - name: renri
+      url: https://github.com/yukimemi/renri
+      description: Unified manager for Git worktrees and Jujutsu workspaces.
+    - name: vcs-toolkit-rs
+      url: https://github.com/ZelAnton/vcs-toolkit-rs
+      description: A Rust toolkit for automating Git, Jujutsu, and GitHub through CLI process execution.
+    - name: hrd
+      url: https://github.com/hugoh/hrd
+      description: Multi-repo manager (TUI & CLI) for Git and jj with parallel dispatch and live status.
+
   shell_integration:
     - name: zsh-jj
       url: https://github.com/rkh/zsh-jj
       description: Jujutsu support for Z Shell.
+    - name: jj-starship
+      url: https://github.com/dmmulroy/jj-starship
+      description: Unified Starship prompt module for Git and Jujutsu.
+    - name: starship-jj
+      url: https://gitlab.com/lanastara_foss/starship-jj
+      description: A Starship plugin that shows bookmarks and other Jujutsu commit state in your terminal prompt.
+
+  agent_tooling:
+    - name: claude-plugins
+      url: https://github.com/muloka/claude-plugins
+      description: Jujutsu plugins for Claude Code covering Git enforcement, project setup, parallel workspace orchestration, commit workflows, and peer review.
+    - name: jujutsu-workflow-skill
+      url: https://github.com/netresearch/jujutsu-workflow-skill
+      description: An agent skill for agent-safe version control with Jujutsu, using jj for local change management and Git as the canonical remote/PR/CI interface.
 
   misc_tools:
     - name: diffsoup
@@ -376,36 +413,15 @@ tools:
     - name: jj-run
       url: https://github.com/neongreen/mono/tree/main/jj-run
       description: A tool to execute shell commands across multiple repository changes in isolated workspaces using jj.
-    - name: jj-starship
-      url: https://github.com/dmmulroy/jj-starship
-      description: Unified Starship prompt module for Git and Jujutsu.
     - name: lumen
       url: https://github.com/jnsahaj/lumen
       description: A diff viewer and code review TUI and CLI to generate commit messages with AI.
-    - name: majjit
-      url: https://github.com/anthrofract/majjit
-      description: A TUI to manipulate the Jujutsu DAG.
     - name: jjq
       url: https://github.com/paulsmith/jjq
       description: A local merge queue for jj.
     - name: jj-commit
       url: https://github.com/Odonno/jj-commit
       description: Simplify the `jj commit` experience.
-    - name: sesh
-      url: https://github.com/amnn/sesh
-      description: A tmux-native session switcher for navigating between and opening new sessions based on Jujutsu repositories and workspaces.
-    - name: weiff
-      url: https://github.com/isgj/weiff
-      description: "A local web interface for exploring and managing Jujutsu repositories: revision graphs, diffs, files, bookmarks, workspaces, and operation history."
-    - name: renri
-      url: https://github.com/yukimemi/renri
-      description: Unified manager for Git worktrees and Jujutsu workspaces.
-    - name: vcs-toolkit-rs
-      url: https://github.com/ZelAnton/vcs-toolkit-rs
-      description: A Rust toolkit for automating Git, Jujutsu, and GitHub through CLI process execution.
-    - name: hrd
-      url: https://github.com/hugoh/hrd
-      description: Multi-repo manager (TUI & CLI) for Git and jj with parallel dispatch and live status.
     - name: jj-trim
       url: https://github.com/hugoh/jj-trim
       description: Clean up merged bookmarks and abandoned anonymous commits in a jj repository.

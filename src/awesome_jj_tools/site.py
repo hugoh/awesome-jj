@@ -9,6 +9,7 @@ time by running Pagefind over the built site/ directory (see
 
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
 from typing import Any
 
@@ -19,6 +20,7 @@ from awesome_jj_tools.templating import env
 
 SITE_DIR = DEFAULT_ENTRIES_PATH.parents[1] / "site"
 INDEX_PATH = SITE_DIR / "index.html"
+STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 
 def render(data: dict[str, Any], updated_at: str) -> dict[str, str]:
@@ -61,4 +63,6 @@ def generate(
     site_dir.mkdir(parents=True, exist_ok=True)
     for filename, content in pages.items():
         (site_dir / filename).write_text(content, encoding="utf-8")
+    for asset in STATIC_DIR.iterdir():
+        shutil.copy(asset, site_dir / asset.name)
     return pages

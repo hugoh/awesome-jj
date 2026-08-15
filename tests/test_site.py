@@ -74,9 +74,14 @@ def test_pagefind_asset_paths_are_relative():
     assert 'src="/pagefind' not in output
 
 
-def test_pagefind_category_filter_present():
+def test_pagefind_category_filter_absent():
+    # Deliberately not emitted — see the comment above <pagefind-modal> in
+    # index.html.j2. Pagefind's filter-pane only gates whole pages, not
+    # sub-result fragments, so on the combined Tools page it looked like it
+    # narrowed results but didn't. Tagging without a UI to consume it would
+    # just be dead metadata.
     output = render_page(MINIMAL, "2026-01-01", "books.html")
-    assert 'data-pagefind-filter="category">Books' in output
+    assert "data-pagefind-filter" not in output
 
 
 def test_pagefind_meta_title_overridden_per_section():
