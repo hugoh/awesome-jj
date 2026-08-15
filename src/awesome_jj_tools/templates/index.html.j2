@@ -1,12 +1,12 @@
 % macro entry_row(entry, kind)
 % if kind in ("list", "list_sorted")
-<li id="{{ entry.slug }}"><a href="{{ entry.url }}">{{ entry.name }}</a>{% if entry.description %} &mdash; {{ entry.description | md_links }}{% endif %}</li>
+<li id="{{ entry.slug }}"><a href="{{ entry.url }}" data-pagefind-weight="2">{{ entry.name }}</a>{% if entry.description %} &mdash; {{ entry.description | md_links }}{% endif %}</li>
 % elif kind == "book"
-<li id="{{ entry.slug }}"><a href="{{ entry.url }}">{{ entry.name }}</a> &mdash; By {{ entry.author }}.</li>
+<li id="{{ entry.slug }}"><a href="{{ entry.url }}" data-pagefind-weight="2">{{ entry.name }}</a> &mdash; By {{ entry.author }}.</li>
 % elif kind == "dated"
-<li id="{{ entry.slug }}"><span class="date">{{ entry.month }}/{{ entry.year }}</span> <a href="{{ entry.url }}">{{ entry.name }}</a> by {{ entry.author }}</li>
+<li id="{{ entry.slug }}"><span class="date">{{ entry.month }}/{{ entry.year }}</span> <a href="{{ entry.url }}" data-pagefind-weight="2">{{ entry.name }}</a> by {{ entry.author }}</li>
 % elif kind == "dated_video"
-<li id="{{ entry.slug }}"><span class="date">{{ entry.month }}/{{ entry.year }}</span> <a href="{{ entry.url }}">{{ entry.name }}</a>{% if entry.suffix %} {{ entry.suffix }}{% endif %}</li>
+<li id="{{ entry.slug }}"><span class="date">{{ entry.month }}/{{ entry.year }}</span> <a href="{{ entry.url }}" data-pagefind-weight="2">{{ entry.name }}</a>{% if entry.suffix %} {{ entry.suffix }}{% endif %}</li>
 % endif
 % endmacro
 <!doctype html>
@@ -14,51 +14,114 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ title }}</title>
-<meta name="description" content="{{ description }}">
+<title>{{ page_title }}</title>
+<meta name="description" content="{{ page_description }}">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="{{ url }}">
+<link rel="canonical" href="{{ page_url }}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{{ title }}">
-<meta property="og:title" content="{{ title }}">
-<meta property="og:description" content="{{ description }}">
-<meta property="og:url" content="{{ url }}">
+<meta property="og:title" content="{{ page_title }}">
+<meta property="og:description" content="{{ page_description }}">
+<meta property="og:url" content="{{ page_url }}">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="{{ title }}">
-<meta name="twitter:description" content="{{ description }}">
-<link rel="icon" href="data:,">
+<meta name="twitter:title" content="{{ page_title }}">
+<meta name="twitter:description" content="{{ page_description }}">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-<link rel="stylesheet" href="pagefind/pagefind-ui.css">
+<link rel="stylesheet" href="pagefind/pagefind-component-ui.css">
 <style>
   :root { --pico-font-size: 100%; }
   main.container, footer.container { max-width: 46rem; }
   .date { color: var(--pico-muted-color); font-variant-numeric: tabular-nums; }
   nav.toc { columns: 2; margin: 1.5rem 0; }
   nav.toc a { display: block; margin: 0.15rem 0; font-size: 0.9rem; }
-  #search { margin: 1.5rem 0; }
+  nav.toc a[aria-current] { font-weight: bold; }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+  .header h1 { margin-bottom: 0; }
+  .search { flex-shrink: 0; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  :root {
+    --pf-text: var(--pico-color);
+    --pf-text-secondary: var(--pico-muted-color);
+    --pf-text-muted: var(--pico-muted-color);
+    --pf-background: var(--pico-background-color);
+    --pf-border: var(--pico-muted-border-color);
+    --pf-border-focus: var(--pico-primary-focus);
+    --pf-skeleton: var(--pico-muted-border-color);
+    --pf-skeleton-shine: var(--pico-code-background-color);
+    --pf-hover: var(--pico-dropdown-hover-background-color);
+    --pf-mark: var(--pico-color);
+    --pf-outline-focus: var(--pico-primary-focus);
+    --pf-modal-backdrop: var(--pico-modal-overlay-background-color);
+  }
 </style>
 </head>
 <body>
 <main class="container" data-pagefind-body>
 
-<h1>{{ title }}</h1>
+<div class="header">
+% if page.filename == "index.html"
+<h1 id="{{ section.slug }}">{{ title }}</h1>
+% else
+<h1 id="{{ section.slug }}">{{ title }} - {{ section.title }}</h1>
+% endif
+<div class="search">
+  <pagefind-config bundle-path="./"></pagefind-config>
+  <pagefind-modal-trigger></pagefind-modal-trigger>
+  {#
+    A <pagefind-filter-pane> for the `category` filter (tagged per Tools
+    subsection below) was tried here, but Pagefind's filter-pane only
+    gates whole PAGES, not the sub-result fragments within a page. Since
+    every Tools subsection (GUI, TUI, Workflows, ...) lives on this one
+    combined page, checking e.g. "TUI" still surfaced Editor Integration
+    and Misc Tools results alongside it — the filter looked functional
+    but didn't actually narrow anything. Making it work for real would
+    mean splitting Tools into one page per subsection, a bigger change
+    than this filter is worth on its own. Left commented out, not
+    deleted, so the reasoning (and the markup to revive if that split
+    ever happens) isn't lost:
+
+    <pagefind-modal>
+      <pagefind-modal-header>
+        <pagefind-input></pagefind-input>
+      </pagefind-modal-header>
+      <pagefind-modal-body>
+        <pagefind-filter-pane label="Category"></pagefind-filter-pane>
+        <pagefind-summary></pagefind-summary>
+        <pagefind-results></pagefind-results>
+      </pagefind-modal-body>
+      <pagefind-modal-footer>
+        <pagefind-keyboard-hints></pagefind-keyboard-hints>
+      </pagefind-modal-footer>
+    </pagefind-modal>
+  #}
+  <pagefind-modal></pagefind-modal>
+</div>
+</div>
 <p class="date">{{ description }}</p>
 <p>{{ intro }} Source and contribution guide: <a href="https://github.com/hugoh/awesome-jj">hugoh/awesome-jj</a>.</p>
 <p class="date">Last updated: {{ updated_at }}</p>
 
-<div id="search"></div>
-
 <nav class="toc">
-% for section in sections
-<a href="#{{ section.slug }}">{{ section.title }}</a>
+% for item in nav
+<a href="{{ item.href }}"{% if item.filename == page.filename %} aria-current="page"{% endif %}>{{ item.title }}</a>
 % endfor
 </nav>
 
-% for section in sections
-<h2 id="{{ section.slug }}">{{ section.title }}</h2>
+<span class="visually-hidden" data-pagefind-meta="title">{{ page_title }}</span>
+{#
+  A data-pagefind-filter="category" span used to sit here (per Tools
+  subsection) and below (per top-level section), feeding the
+  <pagefind-filter-pane> discussed above. With that filter pane gone —
+  see the comment near <pagefind-modal> — these tags would just be
+  indexed and never surfaced, so they're commented out too rather than
+  left as dead metadata. Revive both together if Tools ever gets split
+  into one page per subsection.
+#}
 % if section.kind == "tools"
 % for sub in section.subsections
 <h3 id="{{ sub.slug }}">{{ sub.title }}</h3>
+{# <span class="visually-hidden" data-pagefind-filter="category">{{ sub.title }}</span> #}
 <ul>
 % for entry in sub.entries
 {{ entry_row(entry, "list_sorted") | trim }}
@@ -66,6 +129,7 @@
 </ul>
 % endfor
 % else
+{# <span class="visually-hidden" data-pagefind-filter="category">{{ section.title }}</span> #}
 % if section.intro
 <p>{{ section.intro }}</p>
 % endif
@@ -75,7 +139,6 @@
 % endfor
 </ul>
 % endif
-% endfor
 
 </main>
 
@@ -84,10 +147,12 @@ Generated from <a href="https://github.com/hugoh/awesome-jj/blob/main/data/entri
 Source: <a href="https://github.com/hugoh/awesome-jj">hugoh/awesome-jj</a>.
 </footer>
 
-<script src="pagefind/pagefind-ui.js"></script>
+<script src="pagefind/pagefind-component-ui.js" type="module"></script>
 <script>
-  window.addEventListener("DOMContentLoaded", () => {
-    new PagefindUI({ element: "#search", showSubResults: true, focusOnSlash: true });
+  document.addEventListener("click", (event) => {
+    if (event.target.closest("pagefind-results a")) {
+      document.querySelector("pagefind-modal")?.close();
+    }
   });
 </script>
 </body>

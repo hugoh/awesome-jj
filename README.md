@@ -4,7 +4,7 @@
 
 Jujutsu (also known as jj) is a Git-compatible version control system.
 
-Last updated: 2026-08-09
+Last updated: 2026-08-15
 
 This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](SOURCES.md) for provenance and what was merged.
 
@@ -17,7 +17,9 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
   - [Editor Integration](#editor-integration)
   - [Diff and Merge Drivers](#diff-and-merge-drivers)
   - [Workflows](#workflows)
+  - [Multi-repo & Workspace Management](#multi-repo--workspace-management)
   - [Shell Integration](#shell-integration)
+  - [AI & Agent Tooling](#ai--agent-tooling)
   - [Misc Tools](#misc-tools)
 - [Articles](#articles)
 - [Books](#books)
@@ -43,18 +45,21 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 - [jayjay](https://github.com/hewigovens/jayjay) - A native macOS GUI for Jujutsu (jj).
 - [jjewel](https://checksimsoftware.com/jjewel) - A native Mac client for the Jujutsu version control system.
 - [lightjj](https://github.com/chronologos/lightjj) - A fast, powerful, single-binary Jujutsu client.
+- [weiff](https://github.com/isgj/weiff) - A local web interface for exploring and managing Jujutsu repositories: revision graphs, diffs, files, bookmarks, workspaces, and operation history.
 
 ### TUI
 
 - [blazingjj](https://github.com/blazingjj/blazingjj) - TUI for Jujutsu/jj.
 - [jif](https://github.com/jrpat/jif) - A moldable Jujutsu TUI.
 - [jj-fzf](https://github.com/tim-janik/jj-fzf) - Text UI for Jujutsu based on fzf.
+- [jj-tui](https://github.com/madicen/jj-tui) - A TUI for Jujutsu that incorporates some light PR and ticket support.
 - [jj_tui](https://github.com/faldor20/jj_tui) - A TUI for the Jujutsu version control system.
 - [jjui](https://github.com/idursun/jjui) - TUI designed for interacting with the Jujutsu version control system.
 - [jk](https://github.com/joshka/jk) - A jj-native terminal UI for Jujutsu.
 - [jujutsu-gi](https://github.com/daeh/jujutsu-gi) - TUI and CLI for creating, managing, and merging Jujutsu workspaces.
 - [jutsu](https://github.com/AliQ80/jutsu) - A TUI command composer for Jujutsu that teaches you the CLI instead of hiding it.
 - [lazyjj](https://github.com/Cretezy/lazyjj) - TUI for Jujutsu/jj, built in Rust with Ratatui.
+- [majjit](https://github.com/anthrofract/majjit) - A TUI to manipulate the Jujutsu DAG.
 
 ### Editor Integration
 
@@ -101,28 +106,35 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 - [kata](https://github.com/martint/kata) - Code review for jj workflows: revset-defined reviews, patchset-anchored comments that survive branch movement, with web, HTTP, and MCP surfaces.
 - [stakk](https://github.com/glennib/stakk) - A tool that bridges Jujutsu bookmarks to GitHub stacked pull requests.
 
+### Multi-repo & Workspace Management
+
+- [hrd](https://github.com/hugoh/hrd) - Multi-repo manager (TUI & CLI) for Git and jj with parallel dispatch and live status.
+- [renri](https://github.com/yukimemi/renri) - Unified manager for Git worktrees and Jujutsu workspaces.
+- [sesh](https://github.com/amnn/sesh) - A tmux-native session switcher for navigating between and opening new sessions based on Jujutsu repositories and workspaces.
+- [vcs-toolkit-rs](https://github.com/ZelAnton/vcs-toolkit-rs) - A Rust toolkit for automating Git, Jujutsu, and GitHub through CLI process execution.
+
 ### Shell Integration
 
+- [jj-starship](https://github.com/dmmulroy/jj-starship) - Unified Starship prompt module for Git and Jujutsu.
+- [starship-jj](https://gitlab.com/lanastara_foss/starship-jj) - A Starship plugin that shows bookmarks and other Jujutsu commit state in your terminal prompt.
 - [zsh-jj](https://github.com/rkh/zsh-jj) - Jujutsu support for Z Shell.
+
+### AI & Agent Tooling
+
+- [claude-plugins](https://github.com/muloka/claude-plugins) - Jujutsu plugins for Claude Code covering Git enforcement, project setup, parallel workspace orchestration, commit workflows, and peer review.
+- [jujutsu-workflow-skill](https://github.com/netresearch/jujutsu-workflow-skill) - An agent skill for agent-safe version control with Jujutsu, using jj for local change management and Git as the canonical remote/PR/CI interface.
 
 ### Misc Tools
 
 - [diffsoup](https://github.com/junglerobba/diffsoup) - A Gerrit-style patchset diff viewer for pull requests, using Jujutsu.
-- [hrd](https://github.com/hugoh/hrd) - Multi-repo manager (TUI & CLI) for Git and jj with parallel dispatch and live status.
 - [hunk](https://github.com/modem-dev/hunk) - A review-first terminal diff viewer for agent-authored changesets.
 - [jj-commit](https://github.com/Odonno/jj-commit) - Simplify the `jj commit` experience.
 - [jj-hunk](https://github.com/laulauland/jj-hunk) - Programmatic hunk selection for Jujutsu.
 - [jj-pre-push](https://github.com/acarapetis/jj-pre-push) - Run pre-commit before `jj git push`.
 - [jj-run](https://github.com/neongreen/mono/tree/main/jj-run) - A tool to execute shell commands across multiple repository changes in isolated workspaces using jj.
-- [jj-starship](https://github.com/dmmulroy/jj-starship) - Unified Starship prompt module for Git and Jujutsu.
 - [jj-trim](https://github.com/hugoh/jj-trim) - Clean up merged bookmarks and abandoned anonymous commits in a jj repository.
 - [jjq](https://github.com/paulsmith/jjq) - A local merge queue for jj.
 - [lumen](https://github.com/jnsahaj/lumen) - A diff viewer and code review TUI and CLI to generate commit messages with AI.
-- [majjit](https://github.com/anthrofract/majjit) - A TUI to manipulate the Jujutsu DAG.
-- [renri](https://github.com/yukimemi/renri) - Unified manager for Git worktrees and Jujutsu workspaces.
-- [sesh](https://github.com/amnn/sesh) - A tmux-native session switcher for navigating between and opening new sessions based on Jujutsu repositories and workspaces.
-- [vcs-toolkit-rs](https://github.com/ZelAnton/vcs-toolkit-rs) - A Rust toolkit for automating Git, Jujutsu, and GitHub through CLI process execution.
-- [weiff](https://github.com/isgj/weiff) - A local web interface for exploring and managing Jujutsu repositories: revision graphs, diffs, files, bookmarks, workspaces, and operation history.
 
 ## Articles
 
