@@ -235,6 +235,9 @@ tools:
     - name: jujutsu-gi
       url: https://github.com/daeh/jujutsu-gi
       description: TUI and CLI for creating, managing, and merging Jujutsu workspaces.
+    - name: jj-tui
+      url: https://github.com/madicen/jj-tui
+      description: A TUI for Jujutsu that incorporates some light PR and ticket support.
 
   editor_integration:
     - name: jiejie.nvim
@@ -379,6 +382,9 @@ tools:
     - name: jj-starship
       url: https://github.com/dmmulroy/jj-starship
       description: Unified Starship prompt module for Git and Jujutsu.
+    - name: starship-jj
+      url: https://gitlab.com/lanastara_foss/starship-jj
+      description: A Starship plugin that shows bookmarks and other Jujutsu commit state in your terminal prompt.
     - name: lumen
       url: https://github.com/jnsahaj/lumen
       description: A diff viewer and code review TUI and CLI to generate commit messages with AI.
@@ -409,6 +415,12 @@ tools:
     - name: jj-trim
       url: https://github.com/hugoh/jj-trim
       description: Clean up merged bookmarks and abandoned anonymous commits in a jj repository.
+    - name: claude-plugins
+      url: https://github.com/muloka/claude-plugins
+      description: Jujutsu plugins for Claude Code covering Git enforcement, project setup, parallel workspace orchestration, commit workflows, and peer review.
+    - name: jujutsu-workflow-skill
+      url: https://github.com/netresearch/jujutsu-workflow-skill
+      description: An agent skill for agent-safe version control with Jujutsu, using jj for local change management and Git as the canonical remote/PR/CI interface.
 
 forges:
   - name: ERSC
