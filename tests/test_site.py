@@ -29,12 +29,21 @@ def test_non_index_page_heading_includes_section():
 
 
 def test_pagefind_hooks_present():
-    output = render_page(MINIMAL, "2026-01-01")
+    output = render_page(MINIMAL, "2026-01-01", "books.html")
     assert "data-pagefind-body" in output
     assert "<pagefind-modal-trigger>" in output
     assert "<pagefind-modal>" in output
     assert "pagefind-component-ui.js" in output
     assert "pagefind-component-ui.css" in output
+
+
+def test_pagefind_body_absent_on_tools_hub():
+    # The hub duplicates every Tools entry (grouped under its subsection
+    # heading) so visitors can scan everything at a glance, but each entry
+    # is already indexed — with a filterable category — on its own
+    # subsection page. Indexing the hub too would just double every result.
+    output = render_page(MINIMAL, "2026-01-01")
+    assert "data-pagefind-body" not in output
 
 
 def test_pagefind_bundle_path_explicit():
@@ -74,14 +83,29 @@ def test_pagefind_asset_paths_are_relative():
     assert 'src="/pagefind' not in output
 
 
-def test_pagefind_category_filter_absent():
-    # Deliberately not emitted — see the comment above <pagefind-modal> in
-    # index.html.j2. Pagefind's filter-pane only gates whole pages, not
-    # sub-result fragments, so on the combined Tools page it looked like it
-    # narrowed results but didn't. Tagging without a UI to consume it would
-    # just be dead metadata.
+def test_pagefind_category_filter_present_on_top_level_sections():
+    # Now that Tools is split into one page per subsection, every page has
+    # exactly one category, so Pagefind's filter-pane (which only gates
+    # whole pages, not sub-result fragments) can filter by it site-wide.
     output = render_page(MINIMAL, "2026-01-01", "books.html")
+    assert 'data-pagefind-filter="category">Books' in output
+
+
+def test_pagefind_category_filter_present_on_tools_subsection():
+    output = render_page(MINIMAL, "2026-01-01", "tools-gui.html")
+    assert 'data-pagefind-filter="category">GUI' in output
+
+
+def test_pagefind_category_filter_absent_on_tools_hub():
+    # The hub page links to every subsection rather than belonging to a
+    # single category itself.
+    output = render_page(MINIMAL, "2026-01-01")
     assert "data-pagefind-filter" not in output
+
+
+def test_pagefind_filter_pane_present():
+    output = render_page(MINIMAL, "2026-01-01")
+    assert '<pagefind-filter-pane label="Category">' in output
 
 
 def test_pagefind_meta_title_overridden_per_section():
@@ -165,15 +189,56 @@ def test_book_rendered_with_by_prefix():
     assert "&mdash; By A Author." in output
 
 
-def test_tools_subsections_have_headings():
+def test_tools_hub_links_to_subsections():
+    output = render_page(MINIMAL, "2026-01-01")
+    assert '<a href="tools-gui.html">GUI</a>' in output
+    assert '<a href="tools-tui.html">TUI</a>' in output
+
+
+def test_tools_hub_lists_all_entries_grouped_by_subsection():
     output = render_page(MINIMAL, "2026-01-01")
     assert '<h3 id="gui">GUI</h3>' in output
+    assert output.index("alpha") < output.index("Zeta")
+
+
+def test_tools_subsection_page_has_heading_and_entries():
+    output = render_page(MINIMAL, "2026-01-01", "tools-gui.html")
+    assert '<h1 id="gui">Awesome JJ - GUI</h1>' in output
+    assert output.index("alpha") < output.index("Zeta")
 
 
 def test_nav_links_to_other_pages():
     output = render_page(MINIMAL, "2026-01-01")
     assert '<a href="books.html">Books</a>' in output
     assert '<a href="./" aria-current="page">Tools</a>' in output
+
+
+def test_nav_marks_tools_current_on_subsection_pages():
+    output = render_page(MINIMAL, "2026-01-01", "tools-gui.html")
+    assert '<a href="./" aria-current="page">Tools</a>' in output
+
+
+def test_tools_subnav_present_on_hub_and_subsection_pages():
+    hub_output = render_page(MINIMAL, "2026-01-01")
+    assert '<div class="tools-subnav-box">' in hub_output
+    assert '<nav class="tools-subnav">' in hub_output
+    assert "Tools categories" in hub_output
+    assert '<a href="tools-tui.html">TUI</a>' in hub_output
+
+    gui_output = render_page(MINIMAL, "2026-01-01", "tools-gui.html")
+    assert '<nav class="tools-subnav">' in gui_output
+    assert '<a href="tools-gui.html" aria-current="page">GUI</a>' in gui_output
+
+
+def test_tools_subnav_absent_on_non_tools_pages():
+    output = render_page(MINIMAL, "2026-01-01", "books.html")
+    assert 'class="tools-subnav"' not in output
+    assert 'class="tools-subnav-box"' not in output
+
+
+def test_nav_sections_are_labeled():
+    output = render_page(MINIMAL, "2026-01-01")
+    assert '<span class="nav-label">Sections</span>' in output
 
 
 def test_generate_writes_one_file_per_section(tmp_path):
@@ -196,6 +261,10 @@ def test_generate_writes_one_file_per_section(tmp_path):
     assert "2026-08-09" in pages["index.html"]
     assert "books.html" in pages
     assert "official-resources.html" in pages
+    assert "tools-gui.html" in pages
+    assert "tools-misc-tools.html" in pages
+    # 7 non-Tools top-level sections + 1 Tools hub + 9 Tools subsections
+    assert len(pages) == 17
 
 
 def test_generate_uses_empty_string_when_no_snapshot_exists(tmp_path):

@@ -33,9 +33,54 @@
   :root { --pico-font-size: 100%; }
   main.container, footer.container { max-width: 46rem; }
   .date { color: var(--pico-muted-color); font-variant-numeric: tabular-nums; }
-  nav.toc { columns: 2; margin: 1.5rem 0; }
-  nav.toc a { display: block; margin: 0.15rem 0; font-size: 0.9rem; }
-  nav.toc a[aria-current] { font-weight: bold; }
+  .nav-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--pico-muted-color);
+    margin: 1.5rem 0 0.5rem;
+  }
+  nav.toc { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 0 1.5rem; }
+  nav.toc a {
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: var(--pico-border-radius);
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: var(--pico-color);
+  }
+  nav.toc a[aria-current] {
+    background: var(--pico-primary);
+    border-color: var(--pico-primary);
+    color: var(--pico-primary-inverse);
+    font-weight: 600;
+  }
+  .tools-subnav-box {
+    margin: -0.75rem 0 1.5rem;
+    padding: 0.75rem 1rem 1rem;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: var(--pico-border-radius);
+    background: var(--pico-code-background-color);
+  }
+  .tools-subnav-box .nav-label { margin-top: 0; }
+  nav.tools-subnav { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  nav.tools-subnav a {
+    padding: 0.2rem 0.65rem;
+    border: 1px solid var(--pico-muted-border-color);
+    border-radius: 999px;
+    background: var(--pico-background-color);
+    font-size: 0.8rem;
+    text-decoration: none;
+    color: var(--pico-color);
+  }
+  nav.tools-subnav a[aria-current] {
+    background: var(--pico-primary);
+    border-color: var(--pico-primary);
+    color: var(--pico-primary-inverse);
+    font-weight: 600;
+  }
   .header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
   .header h1 { margin-bottom: 0; }
   .search { flex-shrink: 0; }
@@ -57,7 +102,7 @@
 </style>
 </head>
 <body>
-<main class="container" data-pagefind-body>
+<main class="container"{% if page.filename != "index.html" %} data-pagefind-body{% endif %}>
 
 <div class="header">
 % if page.filename == "index.html"
@@ -68,60 +113,47 @@
 <div class="search">
   <pagefind-config bundle-path="./"></pagefind-config>
   <pagefind-modal-trigger></pagefind-modal-trigger>
-  {#
-    A <pagefind-filter-pane> for the `category` filter (tagged per Tools
-    subsection below) was tried here, but Pagefind's filter-pane only
-    gates whole PAGES, not the sub-result fragments within a page. Since
-    every Tools subsection (GUI, TUI, Workflows, ...) lives on this one
-    combined page, checking e.g. "TUI" still surfaced Editor Integration
-    and Misc Tools results alongside it — the filter looked functional
-    but didn't actually narrow anything. Making it work for real would
-    mean splitting Tools into one page per subsection, a bigger change
-    than this filter is worth on its own. Left commented out, not
-    deleted, so the reasoning (and the markup to revive if that split
-    ever happens) isn't lost:
-
-    <pagefind-modal>
-      <pagefind-modal-header>
-        <pagefind-input></pagefind-input>
-      </pagefind-modal-header>
-      <pagefind-modal-body>
-        <pagefind-filter-pane label="Category"></pagefind-filter-pane>
-        <pagefind-summary></pagefind-summary>
-        <pagefind-results></pagefind-results>
-      </pagefind-modal-body>
-      <pagefind-modal-footer>
-        <pagefind-keyboard-hints></pagefind-keyboard-hints>
-      </pagefind-modal-footer>
-    </pagefind-modal>
-  #}
-  <pagefind-modal></pagefind-modal>
+  <pagefind-modal>
+    <pagefind-modal-header>
+      <pagefind-input></pagefind-input>
+    </pagefind-modal-header>
+    <pagefind-modal-body>
+      <pagefind-filter-pane label="Category"></pagefind-filter-pane>
+      <pagefind-summary></pagefind-summary>
+      <pagefind-results></pagefind-results>
+    </pagefind-modal-body>
+    <pagefind-modal-footer>
+      <pagefind-keyboard-hints></pagefind-keyboard-hints>
+    </pagefind-modal-footer>
+  </pagefind-modal>
 </div>
 </div>
 <p class="date">{{ description }}</p>
 <p>{{ intro }} Source and contribution guide: <a href="https://github.com/hugoh/awesome-jj">hugoh/awesome-jj</a>.</p>
 <p class="date">Last updated: {{ updated_at }}</p>
 
+<span class="nav-label">Sections</span>
 <nav class="toc">
 % for item in nav
-<a href="{{ item.href }}"{% if item.filename == page.filename %} aria-current="page"{% endif %}>{{ item.title }}</a>
+<a href="{{ item.href }}"{% if item.filename == page.filename or (item.href == "./" and page.tools_nav) %} aria-current="page"{% endif %}>{{ item.title }}</a>
 % endfor
 </nav>
 
+% if page.tools_nav
+<div class="tools-subnav-box">
+<span class="nav-label">Tools categories</span>
+<nav class="tools-subnav">
+% for item in page.tools_nav
+<a href="{{ item.filename }}"{% if item.filename == page.filename %} aria-current="page"{% endif %}>{{ item.title }}</a>
+% endfor
+</nav>
+</div>
+% endif
+
 <span class="visually-hidden" data-pagefind-meta="title">{{ page_title }}</span>
-{#
-  A data-pagefind-filter="category" span used to sit here (per Tools
-  subsection) and below (per top-level section), feeding the
-  <pagefind-filter-pane> discussed above. With that filter pane gone —
-  see the comment near <pagefind-modal> — these tags would just be
-  indexed and never surfaced, so they're commented out too rather than
-  left as dead metadata. Revive both together if Tools ever gets split
-  into one page per subsection.
-#}
 % if section.kind == "tools"
 % for sub in section.subsections
 <h3 id="{{ sub.slug }}">{{ sub.title }}</h3>
-{# <span class="visually-hidden" data-pagefind-filter="category">{{ sub.title }}</span> #}
 <ul>
 % for entry in sub.entries
 {{ entry_row(entry, "list_sorted") | trim }}
@@ -129,7 +161,7 @@
 </ul>
 % endfor
 % else
-{# <span class="visually-hidden" data-pagefind-filter="category">{{ section.title }}</span> #}
+<span class="visually-hidden" data-pagefind-filter="category">{{ section.title }}</span>
 % if section.intro
 <p>{{ section.intro }}</p>
 % endif
