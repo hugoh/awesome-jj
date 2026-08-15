@@ -68,6 +68,33 @@
 <div class="search">
   <pagefind-config bundle-path="./"></pagefind-config>
   <pagefind-modal-trigger></pagefind-modal-trigger>
+  {#
+    A <pagefind-filter-pane> for the `category` filter (tagged per Tools
+    subsection below) was tried here, but Pagefind's filter-pane only
+    gates whole PAGES, not the sub-result fragments within a page. Since
+    every Tools subsection (GUI, TUI, Workflows, ...) lives on this one
+    combined page, checking e.g. "TUI" still surfaced Editor Integration
+    and Misc Tools results alongside it — the filter looked functional
+    but didn't actually narrow anything. Making it work for real would
+    mean splitting Tools into one page per subsection, a bigger change
+    than this filter is worth on its own. Left commented out, not
+    deleted, so the reasoning (and the markup to revive if that split
+    ever happens) isn't lost:
+
+    <pagefind-modal>
+      <pagefind-modal-header>
+        <pagefind-input></pagefind-input>
+      </pagefind-modal-header>
+      <pagefind-modal-body>
+        <pagefind-filter-pane label="Category"></pagefind-filter-pane>
+        <pagefind-summary></pagefind-summary>
+        <pagefind-results></pagefind-results>
+      </pagefind-modal-body>
+      <pagefind-modal-footer>
+        <pagefind-keyboard-hints></pagefind-keyboard-hints>
+      </pagefind-modal-footer>
+    </pagefind-modal>
+  #}
   <pagefind-modal></pagefind-modal>
 </div>
 </div>
@@ -82,10 +109,19 @@
 </nav>
 
 <span class="visually-hidden" data-pagefind-meta="title">{{ page_title }}</span>
-<span class="visually-hidden" data-pagefind-filter="category">{{ section.title }}</span>
+{#
+  A data-pagefind-filter="category" span used to sit here (per Tools
+  subsection) and below (per top-level section), feeding the
+  <pagefind-filter-pane> discussed above. With that filter pane gone —
+  see the comment near <pagefind-modal> — these tags would just be
+  indexed and never surfaced, so they're commented out too rather than
+  left as dead metadata. Revive both together if Tools ever gets split
+  into one page per subsection.
+#}
 % if section.kind == "tools"
 % for sub in section.subsections
 <h3 id="{{ sub.slug }}">{{ sub.title }}</h3>
+{# <span class="visually-hidden" data-pagefind-filter="category">{{ sub.title }}</span> #}
 <ul>
 % for entry in sub.entries
 {{ entry_row(entry, "list_sorted") | trim }}
@@ -93,6 +129,7 @@
 </ul>
 % endfor
 % else
+{# <span class="visually-hidden" data-pagefind-filter="category">{{ section.title }}</span> #}
 % if section.intro
 <p>{{ section.intro }}</p>
 % endif
