@@ -12,7 +12,6 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 from typing import Any
-from xml.sax.saxutils import escape as xml_escape
 
 from awesome_jj_tools.entries import DEFAULT_ENTRIES_PATH, load_entries
 from awesome_jj_tools.last_updated import DEFAULT_LAST_UPDATED_PATH, load_snapshot
@@ -32,22 +31,15 @@ def page_url(context: dict[str, Any], filename: str) -> str:
 
 def render_sitemap(context: dict[str, Any], filenames: list[str], updated_at: str) -> str:
     """A sitemap.xml listing every rendered page, per the sitemaps.org protocol."""
-    lastmod = f"\n    <lastmod>{updated_at}</lastmod>" if updated_at else ""
-    urls = "\n".join(
-        f"  <url>\n    <loc>{xml_escape(page_url(context, filename))}</loc>{lastmod}\n  </url>"
-        for filename in filenames
-    )
-    return (
-        '<?xml version="1.0" encoding="UTF-8"?>\n'
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        f"{urls}\n"
-        "</urlset>\n"
-    )
+    template = env.get_template("sitemap.xml.j2")
+    urls = [page_url(context, filename) for filename in filenames]
+    return template.render(urls=urls, updated_at=updated_at)
 
 
 def render_robots(context: dict[str, Any]) -> str:
     """Allow all crawlers and point them at the sitemap."""
-    return f"User-agent: *\nAllow: /\n\nSitemap: {context['url']}sitemap.xml\n"
+    template = env.get_template("robots.txt.j2")
+    return template.render(sitemap_url=page_url(context, "sitemap.xml"))
 
 
 def render(data: dict[str, Any], updated_at: str) -> dict[str, str]:
