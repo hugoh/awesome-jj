@@ -117,15 +117,23 @@ def build_context(data: dict[str, Any], config: dict[str, Any] | None = None) ->
 
 
 def page_filename(section: dict[str, Any]) -> str:
-    """The Tools section is the site's landing page; every other section
-    gets its own file named after its slug."""
+    """The Tools section's hub page is the site's landing page; every other
+    top-level section gets its own file named after its slug."""
     return "index.html" if section["key"] == "tools" else f"{section['slug']}.html"
 
 
+def subsection_filename(sub: dict[str, Any]) -> str:
+    """Each Tools subsection gets its own file, so Pagefind's category filter
+    can gate a whole page instead of a fragment within the combined Tools
+    page (see the pagefind-modal markup in index.html.j2)."""
+    return f"tools-{sub['slug']}.html"
+
+
 def iter_pages(context: dict[str, Any]) -> list[dict[str, Any]]:
-    """One entry per section: its output filename, its own section data, and
-    the shared nav (title + filename for every section) so each page can
-    link to all the others."""
+    """One entry per output page: its filename, the section data to render,
+    the shared top-level nav (title + filename for every top-level section),
+    and — for the Tools hub and its subsection pages only — `tools_nav`
+    (title + filename for every Tools subsection)."""
     nav = [
         {
             "title": section["title"],
@@ -134,7 +142,43 @@ def iter_pages(context: dict[str, Any]) -> list[dict[str, Any]]:
         }
         for section in context["sections"]
     ]
-    return [
-        {"filename": page_filename(section), "section": section, "nav": nav}
-        for section in context["sections"]
-    ]
+
+    pages = []
+    for section in context["sections"]:
+        if section["key"] != "tools":
+            pages.append(
+                {
+                    "filename": page_filename(section),
+                    "section": section,
+                    "nav": nav,
+                    "tools_nav": [],
+                }
+            )
+            continue
+
+        tools_nav = [
+            {"title": sub["title"], "filename": subsection_filename(sub)}
+            for sub in section["subsections"]
+        ]
+        pages.append(
+            {"filename": "index.html", "section": section, "nav": nav, "tools_nav": tools_nav}
+        )
+        for sub in section["subsections"]:
+            sub_section = {
+                "key": sub["key"],
+                "title": sub["title"],
+                "slug": sub["slug"],
+                "kind": "list_sorted",
+                "entries": sub["entries"],
+                "subsections": [],
+                "intro": None,
+            }
+            pages.append(
+                {
+                    "filename": subsection_filename(sub),
+                    "section": sub_section,
+                    "nav": nav,
+                    "tools_nav": tools_nav,
+                }
+            )
+    return pages

@@ -1,4 +1,11 @@
-from awesome_jj_tools.sections import build_context, load_config, slug, sort_key
+from awesome_jj_tools.sections import (
+    build_context,
+    iter_pages,
+    load_config,
+    slug,
+    sort_key,
+    subsection_filename,
+)
 
 MINIMAL_CONFIG = {
     "title": "Test Title",
@@ -12,7 +19,10 @@ MINIMAL_CONFIG = {
             "key": "tools",
             "title": "Tools",
             "kind": "tools",
-            "subsections": [{"key": "gui", "title": "GUI"}],
+            "subsections": [
+                {"key": "gui", "title": "GUI"},
+                {"key": "tui", "title": "TUI"},
+            ],
         },
         {
             "key": "forges",
@@ -137,3 +147,34 @@ def test_build_context_defaults_to_real_config():
     assert "official_resources" in keys
     assert "community" in keys
     assert context["title"]
+
+
+def test_subsection_filename():
+    assert subsection_filename({"slug": "gui"}) == "tools-gui.html"
+
+
+def test_iter_pages_splits_tools_into_hub_and_subsection_pages():
+    context = build_context({}, MINIMAL_CONFIG)
+    filenames = [page["filename"] for page in iter_pages(context)]
+    assert "index.html" in filenames
+    assert "tools-gui.html" in filenames
+    assert "tools-tui.html" in filenames
+
+
+def test_iter_pages_tools_nav_present_only_on_tools_pages():
+    context = build_context({}, MINIMAL_CONFIG)
+    by_filename = {page["filename"]: page for page in iter_pages(context)}
+    assert by_filename["index.html"]["tools_nav"]
+    assert by_filename["tools-gui.html"]["tools_nav"]
+    assert by_filename["forges.html"]["tools_nav"] == []
+
+
+def test_iter_pages_tools_subsection_page_has_single_list_section():
+    context = build_context(
+        {"tools": {"gui": [{"name": "x", "url": "https://example.com"}]}}, MINIMAL_CONFIG
+    )
+    pages = {page["filename"]: page for page in iter_pages(context)}
+    gui_page = pages["tools-gui.html"]
+    assert gui_page["section"]["kind"] == "list_sorted"
+    assert gui_page["section"]["title"] == "GUI"
+    assert [e["name"] for e in gui_page["section"]["entries"]] == ["x"]
