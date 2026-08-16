@@ -135,6 +135,29 @@ def test_seo_tags_present_on_non_index_page():
     assert 'property="og:url" content="https://awesome-jj.larve.net/books.html"' in output
 
 
+def test_sitemap_lists_every_page():
+    pages = render(MINIMAL, "2026-01-01")
+    sitemap = pages["sitemap.xml"]
+    assert sitemap.startswith('<?xml version="1.0" encoding="UTF-8"?>')
+    assert "<loc>https://awesome-jj.larve.net/</loc>" in sitemap
+    assert "<loc>https://awesome-jj.larve.net/books.html</loc>" in sitemap
+    assert "<loc>https://awesome-jj.larve.net/tools-gui.html</loc>" in sitemap
+    assert "sitemap.xml</loc>" not in sitemap
+    assert "robots.txt</loc>" not in sitemap
+    assert "<lastmod>2026-01-01</lastmod>" in sitemap
+
+
+def test_sitemap_omits_lastmod_when_no_snapshot():
+    sitemap = render(MINIMAL, "")["sitemap.xml"]
+    assert "<lastmod>" not in sitemap
+
+
+def test_robots_txt_points_at_sitemap():
+    robots = render(MINIMAL, "2026-01-01")["robots.txt"]
+    assert "Allow: /" in robots
+    assert "Sitemap: https://awesome-jj.larve.net/sitemap.xml" in robots
+
+
 def test_entries_get_unique_anchor_ids():
     output = render_page(MINIMAL, "2026-01-01")
     assert 'id="jujutsu-homepage"' not in output  # official_resources isn't on the tools page
@@ -263,8 +286,10 @@ def test_generate_writes_one_file_per_section(tmp_path):
     assert "official-resources.html" in pages
     assert "tools-gui.html" in pages
     assert "tools-misc-tools.html" in pages
-    # 7 non-Tools top-level sections + 1 Tools hub + 9 Tools subsections
-    assert len(pages) == 17
+    assert "sitemap.xml" in pages
+    assert "robots.txt" in pages
+    # 7 non-Tools top-level sections + 1 Tools hub + 9 Tools subsections + sitemap.xml + robots.txt
+    assert len(pages) == 19
 
 
 def test_generate_uses_empty_string_when_no_snapshot_exists(tmp_path):

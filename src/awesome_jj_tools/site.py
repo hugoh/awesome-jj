@@ -12,6 +12,7 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 from typing import Any
+from xml.sax.saxutils import escape as xml_escape
 
 from awesome_jj_tools.entries import DEFAULT_ENTRIES_PATH, load_entries
 from awesome_jj_tools.last_updated import DEFAULT_LAST_UPDATED_PATH, load_snapshot
@@ -21,6 +22,32 @@ from awesome_jj_tools.templating import env
 SITE_DIR = DEFAULT_ENTRIES_PATH.parents[1] / "site"
 INDEX_PATH = SITE_DIR / "index.html"
 STATIC_DIR = Path(__file__).resolve().parent / "static"
+
+
+def page_url(context: dict[str, Any], filename: str) -> str:
+    """Same convention `render` uses for canonical/og:url — index.html is the bare site
+    root, every other page is that root plus its filename."""
+    return context["url"] if filename == "index.html" else context["url"] + filename
+
+
+def render_sitemap(context: dict[str, Any], filenames: list[str], updated_at: str) -> str:
+    """A sitemap.xml listing every rendered page, per the sitemaps.org protocol."""
+    lastmod = f"\n    <lastmod>{updated_at}</lastmod>" if updated_at else ""
+    urls = "\n".join(
+        f"  <url>\n    <loc>{xml_escape(page_url(context, filename))}</loc>{lastmod}\n  </url>"
+        for filename in filenames
+    )
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{urls}\n"
+        "</urlset>\n"
+    )
+
+
+def render_robots(context: dict[str, Any]) -> str:
+    """Allow all crawlers and point them at the sitemap."""
+    return f"User-agent: *\nAllow: /\n\nSitemap: {context['url']}sitemap.xml\n"
 
 
 def render(data: dict[str, Any], updated_at: str) -> dict[str, str]:
@@ -34,7 +61,6 @@ def render(data: dict[str, Any], updated_at: str) -> dict[str, str]:
         section = page["section"]
         is_index = page["filename"] == "index.html"
         page_title = context["title"] if is_index else f"{section['title']} — {context['title']}"
-        page_url = context["url"] if is_index else context["url"] + page["filename"]
         pages[page["filename"]] = template.render(
             **context,
             page=page,
@@ -42,8 +68,10 @@ def render(data: dict[str, Any], updated_at: str) -> dict[str, str]:
             nav=page["nav"],
             page_title=page_title,
             page_description=context["description"],
-            page_url=page_url,
+            page_url=page_url(context, page["filename"]),
         )
+    pages["sitemap.xml"] = render_sitemap(context, list(pages), updated_at)
+    pages["robots.txt"] = render_robots(context)
     return pages
 
 
