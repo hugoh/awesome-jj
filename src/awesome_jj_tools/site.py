@@ -23,6 +23,25 @@ INDEX_PATH = SITE_DIR / "index.html"
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 
+def page_url(context: dict[str, Any], filename: str) -> str:
+    """Same convention `render` uses for canonical/og:url — index.html is the bare site
+    root, every other page is that root plus its filename."""
+    return context["url"] if filename == "index.html" else context["url"] + filename
+
+
+def render_sitemap(context: dict[str, Any], filenames: list[str], updated_at: str) -> str:
+    """A sitemap.xml listing every rendered page, per the sitemaps.org protocol."""
+    template = env.get_template("sitemap.xml.j2")
+    urls = [page_url(context, filename) for filename in filenames]
+    return template.render(urls=urls, updated_at=updated_at)
+
+
+def render_robots(context: dict[str, Any]) -> str:
+    """Allow all crawlers and point them at the sitemap."""
+    template = env.get_template("robots.txt.j2")
+    return template.render(sitemap_url=page_url(context, "sitemap.xml"))
+
+
 def render(data: dict[str, Any], updated_at: str) -> dict[str, str]:
     """One rendered page per section, keyed by output filename — see
     `sections.iter_pages` for the filename convention (Tools is index.html).
@@ -34,7 +53,6 @@ def render(data: dict[str, Any], updated_at: str) -> dict[str, str]:
         section = page["section"]
         is_index = page["filename"] == "index.html"
         page_title = context["title"] if is_index else f"{section['title']} — {context['title']}"
-        page_url = context["url"] if is_index else context["url"] + page["filename"]
         pages[page["filename"]] = template.render(
             **context,
             page=page,
@@ -42,8 +60,10 @@ def render(data: dict[str, Any], updated_at: str) -> dict[str, str]:
             nav=page["nav"],
             page_title=page_title,
             page_description=context["description"],
-            page_url=page_url,
+            page_url=page_url(context, page["filename"]),
         )
+    pages["sitemap.xml"] = render_sitemap(context, list(pages), updated_at)
+    pages["robots.txt"] = render_robots(context)
     return pages
 
 
