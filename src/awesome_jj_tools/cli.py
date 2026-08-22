@@ -1,4 +1,5 @@
-"""Entry points: generate, check, generate-site, discover, releases, stars, discovery-report."""
+"""Entry points: generate, check, generate-site, discover, releases, stars, redirects,
+discovery-report."""
 
 from __future__ import annotations
 
@@ -21,10 +22,16 @@ def main(argv: list[str] | None = None) -> int:
     subparsers.add_parser(
         "media", help="Sweep HN/Lobsters/Reddit/YouTube for popular new jj articles and videos"
     )
+    redirects_parser = subparsers.add_parser(
+        "redirects", help="Diff lychee's redirects against known/accepted ones"
+    )
+    redirects_parser.add_argument(
+        "inputs", nargs="*", help="Files to check (default: the standard doc set)"
+    )
     subparsers.add_parser(
         "discovery-report",
         help=(
-            "Run discover+releases+stars, print the combined report. "
+            "Run discover+releases+stars+redirects, print the combined report. "
             "Exits 1 (like grep) if nothing was found, for CI to skip filing an issue."
         ),
     )
@@ -82,6 +89,13 @@ def main(argv: list[str] | None = None) -> int:
         print(report)
         return 0
 
+    if args.command == "redirects":
+        from awesome_jj_tools.redirects import run
+
+        report, _has_findings = run(args.inputs or None)
+        print(report)
+        return 0
+
     if args.command == "discovery-report":
         return asyncio.run(_discovery_report())
 
@@ -91,6 +105,7 @@ def main(argv: list[str] | None = None) -> int:
 async def _discovery_report() -> int:
     from awesome_jj_tools.discover import run as discover_run
     from awesome_jj_tools.media import run as media_run
+    from awesome_jj_tools.redirects import run as redirects_run
     from awesome_jj_tools.releases import run as releases_run
     from awesome_jj_tools.stars import run as stars_run
 
@@ -98,9 +113,14 @@ async def _discovery_report() -> int:
     media_text, media_found = await media_run()
     releases_text, releases_found = await releases_run()
     stars_text, stars_found = await stars_run()
+    redirects_text, redirects_found = redirects_run()
 
-    print("\n\n".join([discover_text, media_text, releases_text, stars_text]))
-    return 0 if (discover_found or media_found or releases_found or stars_found) else 1
+    print("\n\n".join([discover_text, media_text, releases_text, stars_text, redirects_text]))
+    return (
+        0
+        if (discover_found or media_found or releases_found or stars_found or redirects_found)
+        else 1
+    )
 
 
 if __name__ == "__main__":

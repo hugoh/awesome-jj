@@ -59,6 +59,10 @@ run = "uv run awesome-jj stars"
 description = "Sweep HN/Lobsters/Reddit/YouTube for popular new jj articles and videos"
 run = "uv run awesome-jj media"
 
+[tasks.redirects]
+description = "Diff lychee's redirects against data/redirect-exceptions.yaml"
+run = "uv run awesome-jj redirects README.md SOURCES.md CONTRIBUTING.md CODE_OF_CONDUCT.md AGENTS.md"
+
 [tasks."discovery-report"]
 description = "Run discover+media+releases+stars combined, as CI does (exits 1 if nothing found)"
 run = "uv run awesome-jj discovery-report"
