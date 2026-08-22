@@ -1,0 +1,20 @@
+# Known/accepted redirects that don't live on an entries.yaml `url:` field --
+# see each entry's own `accepted_redirect` key for the ones that do. These
+# three are either hardcoded in the README template (the two badges) or
+# embedded in an entry's `description:` link text rather than its `url:`, so
+# there's no single entries.yaml field to attach the exception to. New
+# redirects that show up here in the discovery report might be a genuine
+# rename worth fixing (see the amnn/sesh -> amnn/smth fix) rather than one to
+# shrug off.
+redirects:
+  - url: https://awesome.re/
+    target: https://github.com/sindresorhus/awesome
+    reason: Intentional short link for the top badge (templates/readme.md.j2).
+  - url: https://i.creativecommons.org/p/zero/1.0/88x31.png
+    target: https://licensebuttons.net/p/zero/1.0/88x31.png
+    reason: Intentional short link for the CC0 badge (templates/readme.md.j2).
+  - url: https://blog.tangled.org/stacking
+    target: https://blog.tangled.org/stacking/
+    reason: >-
+      Trailing-slash normalization; link is inside the Tangled entry's
+      description, not its own url: field.

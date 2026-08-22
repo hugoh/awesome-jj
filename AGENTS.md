@@ -18,8 +18,8 @@ on the pipeline to fix it.
 
 `.github/workflows/discovery.yml` runs every two weeks (and on-demand via
 `workflow_dispatch`), driven by `src/awesome_jj_tools/discover.py`,
-`media.py`, `releases.py`, and `stars.py`. It opens or updates a single issue
-labeled `discovery-report` with these sections:
+`media.py`, `releases.py`, `stars.py`, and `redirects.py`. It opens or
+updates a single issue labeled `discovery-report` with these sections:
 
 1. **New candidates** — repos from GitHub/GitLab/Codeberg topic sweeps and
    crates.io's `jj-lib` reverse-dependencies that aren't in `entries.yaml`
@@ -62,6 +62,27 @@ labeled `discovery-report` with these sections:
      configured** — app verification is pending on the repo owner's side.
 5. **New releases** / **Star movers** — informational, not
    inclusion/exclusion signals on their own.
+6. **Redirect exceptions** (`redirects.py`) — diffs `lychee`'s current
+   redirects (the same check CI already runs, `--format json`'d for
+   comparison) against known/accepted ones. Known redirects live in two
+   places: an entry's own `accepted_redirect` field next to its `url:` in
+   `entries.yaml` (the common case — colocated so editing or removing the
+   entry naturally keeps the exception in sync, no separate file to drift
+   out of date), and
+   [`data/redirect-exceptions.yaml`](data/redirect-exceptions.yaml) for the
+   few redirects that aren't tied to any entry's `url:` field (a
+   template-hardcoded badge, or a link embedded in an entry's
+   `description:` rather than its own `url:`). A **new redirect** is a
+   triage prompt, not a failure: check whether it's a genuine rename (update
+   the URL in `entries.yaml`, same as any other staleness flag above) or
+   just cosmetic — normalization (trailing-slash/case) or an intentional
+   short link (`discord.gg`, `awesome.re`) — in which case add
+   `accepted_redirect: <target>` to the entry (or, for the handful of cases
+   with no entry to attach it to, a line in `redirect-exceptions.yaml` with
+   a one-line reason). A **stale exception** (recorded but no longer
+   occurring — the target started resolving directly, or started failing
+   outright) just needs its `accepted_redirect` field or
+   `redirect-exceptions.yaml` entry deleted.
 
 When asked to update this list, or asked proactively to check it:
 

@@ -7,10 +7,13 @@ official_resources:
     url: https://github.com/jj-vcs/jj
   - name: Official tutorial
     url: https://docs.jj-vcs.dev/latest/tutorial
+    accepted_redirect: https://docs.jj-vcs.dev/latest/tutorial/
   - name: Official documentation
     url: https://docs.jj-vcs.dev/latest
+    accepted_redirect: https://docs.jj-vcs.dev/latest/
   - name: Frequently Asked Questions
     url: https://docs.jj-vcs.dev/latest/FAQ/
+    accepted_redirect: https://docs.jj-vcs.dev/latest/faq/
   - name: '"The jj workshop: A Zero-to-Hero Speedrun"'
     url: https://github.com/jkoppel/jj-workshop
     description: A hands-on workshop repo.
@@ -202,6 +205,7 @@ tools:
       description: A native macOS GUI for Jujutsu (jj).
     - name: jjewel
       url: https://checksimsoftware.com/jjewel
+      accepted_redirect: https://checksimsoftware.com/jjewel/
       description: A native Mac client for the Jujutsu version control system.
     - name: lightjj
       url: https://github.com/chronologos/lightjj
@@ -444,6 +448,7 @@ forges:
     description: The sovereign forge.
   - name: Revset
     url: https://www.revset.dev/
+    accepted_redirect: https://revset.dev/
     description: Commit First Code Forge (Early Access).
   - name: Tangled
     url: https://tangled.org/
@@ -464,6 +469,7 @@ community:
     description: Official Jujutsu account.
   - name: Discord
     url: https://discord.gg/dkmfj3aGQN
+    accepted_redirect: https://discord.com/invite/dkmfj3aGQN
     description: Community chat server.
   - name: GitHub Discussions
     url: https://github.com/jj-vcs/jj/discussions
