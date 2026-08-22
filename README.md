@@ -4,7 +4,7 @@
 
 Jujutsu (also known as jj) is a Git-compatible version control system.
 
-Last updated: 2026-08-15
+Last updated: 2026-08-22
 
 This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](SOURCES.md) for provenance and what was merged.
 
@@ -115,8 +115,10 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 
 ### Shell Integration
 
+- [fish_jj_prompt](https://github.com/nertzy/fish_jj_prompt) - A Fish shell prompt segment for Jujutsu repositories, installable via Fisher.
 - [jj-starship](https://github.com/dmmulroy/jj-starship) - Unified Starship prompt module for Git and Jujutsu.
 - [starship-jj](https://gitlab.com/lanastara_foss/starship-jj) - A Starship plugin that shows bookmarks and other Jujutsu commit state in your terminal prompt.
+- [tide-item-jj](https://github.com/lucasadelino/tide-item-jj) - A Tide prompt item that displays Jujutsu change ID, bookmarks, commit status, and file statistics.
 - [zsh-jj](https://github.com/rkh/zsh-jj) - Jujutsu support for Z Shell.
 
 ### AI & Agent Tooling
