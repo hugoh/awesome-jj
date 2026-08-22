@@ -110,7 +110,7 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 
 - [hrd](https://github.com/hugoh/hrd) - Multi-repo manager (TUI & CLI) for Git and jj with parallel dispatch and live status.
 - [renri](https://github.com/yukimemi/renri) - Unified manager for Git worktrees and Jujutsu workspaces.
-- [sesh](https://github.com/amnn/sesh) - A tmux-native session switcher for navigating between and opening new sessions based on Jujutsu repositories and workspaces.
+- [smth](https://github.com/amnn/smth) - A tmux-native session switcher for navigating between and opening new sessions based on Jujutsu repositories and workspaces.
 - [vcs-toolkit-rs](https://github.com/ZelAnton/vcs-toolkit-rs) - A Rust toolkit for automating Git, Jujutsu, and GitHub through CLI process execution.
 
 ### Shell Integration

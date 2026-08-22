@@ -365,8 +365,8 @@ tools:
       description: Opinionated Jujutsu companion for GitHub PR workflows, safe syncing, and layout-aware multi-repository work.
 
   workspace_management:
-    - name: sesh
-      url: https://github.com/amnn/sesh
+    - name: smth
+      url: https://github.com/amnn/smth
       description: A tmux-native session switcher for navigating between and opening new sessions based on Jujutsu repositories and workspaces.
     - name: renri
       url: https://github.com/yukimemi/renri
