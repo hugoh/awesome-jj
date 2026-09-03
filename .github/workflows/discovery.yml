@@ -94,6 +94,8 @@ jobs:
         with:
           app-id: ${{ secrets.DISCOVERY_APP_ID }}
           private-key: ${{ secrets.DISCOVERY_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
 
       - name: Commit refreshed data snapshots
         env:
