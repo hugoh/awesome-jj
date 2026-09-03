@@ -4,7 +4,7 @@
 
 Jujutsu (also known as jj) is a Git-compatible version control system.
 
-Last updated: 2026-08-22
+Last updated: 2026-09-03
 
 This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](SOURCES.md) for provenance and what was merged.
 
@@ -50,6 +50,7 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 ### TUI
 
 - [blazingjj](https://github.com/blazingjj/blazingjj) - TUI for Jujutsu/jj.
+- [gojo](https://github.com/0xhckr/gojo) - A fullscreen terminal UI for Jujutsu with commit graph, diff viewing, conflict resolution, and AI-generated commit messages.
 - [jif](https://github.com/jrpat/jif) - A moldable Jujutsu TUI.
 - [jj-fzf](https://github.com/tim-janik/jj-fzf) - Text UI for Jujutsu based on fzf.
 - [jj-tui](https://github.com/madicen/jj-tui) - A TUI for Jujutsu that incorporates some light PR and ticket support.
@@ -68,6 +69,7 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 - [JJ View](https://github.com/brychanrobot/jj-view) - Integrates Jujutsu (jj) version control into VS Code.
 - [jj-idea](https://github.com/kkkev/jj-idea) - Jujutsu VCS Plugin for IntelliJ IDEA.
 - [jj-mode.el](https://github.com/bolivier/jj-mode.el) - Jujutsu version control mode for Emacs inspired by Magit.
+- [jj.hx](https://github.com/icorbrey/jj.hx) - A Steel plugin that provides Jujutsu integration for the Helix editor.
 - [jj.nvim](https://github.com/NicolasGB/jj.nvim) - Drive Jujutsu (jj) VCS from Neovim.
 - [jjwsm.nvim](https://github.com/vapourismo/jjwsm.nvim) - Neovim Jujutsu Workspace Manager.
 - [jjx](https://github.com/Christoph-D/jjx) - Jujutsu (jj) VCS support for VS Code.

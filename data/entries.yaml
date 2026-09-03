@@ -248,6 +248,9 @@ tools:
     - name: majjit
       url: https://github.com/anthrofract/majjit
       description: A TUI to manipulate the Jujutsu DAG.
+    - name: gojo
+      url: https://github.com/0xhckr/gojo
+      description: A fullscreen terminal UI for Jujutsu with commit graph, diff viewing, conflict resolution, and AI-generated commit messages.
 
   editor_integration:
     - name: jiejie.nvim
@@ -259,6 +262,9 @@ tools:
     - name: jj-mode.el
       url: https://github.com/bolivier/jj-mode.el
       description: Jujutsu version control mode for Emacs inspired by Magit.
+    - name: jj.hx
+      url: https://github.com/icorbrey/jj.hx
+      description: A Steel plugin that provides Jujutsu integration for the Helix editor.
     - name: jj.nvim
       url: https://github.com/NicolasGB/jj.nvim
       description: Drive Jujutsu (jj) VCS from Neovim.
