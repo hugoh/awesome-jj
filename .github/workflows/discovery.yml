@@ -84,9 +84,20 @@ jobs:
             gh issue create --title "awesome-jj discovery report" --label discovery-report --body "$body"
           fi
 
+      - name: Mint GitHub App token
+        # Using an App token (instead of GITHUB_TOKEN) for the push/PR below
+        # is required so the resulting pull_request event triggers CI —
+        # GitHub deliberately suppresses workflow triggers for events
+        # produced by the default GITHUB_TOKEN, to avoid recursive runs.
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.DISCOVERY_APP_ID }}
+          private-key: ${{ secrets.DISCOVERY_APP_PRIVATE_KEY }}
+
       - name: Commit refreshed data snapshots
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
