@@ -1,6 +1,5 @@
+---
 name: hk
-
-permissions: {}
 
 on: # yamllint disable-line rule:truthy
   push:
@@ -8,20 +7,12 @@ on: # yamllint disable-line rule:truthy
       - main
   pull_request:
 
+permissions: {}
+
 jobs:
-  check:
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.event.pull_request.number ||
-        github.ref }}
-      cancel-in-progress: true
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+  hk:
+    uses: hugoh/gh-workflows/.github/workflows/hk.yml@bb265ccce6562fcb1ad4ae85a4aacc72de332652 # v1.20.0
     permissions:
       contents: read
       packages: read
       statuses: write
-    steps:
-      - uses: hugoh/gh-workflows/setup@3491144ab533d5d7724af1975dc694c59c9db0d6 # v1.10.0
-      - uses: hugoh/gh-workflows/hk-check@3491144ab533d5d7724af1975dc694c59c9db0d6 # v1.10.0
-        env:
-          PINACT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
