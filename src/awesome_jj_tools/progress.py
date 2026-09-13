@@ -37,17 +37,15 @@ async def parallel_map[T, R](
     if not items:
         return []
 
-    results: dict[int, R] = {}
     semaphore = asyncio.Semaphore(max_concurrency)
 
     with Progress(console=_console, transient=True) as progress:
         task_id = progress.add_task(description, total=len(items))
 
-        async def run_one(index: int, item: T) -> None:
+        async def run_one(item: T) -> R:
             async with semaphore:
-                results[index] = await fn(item)
+                result = await fn(item)
             progress.advance(task_id)
+            return result
 
-        await asyncio.gather(*(run_one(i, item) for i, item in enumerate(items)))
-
-    return [results[i] for i in range(len(items))]
+        return await asyncio.gather(*(run_one(item) for item in items))

@@ -153,14 +153,6 @@ async def fetch_crates_candidates(
     return await parallel_map(resolve, crate_names, description="Resolving crates.io repos")
 
 
-def load_candidates_snapshot(path: Path = DEFAULT_CANDIDATES_SNAPSHOT_PATH) -> set[str]:
-    return load_url_snapshot(path)
-
-
-def save_candidates_snapshot(urls: set[str], path: Path = DEFAULT_CANDIDATES_SNAPSHOT_PATH) -> None:
-    save_url_snapshot(urls, path)
-
-
 def load_ignored_urls(path: Path = DEFAULT_IGNORED_PATH) -> set[str]:
     """URLs that legitimately keep surfacing but should never be reported — see ignored.yaml."""
     if not path.exists():
@@ -261,7 +253,7 @@ async def run(
     """Returns (report_text, has_findings)."""
     data = load_entries(entries_path)
     excluded_urls = all_urls(data) | load_ignored_urls(ignored_path)
-    previous_snapshot_urls = load_candidates_snapshot(snapshot_path)
+    previous_snapshot_urls = load_url_snapshot(snapshot_path)
 
     async with new_client() as client:
         github, gitlab, codeberg, crates = await asyncio.gather(
@@ -276,7 +268,7 @@ async def run(
         new_candidates, outstanding_candidates = split_new_vs_outstanding(
             missing, previous_snapshot_urls
         )
-        save_candidates_snapshot({c.url for c in missing}, snapshot_path)
+        save_url_snapshot({c.url for c in missing}, snapshot_path)
 
         repo_refs = github_repos(data)
         stale_entries = await check_staleness(client, repo_refs)

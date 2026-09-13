@@ -61,30 +61,10 @@ def main(argv: list[str] | None = None) -> int:
         generate_site()
         return 0
 
-    if args.command == "discover":
-        from awesome_jj_tools.discover import run
+    if args.command in ("discover", "releases", "stars", "media"):
+        import importlib
 
-        report, _has_findings = asyncio.run(run())
-        print(report)
-        return 0
-
-    if args.command == "releases":
-        from awesome_jj_tools.releases import run
-
-        report, _has_findings = asyncio.run(run())
-        print(report)
-        return 0
-
-    if args.command == "stars":
-        from awesome_jj_tools.stars import run
-
-        report, _has_findings = asyncio.run(run())
-        print(report)
-        return 0
-
-    if args.command == "media":
-        from awesome_jj_tools.media import run
-
+        run = importlib.import_module(f"awesome_jj_tools.{args.command}").run
         report, _has_findings = asyncio.run(run())
         print(report)
         return 0
