@@ -4,7 +4,7 @@
 
 Jujutsu (also known as jj) is a Git-compatible version control system.
 
-Last updated: 2026-09-03
+Last updated: 2026-09-22
 
 This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](SOURCES.md) for provenance and what was merged.
 
@@ -57,6 +57,7 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 - [jj_tui](https://github.com/faldor20/jj_tui) - A TUI for the Jujutsu version control system.
 - [jjui](https://github.com/idursun/jjui) - TUI designed for interacting with the Jujutsu version control system.
 - [jk](https://github.com/joshka/jk) - A jj-native terminal UI for Jujutsu.
+- [jufu](https://github.com/hkrhd/jufu) - TUI for viewing jujutsu logs, designed for use with coding agents and panes.
 - [jujutsu-gi](https://github.com/daeh/jujutsu-gi) - TUI and CLI for creating, managing, and merging Jujutsu workspaces.
 - [jutsu](https://github.com/AliQ80/jutsu) - A TUI command composer for Jujutsu that teaches you the CLI instead of hiding it.
 - [lazyjj](https://github.com/Cretezy/lazyjj) - TUI for Jujutsu/jj, built in Rust with Ratatui.
@@ -87,6 +88,8 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 - [0xferrous/jj-conflict.nvim](https://github.com/0xferrous/jj-conflict.nvim) - Neovim plugin for highlighting and resolving Jujutsu (jj) file conflicts, with multi-sided conflict support.
 - [diffedit3](https://github.com/ilyagr/diffedit3) - Edit diffs in a 3-pane view.
 - [hunk.nvim](https://github.com/julienvincent/hunk.nvim) - A tool for splitting diffs in Neovim.
+- [jj-diff](https://github.com/KyleKing/jj-diff) - Exploring better diff management for jj.
+- [jj-diff.el](https://github.com/ccqpein/jj-diff.el) - Interactive Jujutsu (jj) diff and split tool for Emacs.
 - [jj-diffconflicts](https://github.com/rafikdraoui/jj-diffconflicts) - A conflict resolution merge tool for Jujutsu VCS that runs in Neovim.
 - [larpios/jj-conflict.nvim](https://github.com/larpios/jj-conflict.nvim) - Neovim plugin for resolving and visualizing Jujutsu conflicts.
 - [Meld](https://meldmerge.org/) - Visual diff and merge tool.
@@ -168,6 +171,7 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 - 03/2026 [Reviewing large changes with Jujutsu](https://ben.gesoff.uk/posts/reviewing-large-changes-with-jj/) by Ben Gesoff
 - 04/2026 [Jujutsu megamerges for fun and profit](https://isaaccorbrey.com/notes/jujutsu-megamerges-for-fun-and-profit) by Isaac Corbrey
 - 06/2026 [Jujutsu: The Git Upgrade You Didn't Know You Needed](https://www.git-tower.com/blog/jujutsu) by Bruno Brito
+- 09/2026 [Beyond jj: config & tools ecosystem](https://andre.arko.net/2026/09/16/beyond-jj-config-and-tools-ecosystem/) by André Arko
 
 ## Books
 
@@ -203,10 +207,12 @@ While Jujutsu works with Git compatible forges like GitHub, there are also some 
 
 - [ERSC](https://ersc.io/) - Source control that scales as you grow ([Early Access](https://ersc.io/blog/ersc-availability)).
 - [garami](https://github.com/garami-vcs/garami) - Experimental native hosting and collaboration infrastructure for Jujutsu repositories (early-stage).
+- [JJHub](https://jjhub.erisera.com/) - An overlay on GitHub from Erisera offering consistent change IDs and skills/MCP servers for agents.
 - [Jujubi](https://juju.bi/) - Modern code forge built for speed (Early Access).
 - [Radicle](https://radicle.dev/) - The sovereign forge.
 - [Revset](https://www.revset.dev/) - Commit First Code Forge (Early Access).
 - [Tangled](https://tangled.org/) - The next-generation social coding platform ([announcement](https://blog.tangled.org/stacking)).
+- [vex.sc](https://vex.sc/) - Code forge (Early Access).
 
 ## Miscellaneous
 

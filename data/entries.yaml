@@ -123,6 +123,10 @@ articles:
     url: https://www.git-tower.com/blog/jujutsu
     date: "2026-06"
     author: Bruno Brito
+  - name: "Beyond jj: config & tools ecosystem"
+    url: https://andre.arko.net/2026/09/16/beyond-jj-config-and-tools-ecosystem/
+    date: "2026-09"
+    author: André Arko
 
 books:
   - name: Jujutsu for Everyone
@@ -224,6 +228,9 @@ tools:
     - name: jjui
       url: https://github.com/idursun/jjui
       description: TUI designed for interacting with the Jujutsu version control system.
+    - name: jufu
+      url: https://github.com/hkrhd/jufu
+      description: TUI for viewing jujutsu logs, designed for use with coding agents and panes.
     - name: jj_tui
       url: https://github.com/faldor20/jj_tui
       description: A TUI for the Jujutsu version control system.
@@ -338,6 +345,12 @@ tools:
     - name: Weave
       url: https://github.com/Ataraxy-Labs/weave
       description: Entity-level semantic merge driver.
+    - name: jj-diff
+      url: https://github.com/KyleKing/jj-diff
+      description: Exploring better diff management for jj.
+    - name: jj-diff.el
+      url: https://github.com/ccqpein/jj-diff.el
+      description: Interactive Jujutsu (jj) diff and split tool for Emacs.
 
   workflows:
     - name: jj-ryu
@@ -462,6 +475,12 @@ forges:
   - name: garami
     url: https://github.com/garami-vcs/garami
     description: Experimental native hosting and collaboration infrastructure for Jujutsu repositories (early-stage).
+  - name: JJHub
+    url: https://jjhub.erisera.com/
+    description: An overlay on GitHub from Erisera offering consistent change IDs and skills/MCP servers for agents.
+  - name: vex.sc
+    url: https://vex.sc/
+    description: Code forge (Early Access).
 
 miscellaneous:
   - name: JJ Cheat Sheet
