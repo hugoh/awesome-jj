@@ -4,7 +4,7 @@
 
 Jujutsu (also known as jj) is a Git-compatible version control system.
 
-Last updated: 2026-09-03
+Last updated: 2026-09-22
 
 This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](SOURCES.md) for provenance and what was merged.
 
@@ -168,6 +168,7 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 - 03/2026 [Reviewing large changes with Jujutsu](https://ben.gesoff.uk/posts/reviewing-large-changes-with-jj/) by Ben Gesoff
 - 04/2026 [Jujutsu megamerges for fun and profit](https://isaaccorbrey.com/notes/jujutsu-megamerges-for-fun-and-profit) by Isaac Corbrey
 - 06/2026 [Jujutsu: The Git Upgrade You Didn't Know You Needed](https://www.git-tower.com/blog/jujutsu) by Bruno Brito
+- 09/2026 [Beyond jj: config & tools ecosystem](https://andre.arko.net/2026/09/16/beyond-jj-config-and-tools-ecosystem/) by André Arko
 
 ## Books
 
@@ -203,6 +204,7 @@ While Jujutsu works with Git compatible forges like GitHub, there are also some 
 
 - [ERSC](https://ersc.io/) - Source control that scales as you grow ([Early Access](https://ersc.io/blog/ersc-availability)).
 - [garami](https://github.com/garami-vcs/garami) - Experimental native hosting and collaboration infrastructure for Jujutsu repositories (early-stage).
+- [JJHub](https://jjhub.dev/) - Code collaboration platform for Jujutsu that reviews changes (not branches) by change ID across amends and rebases (alpha, invite-only).
 - [Jujubi](https://juju.bi/) - Modern code forge built for speed (Early Access).
 - [Radicle](https://radicle.dev/) - The sovereign forge.
 - [Revset](https://www.revset.dev/) - Commit First Code Forge (Early Access).

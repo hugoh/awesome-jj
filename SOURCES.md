@@ -73,3 +73,12 @@ folded back into the "Active-project sweep" section above.
   resurfacing in every discovery report — deliberately *not* added: the
   "too early-stage" repos from the Active-project sweep above, which should
   keep reappearing until revisited.
+- **2026-09-22**: André Arko's ["Beyond jj: config & tools ecosystem"](https://andre.arko.net/2026/09/16/beyond-jj-config-and-tools-ecosystem/)
+  (09/2026) added to Articles. Cross-referenced its tool survey (GUIs, TUIs,
+  editor plugins, stacked-PR tools, merge drivers, forges) against
+  `entries.yaml`: everything it named was already listed except
+  [JJHub](https://jjhub.dev/), a change-ID-based (not branch-based) code
+  review forge for jj, currently alpha/invite-only — added to Forges. The
+  talk's "built-in jj features" (`jj run`, `jj fix`, `bisect run`, etc.) and
+  "alias directory" (the same `lysator.liu.se/~axl/jj-aliases` already under
+  Miscellaneous) aren't separate entries.

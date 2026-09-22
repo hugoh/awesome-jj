@@ -123,6 +123,10 @@ articles:
     url: https://www.git-tower.com/blog/jujutsu
     date: "2026-06"
     author: Bruno Brito
+  - name: "Beyond jj: config & tools ecosystem"
+    url: https://andre.arko.net/2026/09/16/beyond-jj-config-and-tools-ecosystem/
+    date: "2026-09"
+    author: André Arko
 
 books:
   - name: Jujutsu for Everyone
@@ -462,6 +466,9 @@ forges:
   - name: garami
     url: https://github.com/garami-vcs/garami
     description: Experimental native hosting and collaboration infrastructure for Jujutsu repositories (early-stage).
+  - name: JJHub
+    url: https://jjhub.dev/
+    description: Code collaboration platform for Jujutsu that reviews changes (not branches) by change ID across amends and rebases (alpha, invite-only).
 
 miscellaneous:
   - name: JJ Cheat Sheet
