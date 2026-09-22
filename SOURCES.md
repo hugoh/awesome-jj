@@ -74,11 +74,23 @@ folded back into the "Active-project sweep" section above.
   "too early-stage" repos from the Active-project sweep above, which should
   keep reappearing until revisited.
 - **2026-09-22**: André Arko's ["Beyond jj: config & tools ecosystem"](https://andre.arko.net/2026/09/16/beyond-jj-config-and-tools-ecosystem/)
-  (09/2026) added to Articles. Cross-referenced its tool survey (GUIs, TUIs,
-  editor plugins, stacked-PR tools, merge drivers, forges) against
-  `entries.yaml`: everything it named was already listed except
-  [JJHub](https://jjhub.dev/), a change-ID-based (not branch-based) code
-  review forge for jj, currently alpha/invite-only — added to Forges. The
-  talk's "built-in jj features" (`jj run`, `jj fix`, `bisect run`, etc.) and
-  "alias directory" (the same `lysator.liu.se/~axl/jj-aliases` already under
-  Miscellaneous) aren't separate entries.
+  (09/2026) added to Articles. Initially cross-referenced only from search
+  summaries; re-checked directly against the saved page/slide deck HTML,
+  which surfaced four genuinely new jj-specific tools the summaries had
+  missed: [jufu](https://github.com/hkrhd/jufu) (TUI, added to TUI),
+  [jj-diff](https://github.com/KyleKing/jj-diff) and
+  [jj-diff.el](https://github.com/ccqpein/jj-diff.el) (added to Diff and
+  Merge Drivers), and [vex.sc](https://vex.sc/), a fourth early-access forge
+  alongside ersc.io/revset.dev/juju.bi (added to Forges). Also corrected the
+  JJHub entry: the article's actual link is `jjhub.erisera.com` (from
+  Erisera, "an overlay on github" with consistent change IDs and agent
+  skills/MCP servers) — the `jjhub.dev` URL and description used initially
+  came from an unverified web-search summary and were wrong. Checked but
+  left out: `zenibako/vim-fujjitive` (repo no longer exists on GitHub —
+  deleted, renamed, or made private since the talk), and the general-purpose
+  (non-jj-specific) `delta`/`difftastic`/`gitk`/`gitx`/`Fork`/`Retcon` diff
+  tools and GUIs the talk mentions only as comparison points. Everything
+  else the talk surveys was already listed. The talk's "built-in jj
+  features" (`jj run`, `jj fix`, `bisect run`, etc.) and "alias directory"
+  (the same `lysator.liu.se/~axl/jj-aliases` already under Miscellaneous)
+  aren't separate entries.
