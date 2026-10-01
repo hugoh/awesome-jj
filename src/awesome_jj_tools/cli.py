@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import sys
+import traceback
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -32,7 +33,7 @@ def main(argv: list[str] | None = None) -> int:
         "discovery-report",
         help=(
             "Run discover+releases+stars+redirects, print the combined report. "
-            "Exits 1 (like grep) if nothing was found, for CI to skip filing an issue."
+            "Exits 0 if something was found, 1 (like grep) if nothing was, 2 if a sweep crashed."
         ),
     )
 
@@ -77,7 +78,11 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "discovery-report":
-        return asyncio.run(_discovery_report())
+        try:
+            return asyncio.run(_discovery_report())
+        except Exception:
+            traceback.print_exc()
+            return 2
 
     return 1
 

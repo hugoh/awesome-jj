@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import sys
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -178,7 +179,14 @@ async def check_staleness(
     now = now or datetime.now(UTC)
 
     async def check_one(ref: GitHubRepoRef) -> StaleEntry | None:
-        info = await fetcher(client, ref.owner, ref.repo)
+        try:
+            info = await fetcher(client, ref.owner, ref.repo)
+        except httpx2.HTTPError as e:
+            print(f"warning: staleness check failed for {ref.url}: {e}", file=sys.stderr)
+            return None
+        full_name = info.get("full_name")
+        if full_name and full_name.lower() != f"{ref.owner}/{ref.repo}".lower():
+            return StaleEntry(name=ref.entry_name, url=ref.url, reason=f"renamed to {full_name}")
         if info.get("archived"):
             return StaleEntry(name=ref.entry_name, url=ref.url, reason="archived")
         pushed_at = info.get("pushed_at")

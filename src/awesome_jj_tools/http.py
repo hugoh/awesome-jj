@@ -31,6 +31,7 @@ def new_client() -> httpx2.AsyncClient:
             max_connections=MAX_CONCURRENCY, max_keepalive_connections=MAX_CONCURRENCY
         ),
         timeout=30,
+        follow_redirects=True,
     )
 
 
