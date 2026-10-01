@@ -9,6 +9,7 @@ from awesome_jj_tools.http import (
     gh_search_repos,
     github_headers,
     github_token,
+    new_client,
     reddit_access_token,
 )
 
@@ -135,3 +136,7 @@ async def test_reddit_access_token_sends_basic_auth_and_returns_token():
     assert str(request.url) == "https://www.reddit.com/api/v1/access_token"
     assert request.headers["Authorization"].startswith("Basic ")
     assert request.content == b"grant_type=client_credentials"
+
+
+def test_new_client_follows_redirects():
+    assert new_client().follow_redirects is True

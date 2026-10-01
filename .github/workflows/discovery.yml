@@ -43,12 +43,14 @@ jobs:
           # Reddit sweep gracefully without them; add both secrets here once ready.
         run: |
           set +e
-          if report=$(uv run awesome-jj discovery-report); then
-            echo "has_findings=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "has_findings=false" >> "$GITHUB_OUTPUT"
-          fi
+          report=$(uv run awesome-jj discovery-report)
+          rc=$?
           set -e
+          if [ "$rc" -gt 1 ]; then
+            echo "::error::discovery-report crashed (exit $rc)"
+            exit "$rc"
+          fi
+          echo "has_findings=$([ "$rc" -eq 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
           {
             echo 'report<<DISCOVERY_EOF'
             echo "$report"
@@ -92,7 +94,7 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
-          app-id: ${{ secrets.DISCOVERY_APP_ID }}
+          client-id: ${{ vars.DISCOVERY_APP_CLIENT_ID }}
           private-key: ${{ secrets.DISCOVERY_APP_PRIVATE_KEY }}
           permission-contents: write
           permission-pull-requests: write

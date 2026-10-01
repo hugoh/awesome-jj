@@ -1,5 +1,7 @@
 from datetime import UTC, datetime
 
+import httpx2
+
 from awesome_jj_tools.discover import (
     Candidate,
     check_staleness,
@@ -333,3 +335,36 @@ def test_render_report_shows_outstanding_separately_from_new():
     assert output.index("### New candidates") < output.index("new-one")
     assert output.index("### Still outstanding") < output.index("old-one")
     assert output.index("new-one") < output.index("### Still outstanding")
+
+
+async def test_check_staleness_skips_repos_whose_lookup_fails(client):
+    refs = [
+        GitHubRepoRef(
+            owner="x",
+            repo=name,
+            url=f"https://github.com/x/{name}",
+            entry_name=name,
+            section_path=(),
+        )
+        for name in ("broken", "archived")
+    ]
+
+    async def fake_fetcher(client, owner, repo):
+        if repo == "broken":
+            raise httpx2.ConnectError("boom")
+        return {"archived": True}
+
+    stale = await check_staleness(client, refs, fake_fetcher, now=datetime(2026, 6, 1, tzinfo=UTC))
+    assert [s.name for s in stale] == ["archived"]
+
+
+async def test_check_staleness_flags_renamed_repo(client):
+    ref = GitHubRepoRef(
+        owner="old", repo="name", url="https://github.com/old/name", entry_name="n", section_path=()
+    )
+
+    async def fake_fetcher(client, owner, repo):
+        return {"full_name": "New/Name", "pushed_at": "2026-05-01T00:00:00Z"}
+
+    stale = await check_staleness(client, [ref], fake_fetcher, now=datetime(2026, 6, 1, tzinfo=UTC))
+    assert [s.reason for s in stale] == ["renamed to New/Name"]
