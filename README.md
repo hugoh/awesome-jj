@@ -4,7 +4,7 @@
 
 Jujutsu (also known as jj) is a Git-compatible version control system.
 
-Last updated: 2026-09-22
+Last updated: 2026-10-01
 
 This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](SOURCES.md) for provenance and what was merged.
 
@@ -65,6 +65,7 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 
 ### Editor Integration
 
+- [dont-be-evil-company/jujutsu.nvim](https://github.com/dont-be-evil-company/jujutsu.nvim) - A Magit-style Jujutsu interface for Neovim.
 - [doprz/jujutsu.nvim](https://github.com/doprz/jujutsu.nvim) - A Neovim plugin for jujutsu integration, inspired by lazygit.nvim.
 - [jiejie.nvim](https://github.com/jceb/jiejie.nvim) - Neovim frontend for Jujutsu in the style of vim-fugitive.
 - [JJ View](https://github.com/brychanrobot/jj-view) - Integrates Jujutsu (jj) version control into VS Code.
@@ -77,7 +78,6 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 - [juju](https://github.com/waddie/juju) - A Git/jj interface for the Helix editor.
 - [Jujutsu Kaizen (jjk)](https://github.com/keanemind/jjk) - Jujutsu (jj) VCS support for VS Code.
 - [Majutsu](https://github.com/0WD0/majutsu) - Magit-inspired Emacs interface for the Jujutsu.
-- [mistweaverco/jujutsu.nvim](https://github.com/mistweaverco/jujutsu.nvim) - A Magit-style Jujutsu interface for Neovim.
 - [neojj](https://github.com/krisajenkins/neojj) - A Magit/Neogit-style plugin for the Jujutsu version control system.
 - [Selvejj](https://selvejj.com/) - JetBrains IDEs plugin for integrating Jujutsu as a first-class VCS.
 - [vcsigns.nvim](https://github.com/algmyr/vcsigns.nvim) - Neovim sign gutter, designed to be mostly VCS-agnostic (works with Jujutsu).
@@ -129,6 +129,7 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 ### AI & Agent Tooling
 
 - [claude-plugins](https://github.com/muloka/claude-plugins) - Jujutsu plugins for Claude Code covering Git enforcement, project setup, parallel workspace orchestration, commit workflows, and peer review.
+- [jj-agentic-workflow](https://github.com/CodeAlive-AI/jj-agentic-workflow) - A methodology for running coding agents in parallel on Jujutsu, with skills, guarded wrappers, hooks, and a hazard test suite.
 - [jujutsu-workflow-skill](https://github.com/netresearch/jujutsu-workflow-skill) - An agent skill for agent-safe version control with Jujutsu, using jj for local change management and Git as the canonical remote/PR/CI interface.
 
 ### Misc Tools
@@ -172,6 +173,7 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 - 04/2026 [Jujutsu megamerges for fun and profit](https://isaaccorbrey.com/notes/jujutsu-megamerges-for-fun-and-profit) by Isaac Corbrey
 - 06/2026 [Jujutsu: The Git Upgrade You Didn't Know You Needed](https://www.git-tower.com/blog/jujutsu) by Bruno Brito
 - 09/2026 [Beyond jj: config & tools ecosystem](https://andre.arko.net/2026/09/16/beyond-jj-config-and-tools-ecosystem/) by André Arko
+- 09/2026 [15 Years of Git, Then Jujutsu: Why I Can't Go Back](https://juju-chu.com/blog/15years-git-then-jujutsu) by Yuka Ooka
 
 ## Books
 

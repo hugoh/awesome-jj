@@ -127,6 +127,10 @@ articles:
     url: https://andre.arko.net/2026/09/16/beyond-jj-config-and-tools-ecosystem/
     date: "2026-09"
     author: André Arko
+  - name: "15 Years of Git, Then Jujutsu: Why I Can't Go Back"
+    url: https://juju-chu.com/blog/15years-git-then-jujutsu
+    date: "2026-09"
+    author: Yuka Ooka
 
 books:
   - name: Jujutsu for Everyone
@@ -284,8 +288,8 @@ tools:
     - name: jjx
       url: https://github.com/Christoph-D/jjx
       description: Jujutsu (jj) VCS support for VS Code.
-    - name: mistweaverco/jujutsu.nvim
-      url: https://github.com/mistweaverco/jujutsu.nvim
+    - name: dont-be-evil-company/jujutsu.nvim
+      url: https://github.com/dont-be-evil-company/jujutsu.nvim
       description: A Magit-style Jujutsu interface for Neovim.
     - name: doprz/jujutsu.nvim
       url: https://github.com/doprz/jujutsu.nvim
@@ -419,6 +423,9 @@ tools:
       description: A Tide prompt item that displays Jujutsu change ID, bookmarks, commit status, and file statistics.
 
   agent_tooling:
+    - name: jj-agentic-workflow
+      url: https://github.com/CodeAlive-AI/jj-agentic-workflow
+      description: A methodology for running coding agents in parallel on Jujutsu, with skills, guarded wrappers, hooks, and a hazard test suite.
     - name: claude-plugins
       url: https://github.com/muloka/claude-plugins
       description: Jujutsu plugins for Claude Code covering Git enforcement, project setup, parallel workspace orchestration, commit workflows, and peer review.

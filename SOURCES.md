@@ -94,3 +94,11 @@ folded back into the "Active-project sweep" section above.
   features" (`jj run`, `jj fix`, `bisect run`, etc.) and "alias directory"
   (the same `lysator.liu.se/~axl/jj-aliases` already under Miscellaneous)
   aren't separate entries.
+- **2026-10-01**: Triaged the discovery report
+  ([#49](https://github.com/hugoh/awesome-jj/issues/49)). Added
+  [jj-agentic-workflow](https://github.com/CodeAlive-AI/jj-agentic-workflow)
+  to AI & Agent Tooling and Yuka Ooka's ["15 Years of Git, Then Jujutsu: Why
+  I Can't Go Back"](https://juju-chu.com/blog/15years-git-then-jujutsu)
+  (09/2026) to Articles. `mistweaverco/jujutsu.nvim` was renamed to
+  `dont-be-evil-company/jujutsu.nvim` (GitHub's API 301'd it, which is what
+  crashed that night's sweep); updated the entry's name and URL.
