@@ -27,7 +27,7 @@
 <meta name="twitter:title" content="{{ page_title }}">
 <meta name="twitter:description" content="{{ page_description }}">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@anyblades/blades@3/css/blades.min.css">
 <link rel="stylesheet" href="pagefind/pagefind-component-ui.css">
 <style>
   :root { --pico-font-size: 100%; }
@@ -51,7 +51,7 @@
     text-decoration: none;
     color: var(--pico-color);
   }
-  nav.toc a[aria-current] {
+  :is(nav.toc, nav.tools-subnav) a[aria-current] {
     background: var(--pico-primary);
     border-color: var(--pico-primary);
     color: var(--pico-primary-inverse);
@@ -74,12 +74,6 @@
     font-size: 0.8rem;
     text-decoration: none;
     color: var(--pico-color);
-  }
-  nav.tools-subnav a[aria-current] {
-    background: var(--pico-primary);
-    border-color: var(--pico-primary);
-    color: var(--pico-primary-inverse);
-    font-weight: 600;
   }
   .header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
   .header h1 { margin-bottom: 0; }
