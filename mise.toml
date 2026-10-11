@@ -1,6 +1,6 @@
 [tools]
 node = "26.10.0"
-uv = "0.12.22"
+uv = "0.12.23"
 hk = "2.4.0"
 actionlint = "1.7.12"
 pinact = "5.0.0"
