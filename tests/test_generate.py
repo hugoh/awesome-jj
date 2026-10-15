@@ -109,6 +109,21 @@ def test_book_rendered_with_by_prefix_and_period():
     assert "- [Apple Book](https://example.com/a) - By A Author.\n" in output
 
 
+def test_book_description_follows_author():
+    data = {
+        "books": [
+            {
+                "name": "Zebra Book",
+                "url": "https://example.com/z",
+                "author": "Z Author",
+                "description": "A guide.",
+            }
+        ]
+    }
+    output = render(data, "2026-01-01")
+    assert "- [Zebra Book](https://example.com/z) - By Z Author. A guide.\n" in output
+
+
 def test_article_rendered_with_month_year_and_by():
     output = render(MINIMAL, "2026-01-01")
     assert "- 01/2024 [First](https://example.com/1) by A Author\n" in output

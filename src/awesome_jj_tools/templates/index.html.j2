@@ -2,7 +2,7 @@
 % if kind in ("list", "list_sorted")
 <li id="{{ entry.slug }}"><a href="{{ entry.url }}" data-pagefind-weight="2">{{ entry.name }}</a>{% if entry.description %} &mdash; {{ entry.description | md_links }}{% endif %}</li>
 % elif kind == "book"
-<li id="{{ entry.slug }}"><a href="{{ entry.url }}" data-pagefind-weight="2">{{ entry.name }}</a> &mdash; By {{ entry.author }}.</li>
+<li id="{{ entry.slug }}"><a href="{{ entry.url }}" data-pagefind-weight="2">{{ entry.name }}</a> &mdash; By {{ entry.author }}.{% if entry.description %} {{ entry.description | md_links }}{% endif %}</li>
 % elif kind == "dated"
 <li id="{{ entry.slug }}"><span class="date">{{ entry.month }}/{{ entry.year }}</span> <a href="{{ entry.url }}" data-pagefind-weight="2">{{ entry.name }}</a> by {{ entry.author }}</li>
 % elif kind == "dated_video"

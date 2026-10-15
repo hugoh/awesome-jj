@@ -4,7 +4,7 @@
 
 Jujutsu (also known as jj) is a Git-compatible version control system.
 
-Last updated: 2026-10-01
+Last updated: 2026-10-15
 
 This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](SOURCES.md) for provenance and what was merged.
 
@@ -55,6 +55,7 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 - [jj-fzf](https://github.com/tim-janik/jj-fzf) - Text UI for Jujutsu based on fzf.
 - [jj-tui](https://github.com/madicen/jj-tui) - A TUI for Jujutsu that incorporates some light PR and ticket support.
 - [jj_tui](https://github.com/faldor20/jj_tui) - A TUI for the Jujutsu version control system.
+- [jjfx](https://github.com/Jarvvski/jjfx) - A Rust TUI for Jujutsu workspaces to drive your VCS and the coding agents editing it from one surface.
 - [jjui](https://github.com/idursun/jjui) - TUI designed for interacting with the Jujutsu version control system.
 - [jk](https://github.com/joshka/jk) - A jj-native terminal UI for Jujutsu.
 - [jufu](https://github.com/hkrhd/jufu) - TUI for viewing jujutsu logs, designed for use with coding agents and panes.
@@ -96,6 +97,7 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 - [Mergiraf](https://mergiraf.org/) - A syntax-aware merge driver.
 - [Oyui](https://github.com/emilien-jegou/oyui) - A modern TUI merge tool and staging interface for Jujutsu and Git.
 - [scm-record](https://github.com/arxanas/scm-record) - The built-in diff editor for Jujutsu.
+- [vcmarkers.nvim](https://github.com/algmyr/vcmarkers.nvim) - Neovim plugin that handles diff markers, supporting jj-style diffs and diff3.
 - [Weave](https://github.com/Ataraxy-Labs/weave) - Entity-level semantic merge driver.
 
 ### Workflows
@@ -141,6 +143,7 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 - [jj-pre-push](https://github.com/acarapetis/jj-pre-push) - Run pre-commit before `jj git push`.
 - [jj-run](https://github.com/neongreen/mono/tree/main/jj-run) - A tool to execute shell commands across multiple repository changes in isolated workspaces using jj.
 - [jj-trim](https://github.com/hugoh/jj-trim) - Clean up merged bookmarks and abandoned anonymous commits in a jj repository.
+- [jj-workfuse](https://github.com/rektide/jj-workfuse) - Read-only lazy FUSE subtree projections of jj revisions, to mount just the sub-workspace you need without a checkout.
 - [jjq](https://github.com/paulsmith/jjq) - A local merge queue for jj.
 - [lumen](https://github.com/jnsahaj/lumen) - A diff viewer and code review TUI and CLI to generate commit messages with AI.
 
@@ -174,14 +177,16 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 - 06/2026 [Jujutsu: The Git Upgrade You Didn't Know You Needed](https://www.git-tower.com/blog/jujutsu) by Bruno Brito
 - 09/2026 [Beyond jj: config & tools ecosystem](https://andre.arko.net/2026/09/16/beyond-jj-config-and-tools-ecosystem/) by André Arko
 - 09/2026 [15 Years of Git, Then Jujutsu: Why I Can't Go Back](https://juju-chu.com/blog/15years-git-then-jujutsu) by Yuka Ooka
+- 10/2026 [I Still Choose Jujutsu When AI Can Handle Git](https://juju-chu.com/blog/why-jj-when-ai-runs-git) by Yuka Ooka
+- 10/2026 [Jujutsu Has No "Create a Branch" Step, and That Made Git Branches Click](https://juju-chu.com/blog/rethinking-branch-with-jj) by Yuka Ooka
 
 ## Books
 
-- [Evan's Jujutsu Tutorial](https://evmar.github.io/jjtut/) - By Evan Martin.
-- [Ju! Ju! Tsu!](https://arialdo.codeberg.page/ju-ju-tsu/) - By Arialdo Martini.
-- [Juju-chu! — Starting Your Jujutsu × AI Workflow with `jj new`](https://leanpub.com/juju-chu) - By Yuka Ooka.
-- [Jujutsu for Everyone](https://jj-for-everyone.github.io/) - By Remo Senekowitsch.
-- [Steve's Jujutsu tutorial](https://steveklabnik.github.io/jujutsu-tutorial/) - By Steve Klabnik.
+- [Evan's Jujutsu Tutorial](https://evmar.github.io/jjtut/) - By Evan Martin. A tutorial for readers already familiar with Git.
+- [Ju! Ju! Tsu!](https://arialdo.codeberg.page/ju-ju-tsu/) - By Arialdo Martini. A free, lean, practical and incremental book, available in HTML and PDF.
+- [Juju-chu! — Starting Your Jujutsu × AI Workflow with `jj new`](https://juju-chu.com/) - By Yuka Ooka. A hands-on book on adopting Jujutsu with Claude Code and Codex: automatic snapshots, undoable operations, and safe history rewriting ([Leanpub](https://leanpub.com/juju-chu)).
+- [Jujutsu for Everyone](https://jj-for-everyone.github.io/) - By Remo Senekowitsch. A tutorial that requires no previous experience with Git or other version control systems.
+- [Steve's Jujutsu tutorial](https://steveklabnik.github.io/jujutsu-tutorial/) - By Steve Klabnik. A tutorial written while learning Jujutsu, from a beginner's point of view.
 
 ## Videos
 
@@ -207,6 +212,7 @@ This list merges the various out-of-date awesome-jj lists — see [SOURCES.md](S
 
 While Jujutsu works with Git compatible forges like GitHub, there are also some new forges/platforms worth mentioning, and some of them are exploring/offering a better integration and support for Jujutsu.
 
+- [Composal](https://composal.ai/) - Code forge (Early Access).
 - [ERSC](https://ersc.io/) - Source control that scales as you grow ([Early Access](https://ersc.io/blog/ersc-availability)).
 - [garami](https://github.com/garami-vcs/garami) - Experimental native hosting and collaboration infrastructure for Jujutsu repositories (early-stage).
 - [JJHub](https://jjhub.erisera.com/) - An overlay on GitHub from Erisera offering consistent change IDs and skills/MCP servers for agents.
@@ -214,7 +220,6 @@ While Jujutsu works with Git compatible forges like GitHub, there are also some 
 - [Radicle](https://radicle.dev/) - The sovereign forge.
 - [Revset](https://www.revset.dev/) - Commit First Code Forge (Early Access).
 - [Tangled](https://tangled.org/) - The next-generation social coding platform ([announcement](https://blog.tangled.org/stacking)).
-- [vex.sc](https://vex.sc/) - Code forge (Early Access).
 
 ## Miscellaneous
 

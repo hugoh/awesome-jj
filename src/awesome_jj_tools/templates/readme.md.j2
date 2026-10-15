@@ -2,7 +2,7 @@
 % if kind in ("list", "list_sorted")
 - [{{ entry.name }}]({{ entry.url }}){{ " - " ~ entry.description if entry.description }}
 % elif kind == "book"
-- [{{ entry.name }}]({{ entry.url }}) - By {{ entry.author }}.
+- [{{ entry.name }}]({{ entry.url }}) - By {{ entry.author }}.{{ " " ~ entry.description if entry.description }}
 % elif kind == "dated"
 - {{ entry.month }}/{{ entry.year }} [{{ entry.name }}]({{ entry.url }}) by {{ entry.author }}
 % elif kind == "dated_video"
