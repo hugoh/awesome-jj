@@ -212,6 +212,13 @@ def test_book_rendered_with_by_prefix():
     assert "&mdash; By A Author." in output
 
 
+def test_book_description_follows_author():
+    book = {"name": "Zebra Book", "url": "https://example.com/z", "author": "Z Author"}
+    data = {**MINIMAL, "books": [{**book, "description": "A [guide](https://x.org)."}]}
+    output = render_page(data, "2026-01-01", "books.html")
+    assert '&mdash; By Z Author. A <a href="https://x.org">guide</a>.' in output
+
+
 def test_tools_hub_links_to_subsections():
     output = render_page(MINIMAL, "2026-01-01")
     assert '<a href="tools-gui.html">GUI</a>' in output

@@ -131,23 +131,36 @@ articles:
     url: https://juju-chu.com/blog/15years-git-then-jujutsu
     date: "2026-09"
     author: Yuka Ooka
+  - name: I Still Choose Jujutsu When AI Can Handle Git
+    url: https://juju-chu.com/blog/why-jj-when-ai-runs-git
+    date: "2026-10"
+    author: Yuka Ooka
+  - name: Jujutsu Has No "Create a Branch" Step, and That Made Git Branches Click
+    url: https://juju-chu.com/blog/rethinking-branch-with-jj
+    date: "2026-10"
+    author: Yuka Ooka
 
 books:
   - name: Jujutsu for Everyone
     url: https://jj-for-everyone.github.io/
     author: Remo Senekowitsch
+    description: A tutorial that requires no previous experience with Git or other version control systems.
   - name: Steve's Jujutsu tutorial
     url: https://steveklabnik.github.io/jujutsu-tutorial/
     author: Steve Klabnik
+    description: A tutorial written while learning Jujutsu, from a beginner's point of view.
   - name: Evan's Jujutsu Tutorial
     url: https://evmar.github.io/jjtut/
     author: Evan Martin
+    description: A tutorial for readers already familiar with Git.
   - name: Ju! Ju! Tsu!
     url: https://arialdo.codeberg.page/ju-ju-tsu/
     author: Arialdo Martini
+    description: A free, lean, practical and incremental book, available in HTML and PDF.
   - name: "Juju-chu! — Starting Your Jujutsu × AI Workflow with `jj new`"
-    url: https://leanpub.com/juju-chu
+    url: https://juju-chu.com/
     author: Yuka Ooka
+    description: "A hands-on book on adopting Jujutsu with Claude Code and Codex: automatic snapshots, undoable operations, and safe history rewriting ([Leanpub](https://leanpub.com/juju-chu))."
 
 videos:
   - name: "Jujutsu: A Git-Compatible VCS - Git Merge 2022"
@@ -244,6 +257,9 @@ tools:
     - name: jif
       url: https://github.com/jrpat/jif
       description: A moldable Jujutsu TUI.
+    - name: jjfx
+      url: https://github.com/Jarvvski/jjfx
+      description: A Rust TUI for Jujutsu workspaces to drive your VCS and the coding agents editing it from one surface.
     - name: blazingjj
       url: https://github.com/blazingjj/blazingjj
       description: TUI for Jujutsu/jj.
@@ -331,6 +347,9 @@ tools:
     - name: larpios/jj-conflict.nvim
       url: https://github.com/larpios/jj-conflict.nvim
       description: Neovim plugin for resolving and visualizing Jujutsu conflicts.
+    - name: vcmarkers.nvim
+      url: https://github.com/algmyr/vcmarkers.nvim
+      description: Neovim plugin that handles diff markers, supporting jj-style diffs and diff3.
     - name: jj-diffconflicts
       url: https://github.com/rafikdraoui/jj-diffconflicts
       description: A conflict resolution merge tool for Jujutsu VCS that runs in Neovim.
@@ -461,6 +480,9 @@ tools:
     - name: jj-trim
       url: https://github.com/hugoh/jj-trim
       description: Clean up merged bookmarks and abandoned anonymous commits in a jj repository.
+    - name: jj-workfuse
+      url: https://github.com/rektide/jj-workfuse
+      description: Read-only lazy FUSE subtree projections of jj revisions, to mount just the sub-workspace you need without a checkout.
 
 forges:
   - name: ERSC
@@ -485,8 +507,8 @@ forges:
   - name: JJHub
     url: https://jjhub.erisera.com/
     description: An overlay on GitHub from Erisera offering consistent change IDs and skills/MCP servers for agents.
-  - name: vex.sc
-    url: https://vex.sc/
+  - name: Composal
+    url: https://composal.ai/
     description: Code forge (Early Access).
 
 miscellaneous:

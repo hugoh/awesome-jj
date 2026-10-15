@@ -82,7 +82,14 @@ updates a single issue labeled `discovery-report` with these sections:
    a one-line reason). A **stale exception** (recorded but no longer
    occurring — the target started resolving directly, or started failing
    outright) just needs its `accepted_redirect` field or
-   `redirect-exceptions.yaml` entry deleted.
+   `redirect-exceptions.yaml` entry deleted. Two cases that aren't
+   `accepted_redirect`:
+   - A **rebrand** (the project renamed itself and moved domains): rename the
+     entry and repoint its URL, then check its description and section still
+     fit — the product may have changed.
+   - A redirect reported **in `SOURCES.md`** is a prose link, not an entry:
+     repoint the link (keeping the old name in the text, e.g. "since
+     rebranded to …") rather than accepting it.
 
 When asked to update this list, or asked proactively to check it:
 
@@ -103,7 +110,8 @@ When asked to update this list, or asked proactively to check it:
      early-stage, maybe later" candidates (see `SOURCES.md`'s Active-project
      sweep) — those should keep reappearing in "Still outstanding" so they
      get revisited as they mature; `ignored.yaml` is only for things that
-     structurally can never become a list entry.
+     structurally can never become a list entry — including this repository
+   itself, which the sweeps pick up as a candidate.
    - If the same project name legitimately collides with something already
      listed (two different repos named `jujutsu.nvim`, say), disambiguate
      both entries' `name` as `<author>/<repo>` rather than picking one
@@ -112,7 +120,8 @@ When asked to update this list, or asked proactively to check it:
    `entries.yaml`; a genuine abandonment means removing the entry. Don't
    remove solely because the workflow flagged it — skim the repo first (a
    stable, feature-complete tool can legitimately go quiet).
-4. **Regenerate and record.** Run `mise run generate`, then append a
+4. **Regenerate and record.** Run `mise run generate` (commit the
+   `data/last-updated.json` it bumps along with `README.md`), then append a
    dated note to `SOURCES.md` under "Re-sweeps" (create the section if this is
    the first one) — what you added, removed, and why. Append, don't overwrite
    `SOURCES.md`'s existing history.
@@ -122,6 +131,10 @@ When asked to update this list, or asked proactively to check it:
    failure without reading what it's flagging — `awesome-lint` in particular
    is strict about structural conventions, and a mechanical fix can silently
    mangle an entry.
+6. **Close the report via the PR.** Put `Closes #<issue>` (the
+   `discovery-report` issue you triaged) in the commit and PR description so
+   merging closes it. Don't close it by hand: the next run opens a fresh
+   report, and anything left untriaged reappears there.
 
 ## If the automation itself needs a fix
 

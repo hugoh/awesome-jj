@@ -16,3 +16,5 @@ ignored:
     reason: Unrelated to Jujutsu VCS, name collision only — see SOURCES.md.
   - url: https://github.com/gwongibeom/awesome-jjambbong
     reason: Unrelated to Jujutsu VCS, name collision only — see SOURCES.md.
+  - url: https://github.com/hugoh/awesome-jj
+    reason: This repository itself.
