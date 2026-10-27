@@ -1,8 +1,10 @@
 name: link-check
 
-permissions:
-  contents: read
-  issues: write
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 on: # yamllint disable-line rule:truthy
   push:
@@ -15,10 +17,9 @@ on: # yamllint disable-line rule:truthy
 
 jobs:
   lychee:
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.event.pull_request.number ||
-        github.ref }}
-      cancel-in-progress: true
+    permissions:
+      contents: read
+      issues: write
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -45,6 +46,7 @@ jobs:
           restore-keys: lychee-cache-
       - name: Link check
         run: |
+          set -o pipefail
           lychee -vv --format markdown --no-progress --cache --max-cache-age "$LYCHEE_MAX_CACHE_AGE" --max-retries 3 --retry-wait-time 5 --accept 100..=103,200..=299,403,429 README.md SOURCES.md CONTRIBUTING.md CODE_OF_CONDUCT.md AGENTS.md site/*.html | tee "$GITHUB_STEP_SUMMARY"
       - name: Open/update issue on scheduled failure
         if: failure() && github.event_name == 'schedule'

@@ -1,9 +1,6 @@
 name: discovery
 
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+permissions: {}
 
 on: # yamllint disable-line rule:truthy
   schedule:
@@ -16,6 +13,10 @@ concurrency:
 
 jobs:
   discover:
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
