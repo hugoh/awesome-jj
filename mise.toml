@@ -1,6 +1,6 @@
 [tools]
-node = "26.12.0"
-uv = "0.13.1"
+node = "26.12.1"
+uv = "0.13.5"
 hk = "2.9.0"
 jactionlint = "2.2.0"
 pinact = "5.0.0"
