@@ -72,7 +72,7 @@ articles:
     date: "2025-05"
     author: Akshay
   - name: Jujutsu on Tangled
-    url: https://blog.tangled.org/stacking/
+    url: https://tangled.org/blog/stacking/
     date: "2025-06"
     author: Akshay
   - name: Jujutsu For Busy Devs
@@ -276,7 +276,7 @@ tools:
       url: https://github.com/anthrofract/majjit
       description: A TUI to manipulate the Jujutsu DAG.
     - name: gojo
-      url: https://github.com/0xhckr/gojo
+      url: https://github.com/hackrdotsh/gojo
       description: A fullscreen terminal UI for Jujutsu with commit graph, diff viewing, conflict resolution, and AI-generated commit messages.
 
   editor_integration:
@@ -451,6 +451,12 @@ tools:
     - name: jujutsu-workflow-skill
       url: https://github.com/netresearch/jujutsu-workflow-skill
       description: An agent skill for agent-safe version control with Jujutsu, using jj for local change management and Git as the canonical remote/PR/CI interface.
+    - name: rudder
+      url: https://github.com/exla-ai/rudder
+      description: A TUI for managing coding agents, running Claude Code, Codex and opencode side by side, each in its own isolated jj workspace.
+    - name: jujutsu-mcp
+      url: https://github.com/LLawli/jujutsu-mcp
+      description: MCP server that lets Claude Code, Codex and Antigravity use jj without a shell.
 
   misc_tools:
     - name: diffsoup
@@ -500,7 +506,7 @@ forges:
     description: Commit First Code Forge (Early Access).
   - name: Tangled
     url: https://tangled.org/
-    description: The next-generation social coding platform ([announcement](https://blog.tangled.org/stacking)).
+    description: The next-generation social coding platform ([announcement](https://tangled.org/blog/stacking/)).
   - name: garami
     url: https://github.com/garami-vcs/garami
     description: Experimental native hosting and collaboration infrastructure for Jujutsu repositories (early-stage).
@@ -508,7 +514,7 @@ forges:
     url: https://jjhub.erisera.com/
     description: An overlay on GitHub from Erisera offering consistent change IDs and skills/MCP servers for agents.
   - name: Composal
-    url: https://composal.ai/
+    url: https://composal.com/
     description: Code forge (Early Access).
 
 miscellaneous:
