@@ -5,6 +5,7 @@ import httpx2
 from awesome_jj_tools.discover import (
     Candidate,
     check_staleness,
+    fetch_all_sources,
     fetch_codeberg_candidates,
     fetch_crates_candidates,
     fetch_github_candidates,
@@ -12,6 +13,7 @@ from awesome_jj_tools.discover import (
     filter_low_signal,
     filter_missing,
     load_ignored_urls,
+    next_snapshot_urls,
     render_report,
     split_new_vs_outstanding,
 )
@@ -368,3 +370,36 @@ async def test_check_staleness_flags_renamed_repo(client):
 
     stale = await check_staleness(client, [ref], fake_fetcher, now=datetime(2026, 6, 1, tzinfo=UTC))
     assert [s.reason for s in stale] == ["renamed to New/Name"]
+
+
+def test_render_report_lists_failed_sources():
+    output = render_report([], [], [], failed_sources=["codeberg"])
+    assert "codeberg" in output
+    assert "unavailable" in output
+
+
+def test_render_report_omits_failed_section_when_all_sources_ok():
+    assert "unavailable" not in render_report([], [], [])
+
+
+async def test_fetch_all_sources_marks_failures_instead_of_raising(client):
+    ok = Candidate(name="a", url="https://github.com/x/a", description="", source="github")
+
+    async def good(client):
+        return [ok]
+
+    async def bad(client):
+        raise httpx2.ReadTimeout("slow")
+
+    candidates, failed = await fetch_all_sources(client, {"github": good, "codeberg": bad})
+    assert candidates == [ok]
+    assert failed == ["codeberg"]
+
+
+def test_next_snapshot_urls_drops_previous_when_all_sources_ok():
+    assert next_snapshot_urls({"a"}, {"b"}, set(), failed_sources=[]) == {"a"}
+
+
+def test_next_snapshot_urls_carries_over_previous_when_a_source_failed():
+    result = next_snapshot_urls({"a"}, {"b", "c/", "d"}, {"d", "c"}, failed_sources=["codeberg"])
+    assert result == {"a", "b"}
