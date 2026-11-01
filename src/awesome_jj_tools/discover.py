@@ -229,8 +229,12 @@ def render_report(
     new_candidates: list[Candidate],
     outstanding_candidates: list[Candidate],
     stale_entries: list[StaleEntry],
+    failed_sources: list[str] | None = None,
 ) -> str:
     lines = ["## Discovery report", ""]
+    if failed_sources:
+        lines.append(f"> ⚠️ Sources unavailable this run: {', '.join(failed_sources)}")
+        lines.append("")
 
     lines.extend(_render_candidate_group("New candidates", new_candidates, "None since last run."))
     lines.extend(
@@ -253,6 +257,35 @@ def render_report(
     return "\n".join(lines)
 
 
+async def fetch_all_sources(
+    client: httpx2.AsyncClient,
+    fetchers: dict[str, Callable[[httpx2.AsyncClient], Awaitable[list[Candidate]]]],
+) -> tuple[list[Candidate], list[str]]:
+    """Fetch every source concurrently; a failing source is reported, not fatal."""
+    results = await asyncio.gather(*(f(client) for f in fetchers.values()), return_exceptions=True)
+    candidates: list[Candidate] = []
+    failed: list[str] = []
+    for name, result in zip(fetchers, results, strict=True):
+        if isinstance(result, BaseException):
+            failed.append(name)
+        else:
+            candidates.extend(result)
+    return candidates, failed
+
+
+def next_snapshot_urls(
+    missing_urls: set[str],
+    previous_urls: set[str],
+    excluded_urls: set[str],
+    failed_sources: list[str],
+) -> set[str]:
+    """A failed source can't confirm its candidates are gone, so keep unresolved prior ones."""
+    if not failed_sources:
+        return missing_urls
+    excluded = {u.rstrip("/") for u in excluded_urls}
+    return missing_urls | {u for u in previous_urls if u.rstrip("/") not in excluded}
+
+
 async def run(
     entries_path: Path = DEFAULT_ENTRIES_PATH,
     snapshot_path: Path = DEFAULT_CANDIDATES_SNAPSHOT_PATH,
@@ -264,23 +297,34 @@ async def run(
     previous_snapshot_urls = load_url_snapshot(snapshot_path)
 
     async with new_client() as client:
-        github, gitlab, codeberg, crates = await asyncio.gather(
-            fetch_github_candidates(client),
-            fetch_gitlab_candidates(client),
-            fetch_codeberg_candidates(client),
-            fetch_crates_candidates(client),
+        fetched, failed_sources = await fetch_all_sources(
+            client,
+            {
+                "github": fetch_github_candidates,
+                "gitlab": fetch_gitlab_candidates,
+                "codeberg": fetch_codeberg_candidates,
+                "crates": fetch_crates_candidates,
+            },
         )
-        all_candidates = filter_low_signal([*github, *gitlab, *codeberg, *crates])
+        all_candidates = filter_low_signal(fetched)
 
         missing = filter_missing(all_candidates, excluded_urls)
         new_candidates, outstanding_candidates = split_new_vs_outstanding(
             missing, previous_snapshot_urls
         )
-        save_url_snapshot({c.url for c in missing}, snapshot_path)
+        save_url_snapshot(
+            next_snapshot_urls(
+                {c.url for c in missing},
+                previous_snapshot_urls,
+                excluded_urls,
+                failed_sources,
+            ),
+            snapshot_path,
+        )
 
         repo_refs = github_repos(data)
         stale_entries = await check_staleness(client, repo_refs)
 
-    report = render_report(new_candidates, outstanding_candidates, stale_entries)
-    has_findings = bool(new_candidates or outstanding_candidates or stale_entries)
+    report = render_report(new_candidates, outstanding_candidates, stale_entries, failed_sources)
+    has_findings = bool(new_candidates or outstanding_candidates or stale_entries or failed_sources)
     return report, has_findings
