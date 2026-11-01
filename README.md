@@ -4,7 +4,7 @@
 
 Jujutsu (also known as jj) is a Git-compatible version control system.
 
-Last updated: 2026-10-15
+Last updated: 2026-11-01
 
 ## Contents
 
@@ -48,7 +48,7 @@ Last updated: 2026-10-15
 ### TUI
 
 - [blazingjj](https://github.com/blazingjj/blazingjj) - TUI for Jujutsu/jj.
-- [gojo](https://github.com/0xhckr/gojo) - A fullscreen terminal UI for Jujutsu with commit graph, diff viewing, conflict resolution, and AI-generated commit messages.
+- [gojo](https://github.com/hackrdotsh/gojo) - A fullscreen terminal UI for Jujutsu with commit graph, diff viewing, conflict resolution, and AI-generated commit messages.
 - [jif](https://github.com/jrpat/jif) - A moldable Jujutsu TUI.
 - [jj-fzf](https://github.com/tim-janik/jj-fzf) - Text UI for Jujutsu based on fzf.
 - [jj-tui](https://github.com/madicen/jj-tui) - A TUI for Jujutsu that incorporates some light PR and ticket support.
@@ -130,7 +130,9 @@ Last updated: 2026-10-15
 
 - [claude-plugins](https://github.com/muloka/claude-plugins) - Jujutsu plugins for Claude Code covering Git enforcement, project setup, parallel workspace orchestration, commit workflows, and peer review.
 - [jj-agentic-workflow](https://github.com/CodeAlive-AI/jj-agentic-workflow) - A methodology for running coding agents in parallel on Jujutsu, with skills, guarded wrappers, hooks, and a hazard test suite.
+- [jujutsu-mcp](https://github.com/LLawli/jujutsu-mcp) - MCP server that lets Claude Code, Codex and Antigravity use jj without a shell.
 - [jujutsu-workflow-skill](https://github.com/netresearch/jujutsu-workflow-skill) - An agent skill for agent-safe version control with Jujutsu, using jj for local change management and Git as the canonical remote/PR/CI interface.
+- [rudder](https://github.com/exla-ai/rudder) - A TUI for managing coding agents, running Claude Code, Codex and opencode side by side, each in its own isolated jj workspace.
 
 ### Misc Tools
 
@@ -160,7 +162,7 @@ Last updated: 2026-10-15
 - 05/2025 [jj tips and tricks](https://zerowidth.com/2025/jj-tips-and-tricks/) by Nathan Witmer
 - 05/2025 [Overengineering PR create with jj](https://crespo.business/posts/overeng-pr-create-jj/) by David Crespo
 - 05/2025 [Configuring Jujutsu](https://oppi.li/posts/configuring_jujutsu/) by Akshay
-- 06/2025 [Jujutsu on Tangled](https://blog.tangled.org/stacking/) by Akshay
+- 06/2025 [Jujutsu on Tangled](https://tangled.org/blog/stacking/) by Akshay
 - 07/2025 [Jujutsu For Busy Devs](https://maddie.wtf/posts/2025-07-21-jujutsu-for-busy-devs) by Madeleine Mortensen
 - 08/2025 [Jujutsu with Radicle](https://radicle.dev/2025/08/14/jujutsu-with-radicle) by Fintan Halpenny
 - 08/2025 [Understanding Jujutsu bookmarks](https://neugierig.org/software/blog/2025/08/jj-bookmarks.html) by Evan Martin
@@ -210,14 +212,14 @@ Last updated: 2026-10-15
 
 While Jujutsu works with Git compatible forges like GitHub, there are also some new forges/platforms worth mentioning, and some of them are exploring/offering a better integration and support for Jujutsu.
 
-- [Composal](https://composal.ai/) - Code forge (Early Access).
+- [Composal](https://composal.com/) - Code forge (Early Access).
 - [ERSC](https://ersc.io/) - Source control that scales as you grow ([Early Access](https://ersc.io/blog/ersc-availability)).
 - [garami](https://github.com/garami-vcs/garami) - Experimental native hosting and collaboration infrastructure for Jujutsu repositories (early-stage).
 - [JJHub](https://jjhub.erisera.com/) - An overlay on GitHub from Erisera offering consistent change IDs and skills/MCP servers for agents.
 - [Jujubi](https://juju.bi/) - Modern code forge built for speed (Early Access).
 - [Radicle](https://radicle.dev/) - The sovereign forge.
 - [Revset](https://www.revset.dev/) - Commit First Code Forge (Early Access).
-- [Tangled](https://tangled.org/) - The next-generation social coding platform ([announcement](https://blog.tangled.org/stacking)).
+- [Tangled](https://tangled.org/) - The next-generation social coding platform ([announcement](https://tangled.org/blog/stacking/)).
 
 ## Miscellaneous
 

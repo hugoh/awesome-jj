@@ -80,7 +80,7 @@ folded back into the "Active-project sweep" section above.
   missed: [jufu](https://github.com/hkrhd/jufu) (TUI, added to TUI),
   [jj-diff](https://github.com/KyleKing/jj-diff) and
   [jj-diff.el](https://github.com/ccqpein/jj-diff.el) (added to Diff and
-  Merge Drivers), and [vex.sc](https://composal.ai/) (since rebranded to Composal), a fourth early-access forge
+  Merge Drivers), and [vex.sc](https://composal.com/) (since rebranded to Composal), a fourth early-access forge
   alongside ersc.io/revset.dev/juju.bi (added to Forges). Also corrected the
   JJHub entry: the article's actual link is `jjhub.erisera.com` (from
   Erisera, "an overlay on github" with consistent change IDs and agent
@@ -109,5 +109,5 @@ folded back into the "Active-project sweep" section above.
   [jj-workfuse](https://github.com/rektide/jj-workfuse) to Misc Tools, and
   two more Yuka Ooka posts to Articles. The Juju-chu! book entry now points
   at its site, [juju-chu.com](https://juju-chu.com/). vex.sc rebranded to
-  [Composal](https://composal.ai/), so the Forges entry was renamed and
+  [Composal](https://composal.com/), so the Forges entry was renamed and
   repointed. This repository itself was added to `ignored.yaml`.
