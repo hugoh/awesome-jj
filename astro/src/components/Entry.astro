@@ -11,10 +11,12 @@ const dated = kind === "dated" || kind === "dated_video";
 ---
 
 <li id={entry.slug}>
-  {dated && <span class="muted">{entry.month}/{entry.year}</span>}
+  {dated && <><span class="muted">{entry.month}/{entry.year}</span>{" "}</>}
   <a href={entry.url} data-pagefind-weight="2">{entry.name}</a>
-  {kind === "book" && <> &mdash; By {entry.author}.</>}
-  {kind === "dated" && <> by {entry.author}</>}
-  {kind === "dated_video" && entry.suffix && <> {entry.suffix}</>}
-  {!dated && entry.description_html && <>{kind !== "book" && <> &mdash; </>}<Fragment set:html={entry.description_html} /></>}
+  {kind === "book" && <>{" "}&mdash; By {entry.author}.</>}
+  {kind === "dated" && <>{" "}by {entry.author}</>}
+  {kind === "dated_video" && entry.suffix && <>{" "}{entry.suffix}</>}
+  {!dated && entry.description_html && (
+    <>{" "}{kind !== "book" && <>&mdash;{" "}</>}<Fragment set:html={entry.description_html} /></>
+  )}
 </li>
