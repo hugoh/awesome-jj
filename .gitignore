@@ -5,7 +5,10 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .ruff_cache/
-site/
 .coverage
 .coverage.*
 htmlcov/
+astro/dist/
+astro/.astro/
+astro/src/data/site.json
+astro/public/pagefind/

@@ -16,7 +16,42 @@ on: # yamllint disable-line rule:truthy
   workflow_dispatch:
 
 jobs:
+  # Always triggers (no path filter on the workflow itself) so the gate below
+  # posts on every PR: GitHub never satisfies a required status check that a
+  # path-filtered trigger simply never runs. This job decides whether the
+  # link check has anything to do.
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      links: ${{ steps.filter.outputs.links }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        id: filter
+        with:
+          filters: |
+            links:
+              - "data/entries.yaml"
+              - "data/sections.yaml"
+              - "astro/**"
+              - "src/awesome_jj_tools/site.py"
+              - "src/awesome_jj_tools/sections.py"
+              - "src/awesome_jj_tools/templating.py"
+              - "README.md"
+              - "SOURCES.md"
+              - "CONTRIBUTING.md"
+              - "CODE_OF_CONDUCT.md"
+              - "AGENTS.md"
+              - ".github/workflows/link-check.yml"
+
   lychee:
+    needs: [changes]
+    if: needs.changes.outputs.links == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: read
       issues: write
@@ -29,10 +64,12 @@ jobs:
         with:
           persist-credentials: false
       - uses: jdx/mise-action@6612f0ef07ed2a736cd1e00a94a065522dd41195 # v5.2.5
-      - name: Render site
-        run: |
-          uv run awesome-jj generate-site
-          npx --yes pagefind --site site
+      - name: Install site dependencies
+        working-directory: astro
+        run: npm ci
+      - name: Build site
+        working-directory: astro
+        run: npm run build
       - name: Restore lychee cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -47,11 +84,11 @@ jobs:
       - name: Link check
         run: |
           set -o pipefail
-          lychee -vv --format markdown --no-progress --cache --max-cache-age "$LYCHEE_MAX_CACHE_AGE" --max-retries 3 --retry-wait-time 5 --accept 100..=103,200..=299,403,429 README.md SOURCES.md CONTRIBUTING.md CODE_OF_CONDUCT.md AGENTS.md site/*.html | tee "$GITHUB_STEP_SUMMARY"
+          lychee -vv --format markdown --no-progress --cache --max-cache-age "$LYCHEE_MAX_CACHE_AGE" --max-retries 3 --retry-wait-time 5 --accept 100..=103,200..=299,403,429 --root-dir "$GITHUB_WORKSPACE/astro/dist" README.md SOURCES.md CONTRIBUTING.md CODE_OF_CONDUCT.md AGENTS.md astro/dist/*.html | tee "$GITHUB_STEP_SUMMARY"
       - name: Open/update issue on scheduled failure
         if: failure() && github.event_name == 'schedule'
         run: |
-          lychee -vv --format markdown --no-progress --cache --max-cache-age "$LYCHEE_MAX_CACHE_AGE" --max-retries 3 --retry-wait-time 5 --accept 100..=103,200..=299,403,429 README.md SOURCES.md CONTRIBUTING.md CODE_OF_CONDUCT.md AGENTS.md site/*.html > /tmp/lychee-report.md || true
+          lychee -vv --format markdown --no-progress --cache --max-cache-age "$LYCHEE_MAX_CACHE_AGE" --max-retries 3 --retry-wait-time 5 --accept 100..=103,200..=299,403,429 --root-dir "$GITHUB_WORKSPACE/astro/dist" README.md SOURCES.md CONTRIBUTING.md CODE_OF_CONDUCT.md AGENTS.md astro/dist/*.html > /tmp/lychee-report.md || true
       - name: Create issue for dead links
         if: failure() && github.event_name == 'schedule'
         uses: peter-evans/create-issue-from-file@fca9117c27cdc29c6c4db3b86c48e4115a786710 # v6.0.0
@@ -59,3 +96,28 @@ jobs:
           title: Monthly link check found dead links
           content-filepath: /tmp/lychee-report.md
           labels: link-check
+
+  # Stable check name for branch protection: a skipped `lychee` job posts no
+  # run of its own on unrelated paths, so this wrapper always runs and passes
+  # trivially when there was nothing to check. It is what's pinned as the
+  # required context.
+  lychee-gate:
+    if: always()
+    needs: [changes, lychee]
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Require the link check to have passed, when relevant
+        env:
+          LINKS_CHANGED: ${{ needs.changes.outputs.links }}
+          LYCHEE_RESULT: ${{ needs.lychee.result }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          echo "links_changed=$LINKS_CHANGED lychee=$LYCHEE_RESULT event=$EVENT_NAME"
+          if [ "$LINKS_CHANGED" != "true" ] && [ "$EVENT_NAME" != "schedule" ] && [ "$EVENT_NAME" != "workflow_dispatch" ]; then
+            echo "no link-relevant changes; skipping"
+            exit 0
+          fi
+          [ "$LYCHEE_RESULT" = success ] || exit 1

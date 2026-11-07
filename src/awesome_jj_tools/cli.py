@@ -1,4 +1,4 @@
-"""Entry points: generate, check, generate-site, discover, releases, stars, redirects,
+"""Entry points: generate, check, export-site-data, discover, releases, stars, redirects,
 discovery-report."""
 
 from __future__ import annotations
@@ -16,7 +16,12 @@ def main(argv: list[str] | None = None) -> int:
     subparsers.add_parser(
         "check", help="Exit non-zero if README.md is out of sync with entries.yaml"
     )
-    subparsers.add_parser("generate-site", help="Render site/index.html from data/entries.yaml")
+    export_parser = subparsers.add_parser(
+        "export-site-data", help="Write the per-page site context (JSON) the Astro site renders"
+    )
+    export_parser.add_argument(
+        "output", nargs="?", help="JSON file to write (default: astro/src/data/site.json)"
+    )
     subparsers.add_parser("discover", help="Sweep for new candidates and stale existing entries")
     subparsers.add_parser("releases", help="Check for new releases among listed repos")
     subparsers.add_parser("stars", help="Refresh star snapshot and report notable movers")
@@ -56,10 +61,12 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 1
 
-    if args.command == "generate-site":
-        from awesome_jj_tools.site import generate as generate_site
+    if args.command == "export-site-data":
+        from pathlib import Path
 
-        generate_site()
+        from awesome_jj_tools.site import DEFAULT_SITE_DATA_PATH, export_site_data
+
+        export_site_data(Path(args.output) if args.output else DEFAULT_SITE_DATA_PATH)
         return 0
 
     if args.command in ("discover", "releases", "stars", "media"):

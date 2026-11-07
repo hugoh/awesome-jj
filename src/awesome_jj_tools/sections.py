@@ -3,7 +3,8 @@
 Holds no hardcoded page title/description/intro, section list, titles, or
 prose — that's all in data/sections.yaml (see its comments). This module
 only implements the mechanics: sort order per kind, slugging, and
-assembling the two config files into the shape both Jinja templates expect.
+assembling the two config files into the shape the README template and the Astro
+site (via site.py) both expect.
 """
 
 from __future__ import annotations
@@ -125,7 +126,7 @@ def page_filename(section: dict[str, Any]) -> str:
 def subsection_filename(sub: dict[str, Any]) -> str:
     """Each Tools subsection gets its own file, so Pagefind's category filter
     can gate a whole page instead of a fragment within the combined Tools
-    page (see the pagefind-modal markup in index.html.j2)."""
+    page (see the Search component in astro/)."""
     return f"tools-{sub['slug']}.html"
 
 

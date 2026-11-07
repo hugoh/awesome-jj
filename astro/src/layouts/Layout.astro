@@ -1,0 +1,66 @@
+---
+import PagefindConfig from "astro-pagefind/components/PagefindConfig.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  siteName: string;
+  /** Tools hub: skip indexing, every entry is already indexed on its subsection page. */
+  indexed: boolean;
+}
+const { title, description, siteName, indexed } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <PagefindConfig />
+  </head>
+  <body>
+    <main data-pagefind-body={indexed ? "" : undefined}>
+      <slot />
+    </main>
+    <footer>
+      Generated from
+      <a href="https://github.com/hugoh/awesome-jj/blob/main/data/entries.yaml">data/entries.yaml</a>.
+      Source: <a href="https://github.com/hugoh/awesome-jj">hugoh/awesome-jj</a>.
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  /* Astro "basics" template look: system font, narrow column, purple-ish accent. */
+  :root {
+    --accent: #4f46e5;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --muted: #9ca3af; --border: #374151; --accent: #818cf8; }
+  }
+  body {
+    font-family: system-ui, sans-serif;
+    line-height: 1.6;
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  a { color: var(--accent); }
+  footer { color: var(--muted); font-size: 0.85rem; margin-top: 3rem; }
+  .muted { color: var(--muted); }
+  ul { padding-left: 1.25rem; }
+  li { margin-bottom: 0.25rem; }
+</style>

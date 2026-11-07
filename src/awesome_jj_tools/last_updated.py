@@ -1,6 +1,6 @@
 """Tracks when data/entries.yaml's *content* last actually changed.
 
-README.md/index.html show this as "last updated" — it must only advance when
+README.md and the site show this as "last updated" — it must only advance when
 there's something to show for it, not on every regeneration (a no-op
 `generate` run shouldn't bump the date). Compares a hash of entries.yaml's
 current bytes against the last-recorded hash in last-updated.json; only

@@ -1,0 +1,68 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Entry from "../components/Entry.astro";
+import Search from "../components/Search.astro";
+import RepoLinks from "../components/RepoLinks.astro";
+import site from "../data/site.json";
+
+export function getStaticPaths() {
+  return site.pages.map((page) => ({
+    // "index.html" -> the site root (slug undefined); "books.html" -> "books".
+    params: { slug: page.filename === "index.html" ? undefined : page.filename.replace(/\.html$/, "") },
+    props: { page },
+  }));
+}
+
+const { page } = Astro.props;
+const { section } = page;
+const isIndex = page.filename === "index.html";
+---
+
+<Layout
+  title={page.page_title}
+  description={site.description}
+  siteName={site.title}
+  indexed={!isIndex}
+>
+  <header>
+    <h1 id={section.slug}>{isIndex ? site.title : `${site.title} - ${section.title}`}</h1>
+    <div class="actions">
+      <RepoLinks />
+      <Search />
+    </div>
+  </header>
+  <p class="muted">{site.description}</p>
+  <p>
+    {site.intro} Source and contribution guide:{" "}
+    <a href="https://github.com/hugoh/awesome-jj">hugoh/awesome-jj</a>.
+  </p>
+  <p class="muted">Last updated: {site.updated_at}</p>
+
+  <Nav label="Sections" items={page.nav} current={page.filename} hubActive={page.tools_nav.length > 0} />
+  {page.tools_nav.length > 0 && <Nav label="Tools categories" items={page.tools_nav} current={page.filename} small />}
+
+  <span hidden data-pagefind-meta="title">{page.page_title}</span>
+  {
+    section.kind === "tools" ? (
+      section.subsections.map((sub) => (
+        <>
+          <h3 id={sub.slug}>{sub.title}</h3>
+          <ul>{sub.entries.map((e) => <Entry entry={e} kind="list_sorted" />)}</ul>
+        </>
+      ))
+    ) : (
+      <>
+        <span hidden data-pagefind-filter="category">{section.title}</span>
+        {section.intro && <p>{section.intro}</p>}
+        <ul>{section.entries.map((e) => <Entry entry={e} kind={section.kind} />)}</ul>
+      </>
+    )
+  }
+</Layout>
+
+<style>
+  header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+  h1 { margin-bottom: 0.25rem; }
+  .actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+</style>
