@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "data": "cd .. && uv run awesome-jj export-site-data astro/src/data/site.json",
-    "dev": "npm run data && astro dev",
+    "dev": "npm run build && rm -rf public/pagefind && cp -R dist/pagefind public/pagefind && astro dev",
     "build": "npm run data && astro build",
     "preview": "astro preview"
   },

@@ -6,7 +6,8 @@ sorting, slugs and page layout (`awesome-jj export-site-data` writes
 
 ```sh
 cd astro && npm install
-npm run dev      # export data + dev server
+npm run dev      # full build once (Pagefind only indexes at build), then dev server;
+                 # search results are as of that build, restart to refresh
 npm run build    # export data + build + Pagefind index into dist/
 ```
 
