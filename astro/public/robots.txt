@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://awesome-jj.larve.net/sitemap-index.xml

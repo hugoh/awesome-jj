@@ -1,7 +1,6 @@
-"""The Jinja2 environment shared by every template (readme.md.j2, index.html.j2).
+"""The Jinja2 environment for readme.md.j2, plus the Markdown filter for the site export.
 
-Centralized so both renderers stay in sync on the whitespace/undefined
-behavior — see generate.py's module docstring for why `%` line statements
+See generate.py's module docstring for why `%` line statements are used
 instead of `{% %}` blocks.
 """
 
@@ -24,7 +23,7 @@ def md_inline(text: str | None) -> str | None:
     """Render an entry description's inline Markdown as HTML (no wrapping `<p>`).
 
     Descriptions in entries.yaml are written in Markdown (they're reused
-    verbatim in README.md.j2), but index.html.j2 needs actual HTML.
+    verbatim in README.md.j2), but the site needs actual HTML.
     """
     if not text:
         return text

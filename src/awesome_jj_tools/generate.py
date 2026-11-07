@@ -3,7 +3,7 @@
 Title/description/intro/section-intro prose all come from data/sections.yaml
 (see sections.py) — this template only owns its own format-specific markup
 (the awesome.re badge, the trailing sentence after `intro`, etc.), not
-content shared with templates/index.html.j2.
+content shared with the site (see site.py).
 
 The template uses `%`-prefixed line statements instead of `{% %}` blocks —
 Jinja's block-tag whitespace control (trim_blocks/lstrip_blocks) was built

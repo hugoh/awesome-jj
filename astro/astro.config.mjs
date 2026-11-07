@@ -3,10 +3,15 @@ import sitemap from "@astrojs/sitemap";
 import pagefind from "astro-pagefind";
 import site from "./src/data/site.json" with { type: "json" };
 
-// One .html file per page (books.html, tools-gui.html, ...) so URLs match the
-// current Jinja-built site. `site.url` comes from data/sections.yaml.
+// build.format "file" emits books.html rather than books/index.html, keeping
+// the URLs the site has always had.
 export default defineConfig({
   site: site.url,
   build: { format: "file" },
-  integrations: [sitemap(), pagefind()],
+  integrations: [
+    sitemap({
+      serialize: (item) => (site.updated_at ? { ...item, lastmod: site.updated_at } : item),
+    }),
+    pagefind(),
+  ],
 });
