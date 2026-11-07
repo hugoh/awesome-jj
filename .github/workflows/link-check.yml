@@ -6,35 +6,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-# Link rot only changes when what we link to changes, so push/PR runs are
-# limited to the files lychee reads or that the built site is derived from.
-# The monthly schedule (and manual dispatch) still checks everything, to catch
-# links that died on their own.
 on: # yamllint disable-line rule:truthy
   push:
     branches:
       - main
-    paths:
-      - data/entries.yaml
-      - data/sections.yaml
-      - astro/**
-      - README.md
-      - SOURCES.md
-      - CONTRIBUTING.md
-      - CODE_OF_CONDUCT.md
-      - AGENTS.md
-      - .github/workflows/link-check.yml
   pull_request:
-    paths:
-      - data/entries.yaml
-      - data/sections.yaml
-      - astro/**
-      - README.md
-      - SOURCES.md
-      - CONTRIBUTING.md
-      - CODE_OF_CONDUCT.md
-      - AGENTS.md
-      - .github/workflows/link-check.yml
   schedule:
     - cron: "0 6 1 * *" # monthly, 1st at 06:00 UTC
   workflow_dispatch:
