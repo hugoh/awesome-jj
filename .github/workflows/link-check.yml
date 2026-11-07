@@ -6,11 +6,35 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+# Link rot only changes when what we link to changes, so push/PR runs are
+# limited to the files lychee reads or that the built site is derived from.
+# The monthly schedule (and manual dispatch) still checks everything, to catch
+# links that died on their own.
 on: # yamllint disable-line rule:truthy
   push:
     branches:
       - main
+    paths:
+      - data/entries.yaml
+      - data/sections.yaml
+      - astro/**
+      - README.md
+      - SOURCES.md
+      - CONTRIBUTING.md
+      - CODE_OF_CONDUCT.md
+      - AGENTS.md
+      - .github/workflows/link-check.yml
   pull_request:
+    paths:
+      - data/entries.yaml
+      - data/sections.yaml
+      - astro/**
+      - README.md
+      - SOURCES.md
+      - CONTRIBUTING.md
+      - CODE_OF_CONDUCT.md
+      - AGENTS.md
+      - .github/workflows/link-check.yml
   schedule:
     - cron: "0 6 1 * *" # monthly, 1st at 06:00 UTC
   workflow_dispatch:
@@ -29,10 +53,12 @@ jobs:
         with:
           persist-credentials: false
       - uses: jdx/mise-action@6612f0ef07ed2a736cd1e00a94a065522dd41195 # v5.2.5
-      - name: Render site
-        run: |
-          uv run awesome-jj generate-site
-          npx --yes pagefind --site site
+      - name: Install site dependencies
+        working-directory: astro
+        run: npm ci
+      - name: Build site
+        working-directory: astro
+        run: npm run build
       - name: Restore lychee cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -47,11 +73,11 @@ jobs:
       - name: Link check
         run: |
           set -o pipefail
-          lychee -vv --format markdown --no-progress --cache --max-cache-age "$LYCHEE_MAX_CACHE_AGE" --max-retries 3 --retry-wait-time 5 --accept 100..=103,200..=299,403,429 README.md SOURCES.md CONTRIBUTING.md CODE_OF_CONDUCT.md AGENTS.md site/*.html | tee "$GITHUB_STEP_SUMMARY"
+          lychee -vv --format markdown --no-progress --cache --max-cache-age "$LYCHEE_MAX_CACHE_AGE" --max-retries 3 --retry-wait-time 5 --accept 100..=103,200..=299,403,429 README.md SOURCES.md CONTRIBUTING.md CODE_OF_CONDUCT.md AGENTS.md astro/dist/*.html | tee "$GITHUB_STEP_SUMMARY"
       - name: Open/update issue on scheduled failure
         if: failure() && github.event_name == 'schedule'
         run: |
-          lychee -vv --format markdown --no-progress --cache --max-cache-age "$LYCHEE_MAX_CACHE_AGE" --max-retries 3 --retry-wait-time 5 --accept 100..=103,200..=299,403,429 README.md SOURCES.md CONTRIBUTING.md CODE_OF_CONDUCT.md AGENTS.md site/*.html > /tmp/lychee-report.md || true
+          lychee -vv --format markdown --no-progress --cache --max-cache-age "$LYCHEE_MAX_CACHE_AGE" --max-retries 3 --retry-wait-time 5 --accept 100..=103,200..=299,403,429 README.md SOURCES.md CONTRIBUTING.md CODE_OF_CONDUCT.md AGENTS.md astro/dist/*.html > /tmp/lychee-report.md || true
       - name: Create issue for dead links
         if: failure() && github.event_name == 'schedule'
         uses: peter-evans/create-issue-from-file@fca9117c27cdc29c6c4db3b86c48e4115a786710 # v6.0.0
