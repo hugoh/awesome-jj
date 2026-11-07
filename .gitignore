@@ -9,3 +9,6 @@ site/
 .coverage
 .coverage.*
 htmlcov/
+astro/dist/
+astro/.astro/
+astro/src/data/site.json

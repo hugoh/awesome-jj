@@ -1,0 +1,24 @@
+---
+interface Item { title: string; filename: string; href?: string }
+interface Props { label: string; items: Item[]; current: string; hubActive?: boolean; small?: boolean }
+const { label, items, current, hubActive = false, small = false } = Astro.props;
+const href = (i: Item) => i.href ?? i.filename;
+---
+
+<p class="label muted">{label}</p>
+<nav class:list={{ small }}>
+  {items.map((i) => (
+    <a
+      href={href(i) === "./" ? "/" : `/${href(i)}`}
+      aria-current={i.filename === current || (hubActive && href(i) === "./") ? "page" : undefined}
+    >{i.title}</a>
+  ))}
+</nav>
+
+<style>
+  .label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin: 1.25rem 0 0.4rem; }
+  nav { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  nav a { padding: 0.2rem 0.7rem; border: 1px solid var(--border); border-radius: 0.4rem; font-size: 0.85rem; text-decoration: none; }
+  nav.small a { border-radius: 999px; font-size: 0.8rem; }
+  nav a[aria-current] { background: var(--accent); border-color: var(--accent); color: Canvas; font-weight: 600; }
+</style>

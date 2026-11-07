@@ -309,3 +309,21 @@ def test_generate_uses_empty_string_when_no_snapshot_exists(tmp_path):
     generate(entries_path, index_path, tmp_path / "does-not-exist.json")
 
     assert index_path.exists()
+
+
+def test_site_data_has_one_entry_per_page_with_titles_and_html_descriptions():
+    from awesome_jj_tools.site import site_data
+
+    data = site_data(MINIMAL, "2026-01-01")
+    pages = {p["filename"]: p for p in data["pages"]}
+    assert set(pages) == set(render_all(MINIMAL)) - {"sitemap.xml", "robots.txt"}
+    assert pages["index.html"]["page_title"] == "Awesome JJ"
+    assert pages["books.html"]["page_title"] == "Books — Awesome JJ"
+    assert data["updated_at"] == "2026-01-01"
+    for page in pages.values():
+        for entry in page["section"]["entries"]:
+            assert isinstance(entry["description_html"], str)
+
+
+def render_all(data):
+    return render(data, "2026-01-01")

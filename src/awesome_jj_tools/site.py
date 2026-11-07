@@ -9,6 +9,7 @@ time by running Pagefind over the built site/ directory (see
 
 from __future__ import annotations
 
+import json
 import shutil
 from pathlib import Path
 from typing import Any
@@ -16,7 +17,7 @@ from typing import Any
 from awesome_jj_tools.entries import DEFAULT_ENTRIES_PATH, load_entries
 from awesome_jj_tools.last_updated import DEFAULT_LAST_UPDATED_PATH, load_snapshot
 from awesome_jj_tools.sections import build_context, iter_pages
-from awesome_jj_tools.templating import env
+from awesome_jj_tools.templating import env, md_inline
 
 SITE_DIR = DEFAULT_ENTRIES_PATH.parents[1] / "site"
 INDEX_PATH = SITE_DIR / "index.html"
@@ -65,6 +66,44 @@ def render(data: dict[str, Any], updated_at: str) -> dict[str, str]:
     pages["sitemap.xml"] = render_sitemap(context, list(pages), updated_at)
     pages["robots.txt"] = render_robots(context)
     return pages
+
+
+def site_data(data: dict[str, Any], updated_at: str) -> dict[str, Any]:
+    """The same per-page context `render` feeds Jinja, as plain JSON for an external
+    renderer (the Astro spike under astro/) — sorting, slugs and page layout stay
+    in Python, shared with README.md."""
+    context = build_context(data) | {"updated_at": updated_at}
+    pages = []
+    for page in iter_pages(context):
+        section = page["section"]
+        for entry in section["entries"] + [
+            e for sub in section["subsections"] for e in sub["entries"]
+        ]:
+            entry["description_html"] = str(md_inline(entry["description"]) or "")
+        is_index = page["filename"] == "index.html"
+        pages.append(
+            page
+            | {
+                "page_title": (
+                    context["title"] if is_index else f"{section['title']} — {context['title']}"
+                )
+            }
+        )
+    return {k: context[k] for k in ("title", "description", "intro", "url", "updated_at")} | {
+        "pages": pages
+    }
+
+
+def export_site_data(
+    output_path: Path,
+    entries_path: Path = DEFAULT_ENTRIES_PATH,
+    last_updated_path: Path = DEFAULT_LAST_UPDATED_PATH,
+) -> None:
+    data = load_entries(entries_path)
+    snapshot = load_snapshot(last_updated_path)
+    payload = site_data(data, snapshot.date if snapshot else "")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", "utf-8")
 
 
 def generate(

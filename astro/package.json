@@ -1,0 +1,16 @@
+{
+  "name": "awesome-jj-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "data": "cd .. && uv run awesome-jj export-site-data astro/src/data/site.json",
+    "dev": "npm run data && astro dev",
+    "build": "npm run data && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.4.7",
+    "astro-pagefind": "^2.0.1"
+  }
+}

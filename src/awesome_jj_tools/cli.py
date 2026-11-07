@@ -17,6 +17,10 @@ def main(argv: list[str] | None = None) -> int:
         "check", help="Exit non-zero if README.md is out of sync with entries.yaml"
     )
     subparsers.add_parser("generate-site", help="Render site/index.html from data/entries.yaml")
+    export_parser = subparsers.add_parser(
+        "export-site-data", help="Write the per-page site context as JSON (for the Astro spike)"
+    )
+    export_parser.add_argument("output", help="Path of the JSON file to write")
     subparsers.add_parser("discover", help="Sweep for new candidates and stale existing entries")
     subparsers.add_parser("releases", help="Check for new releases among listed repos")
     subparsers.add_parser("stars", help="Refresh star snapshot and report notable movers")
@@ -60,6 +64,14 @@ def main(argv: list[str] | None = None) -> int:
         from awesome_jj_tools.site import generate as generate_site
 
         generate_site()
+        return 0
+
+    if args.command == "export-site-data":
+        from pathlib import Path
+
+        from awesome_jj_tools.site import export_site_data
+
+        export_site_data(Path(args.output))
         return 0
 
     if args.command in ("discover", "releases", "stars", "media"):
