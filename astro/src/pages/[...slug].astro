@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import Nav from "../components/Nav.astro";
 import Entry from "../components/Entry.astro";
 import Search from "../components/Search.astro";
+import RepoLinks from "../components/RepoLinks.astro";
 import site from "../data/site.json";
 
 export function getStaticPaths() {
@@ -26,7 +27,10 @@ const isIndex = page.filename === "index.html";
 >
   <header>
     <h1 id={section.slug}>{isIndex ? site.title : `${site.title} - ${section.title}`}</h1>
-    <div class="search"><Search /></div>
+    <div class="actions">
+      <RepoLinks />
+      <Search />
+    </div>
   </header>
   <p class="muted">{site.description}</p>
   <p>
@@ -58,7 +62,7 @@ const isIndex = page.filename === "index.html";
 </Layout>
 
 <style>
-  header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+  header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 1rem; }
   h1 { margin-bottom: 0.25rem; }
-  .search { flex-shrink: 0; }
+  .actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
 </style>
