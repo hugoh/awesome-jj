@@ -80,6 +80,7 @@ Last updated: 2026-11-16
 - [Majutsu](https://github.com/0WD0/majutsu) - Magit-inspired Emacs interface for the Jujutsu.
 - [neojj](https://github.com/krisajenkins/neojj) - A Magit/Neogit-style plugin for the Jujutsu version control system.
 - [Selvejj](https://selvejj.com/) - JetBrains IDEs plugin for integrating Jujutsu as a first-class VCS.
+- [shikigami.nvim](https://github.com/yukimemi/shikigami.nvim) - Neovim front end for shikigami, the Jujutsu (jj) terminal UI.
 - [ukemi](https://github.com/samuelba/ukemi) - A visual interface for Jujutsu (jj) in VS Code.
 - [vcsigns.nvim](https://github.com/algmyr/vcsigns.nvim) - Neovim sign gutter, designed to be mostly VCS-agnostic (works with Jujutsu).
 - [VisualJJ](https://www.visualjj.com/) - Visual interface for Jujutsu and Git inside VS Code.

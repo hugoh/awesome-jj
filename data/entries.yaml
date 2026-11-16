@@ -300,6 +300,9 @@ tools:
     - name: jj.hx
       url: https://github.com/icorbrey/jj.hx
       description: A Steel plugin that provides Jujutsu integration for the Helix editor.
+    - name: shikigami.nvim
+      url: https://github.com/yukimemi/shikigami.nvim
+      description: Neovim front end for shikigami, the Jujutsu (jj) terminal UI.
     - name: jj.nvim
       url: https://github.com/NicolasGB/jj.nvim
       description: Drive Jujutsu (jj) VCS from Neovim.

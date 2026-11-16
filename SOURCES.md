@@ -115,7 +115,9 @@ folded back into the "Active-project sweep" section above.
   ([#106](https://github.com/hugoh/awesome-jj/issues/106)). Added
   [triad-merge](https://github.com/lookbusy1344/triad-merge) to Diff and Merge
   Drivers, [shikigami](https://github.com/yukimemi/shikigami) to TUI,
-  [ukemi](https://github.com/samuelba/ukemi) to Editor Integration,
+  [ukemi](https://github.com/samuelba/ukemi) and
+  [shikigami.nvim](https://github.com/yukimemi/shikigami.nvim) to Editor
+  Integration,
   [hari](https://github.com/yukimemi/hari) to Workflows,
   [jumux](https://github.com/richardcase/jumux) to Workspace Management,
   [dsh-jujutsu](https://github.com/viztor/dsh-jujutsu) and
