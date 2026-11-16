@@ -4,7 +4,7 @@
 
 Jujutsu (also known as jj) is a Git-compatible version control system.
 
-Last updated: 2026-11-01
+Last updated: 2026-11-16
 
 ## Contents
 
@@ -61,6 +61,7 @@ Last updated: 2026-11-01
 - [jutsu](https://github.com/AliQ80/jutsu) - A TUI command composer for Jujutsu that teaches you the CLI instead of hiding it.
 - [lazyjj](https://github.com/Cretezy/lazyjj) - TUI for Jujutsu/jj, built in Rust with Ratatui.
 - [majjit](https://github.com/anthrofract/majjit) - A TUI to manipulate the Jujutsu DAG.
+- [shikigami](https://github.com/yukimemi/shikigami) - Terminal UI for Jujutsu (jj) to browse the change graph, read diffs, and drive new/edit/describe/squash/rebase/abandon without leaving the log.
 
 ### Editor Integration
 
@@ -79,6 +80,8 @@ Last updated: 2026-11-01
 - [Majutsu](https://github.com/0WD0/majutsu) - Magit-inspired Emacs interface for the Jujutsu.
 - [neojj](https://github.com/krisajenkins/neojj) - A Magit/Neogit-style plugin for the Jujutsu version control system.
 - [Selvejj](https://selvejj.com/) - JetBrains IDEs plugin for integrating Jujutsu as a first-class VCS.
+- [shikigami.nvim](https://github.com/yukimemi/shikigami.nvim) - Neovim front end for shikigami, the Jujutsu (jj) terminal UI.
+- [ukemi](https://github.com/samuelba/ukemi) - A visual interface for Jujutsu (jj) in VS Code.
 - [vcsigns.nvim](https://github.com/algmyr/vcsigns.nvim) - Neovim sign gutter, designed to be mostly VCS-agnostic (works with Jujutsu).
 - [VisualJJ](https://www.visualjj.com/) - Visual interface for Jujutsu and Git inside VS Code.
 
@@ -95,11 +98,13 @@ Last updated: 2026-11-01
 - [Mergiraf](https://mergiraf.org/) - A syntax-aware merge driver.
 - [Oyui](https://github.com/emilien-jegou/oyui) - A modern TUI merge tool and staging interface for Jujutsu and Git.
 - [scm-record](https://github.com/arxanas/scm-record) - The built-in diff editor for Jujutsu.
+- [triad-merge](https://github.com/lookbusy1344/triad-merge) - A fast, native 3-way merge and diff tool built for Jujutsu, with full Git support, written in Rust and GPUI.
 - [vcmarkers.nvim](https://github.com/algmyr/vcmarkers.nvim) - Neovim plugin that handles diff markers, supporting jj-style diffs and diff3.
 - [Weave](https://github.com/Ataraxy-Labs/weave) - Entity-level semantic merge driver.
 
 ### Workflows
 
+- [hari](https://github.com/yukimemi/hari) - Lets jj run your existing Git pre-push hooks.
 - [jip](https://github.com/omarkohl/jip) - Tool for managing pull requests with jj.
 - [jj-gh](https://github.com/mrjones2014/jj-gh) - GitHub PR tools for jj, usable from your terminal.
 - [jj-navi](https://github.com/eersnington/jj-navi) - Workspace navigation and management for Jujutsu.
@@ -114,6 +119,7 @@ Last updated: 2026-11-01
 ### Multi-repo & Workspace Management
 
 - [hrd](https://github.com/hugoh/hrd) - Multi-repo manager (TUI & CLI) for Git and jj with parallel dispatch and live status.
+- [jumux](https://github.com/richardcase/jumux) - Pairs a jj workspace with a tmux window per feature for working on multiple features in parallel with coding agents.
 - [renri](https://github.com/yukimemi/renri) - Unified manager for Git worktrees and Jujutsu workspaces.
 - [smth](https://github.com/amnn/smth) - A tmux-native session switcher for navigating between and opening new sessions based on Jujutsu repositories and workspaces.
 - [vcs-toolkit-rs](https://github.com/ZelAnton/vcs-toolkit-rs) - A Rust toolkit for automating Git, Jujutsu, and GitHub through CLI process execution.
@@ -129,8 +135,10 @@ Last updated: 2026-11-01
 ### AI & Agent Tooling
 
 - [claude-plugins](https://github.com/muloka/claude-plugins) - Jujutsu plugins for Claude Code covering Git enforcement, project setup, parallel workspace orchestration, commit workflows, and peer review.
+- [dsh-jujutsu](https://github.com/viztor/dsh-jujutsu) - Refuses Git inside a Jujutsu workspace and hands the model jj commands instead, for the DeepSeek Harness.
 - [jj-agentic-workflow](https://github.com/CodeAlive-AI/jj-agentic-workflow) - A methodology for running coding agents in parallel on Jujutsu, with skills, guarded wrappers, hooks, and a hazard test suite.
 - [jujutsu-mcp](https://github.com/LLawli/jujutsu-mcp) - MCP server that lets Claude Code, Codex and Antigravity use jj without a shell.
+- [jujutsu-skill](https://github.com/danverbraganza/jujutsu-skill) - A skill to teach your agents how to use Jujutsu.
 - [jujutsu-workflow-skill](https://github.com/netresearch/jujutsu-workflow-skill) - An agent skill for agent-safe version control with Jujutsu, using jj for local change management and Git as the canonical remote/PR/CI interface.
 - [rudder](https://github.com/exla-ai/rudder) - A TUI for managing coding agents, running Claude Code, Codex and opencode side by side, each in its own isolated jj workspace.
 
@@ -141,7 +149,7 @@ Last updated: 2026-11-01
 - [jj-commit](https://github.com/Odonno/jj-commit) - Simplify the `jj commit` experience.
 - [jj-hunk](https://github.com/laulauland/jj-hunk) - Programmatic hunk selection for Jujutsu.
 - [jj-pre-push](https://github.com/acarapetis/jj-pre-push) - Run pre-commit before `jj git push`.
-- [jj-run](https://github.com/neongreen/mono/tree/main/jj-run) - A tool to execute shell commands across multiple repository changes in isolated workspaces using jj.
+- [jj-run](https://github.com/neongreen/jj-run) - A tool to execute shell commands across multiple repository changes in isolated workspaces using jj.
 - [jj-trim](https://github.com/hugoh/jj-trim) - Clean up merged bookmarks and abandoned anonymous commits in a jj repository.
 - [jj-workfuse](https://github.com/rektide/jj-workfuse) - Read-only lazy FUSE subtree projections of jj revisions, to mount just the sub-workspace you need without a checkout.
 - [jjq](https://github.com/paulsmith/jjq) - A local merge queue for jj.
@@ -177,6 +185,7 @@ Last updated: 2026-11-01
 - 06/2026 [Jujutsu: The Git Upgrade You Didn't Know You Needed](https://www.git-tower.com/blog/jujutsu) by Bruno Brito
 - 09/2026 [Beyond jj: config & tools ecosystem](https://andre.arko.net/2026/09/16/beyond-jj-config-and-tools-ecosystem/) by André Arko
 - 09/2026 [15 Years of Git, Then Jujutsu: Why I Can't Go Back](https://juju-chu.com/blog/15years-git-then-jujutsu) by Yuka Ooka
+- 09/2026 [Two Dimensional Version Control](https://www.redblobgames.com/blog/2026-09-27-jujutsu-experience/) by Amit Patel
 - 10/2026 [I Still Choose Jujutsu When AI Can Handle Git](https://juju-chu.com/blog/why-jj-when-ai-runs-git) by Yuka Ooka
 - 10/2026 [Jujutsu Has No "Create a Branch" Step, and That Made Git Branches Click](https://juju-chu.com/blog/rethinking-branch-with-jj) by Yuka Ooka
 
@@ -219,6 +228,7 @@ While Jujutsu works with Git compatible forges like GitHub, there are also some 
 - [Jujubi](https://juju.bi/) - Modern code forge built for speed (Early Access).
 - [Radicle](https://radicle.dev/) - The sovereign forge.
 - [Revset](https://www.revset.dev/) - Commit First Code Forge (Early Access).
+- [Slath](https://github.com/slath-org/slath) - Open-source, self-hosted code forge for Git and Jujutsu.
 - [Tangled](https://tangled.org/) - The next-generation social coding platform ([announcement](https://tangled.org/blog/stacking/)).
 
 ## Miscellaneous

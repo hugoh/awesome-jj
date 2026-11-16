@@ -37,6 +37,7 @@ articles:
     author: Sandy Maguire
   - name: Basic jj workflows
     url: https://blog.chay.dev/basic-jj-workflows/
+    accepted_redirect: https://blog.chay.dev/basic-jj-workflows
     date: "2024-06"
     author: Chay Choong
   - name: Understanding Revsets for a Better JJ Log Output
@@ -139,6 +140,10 @@ articles:
     url: https://juju-chu.com/blog/rethinking-branch-with-jj
     date: "2026-10"
     author: Yuka Ooka
+  - name: Two Dimensional Version Control
+    url: https://www.redblobgames.com/blog/2026-09-27-jujutsu-experience/
+    date: "2026-09"
+    author: Amit Patel
 
 books:
   - name: Jujutsu for Everyone
@@ -278,6 +283,9 @@ tools:
     - name: gojo
       url: https://github.com/hackrdotsh/gojo
       description: A fullscreen terminal UI for Jujutsu with commit graph, diff viewing, conflict resolution, and AI-generated commit messages.
+    - name: shikigami
+      url: https://github.com/yukimemi/shikigami
+      description: Terminal UI for Jujutsu (jj) to browse the change graph, read diffs, and drive new/edit/describe/squash/rebase/abandon without leaving the log.
 
   editor_integration:
     - name: jiejie.nvim
@@ -292,6 +300,9 @@ tools:
     - name: jj.hx
       url: https://github.com/icorbrey/jj.hx
       description: A Steel plugin that provides Jujutsu integration for the Helix editor.
+    - name: shikigami.nvim
+      url: https://github.com/yukimemi/shikigami.nvim
+      description: Neovim front end for shikigami, the Jujutsu (jj) terminal UI.
     - name: jj.nvim
       url: https://github.com/NicolasGB/jj.nvim
       description: Drive Jujutsu (jj) VCS from Neovim.
@@ -331,6 +342,9 @@ tools:
     - name: VisualJJ
       url: https://www.visualjj.com/
       description: Visual interface for Jujutsu and Git inside VS Code.
+    - name: ukemi
+      url: https://github.com/samuelba/ukemi
+      description: A visual interface for Jujutsu (jj) in VS Code.
 
   diff_merge_drivers:
     - name: diffedit3
@@ -374,6 +388,9 @@ tools:
     - name: jj-diff.el
       url: https://github.com/ccqpein/jj-diff.el
       description: Interactive Jujutsu (jj) diff and split tool for Emacs.
+    - name: triad-merge
+      url: https://github.com/lookbusy1344/triad-merge
+      description: A fast, native 3-way merge and diff tool built for Jujutsu, with full Git support, written in Rust and GPUI.
 
   workflows:
     - name: jj-ryu
@@ -409,6 +426,9 @@ tools:
     - name: jx
       url: https://github.com/solodov/jx
       description: Opinionated Jujutsu companion for GitHub PR workflows, safe syncing, and layout-aware multi-repository work.
+    - name: hari
+      url: https://github.com/yukimemi/hari
+      description: Lets jj run your existing Git pre-push hooks.
 
   workspace_management:
     - name: smth
@@ -423,6 +443,9 @@ tools:
     - name: hrd
       url: https://github.com/hugoh/hrd
       description: Multi-repo manager (TUI & CLI) for Git and jj with parallel dispatch and live status.
+    - name: jumux
+      url: https://github.com/richardcase/jumux
+      description: Pairs a jj workspace with a tmux window per feature for working on multiple features in parallel with coding agents.
 
   shell_integration:
     - name: zsh-jj
@@ -457,6 +480,12 @@ tools:
     - name: jujutsu-mcp
       url: https://github.com/LLawli/jujutsu-mcp
       description: MCP server that lets Claude Code, Codex and Antigravity use jj without a shell.
+    - name: dsh-jujutsu
+      url: https://github.com/viztor/dsh-jujutsu
+      description: Refuses Git inside a Jujutsu workspace and hands the model jj commands instead, for the DeepSeek Harness.
+    - name: jujutsu-skill
+      url: https://github.com/danverbraganza/jujutsu-skill
+      description: A skill to teach your agents how to use Jujutsu.
 
   misc_tools:
     - name: diffsoup
@@ -472,7 +501,7 @@ tools:
       url: https://github.com/acarapetis/jj-pre-push
       description: Run pre-commit before `jj git push`.
     - name: jj-run
-      url: https://github.com/neongreen/mono/tree/main/jj-run
+      url: https://github.com/neongreen/jj-run
       description: A tool to execute shell commands across multiple repository changes in isolated workspaces using jj.
     - name: lumen
       url: https://github.com/jnsahaj/lumen
@@ -516,6 +545,9 @@ forges:
   - name: Composal
     url: https://composal.com/
     description: Code forge (Early Access).
+  - name: Slath
+    url: https://github.com/slath-org/slath
+    description: Open-source, self-hosted code forge for Git and Jujutsu.
 
 miscellaneous:
   - name: JJ Cheat Sheet
