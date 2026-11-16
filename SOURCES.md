@@ -111,3 +111,16 @@ folded back into the "Active-project sweep" section above.
   at its site, [juju-chu.com](https://juju-chu.com/). vex.sc rebranded to
   [Composal](https://composal.com/), so the Forges entry was renamed and
   repointed. This repository itself was added to `ignored.yaml`.
+- **2026-11-16**: Triaged the discovery report
+  ([#106](https://github.com/hugoh/awesome-jj/issues/106)). Added
+  [triad-merge](https://github.com/lookbusy1344/triad-merge) to Diff and Merge
+  Drivers, [shikigami](https://github.com/yukimemi/shikigami) to TUI,
+  [ukemi](https://github.com/samuelba/ukemi) to Editor Integration,
+  [hari](https://github.com/yukimemi/hari) to Workflows,
+  [jumux](https://github.com/richardcase/jumux) to Workspace Management,
+  [dsh-jujutsu](https://github.com/viztor/dsh-jujutsu) and
+  [jujutsu-skill](https://github.com/danverbraganza/jujutsu-skill) to AI &
+  Agent Tooling, [Slath](https://github.com/slath-org/slath) to Forges, and
+  Red Blob Games' "Two Dimensional Version Control" (09/2026) to Articles.
+  The `blog.chay.dev` trailing-slash redirect was recorded as an accepted
+  redirect. Other candidates were left untriaged.
