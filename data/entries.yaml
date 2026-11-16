@@ -501,7 +501,7 @@ tools:
       url: https://github.com/acarapetis/jj-pre-push
       description: Run pre-commit before `jj git push`.
     - name: jj-run
-      url: https://github.com/neongreen/mono/tree/main/jj-run
+      url: https://github.com/neongreen/jj-run
       description: A tool to execute shell commands across multiple repository changes in isolated workspaces using jj.
     - name: lumen
       url: https://github.com/jnsahaj/lumen

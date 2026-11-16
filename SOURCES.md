@@ -125,4 +125,6 @@ folded back into the "Active-project sweep" section above.
   Agent Tooling, [Slath](https://github.com/slath-org/slath) to Forges, and
   Red Blob Games' "Two Dimensional Version Control" (09/2026) to Articles.
   The `blog.chay.dev` trailing-slash redirect was recorded as an accepted
-  redirect. Other candidates were left untriaged.
+  redirect, and `jj-run` was repointed from its old `neongreen/mono` path
+  (404) to its own repo, `neongreen/jj-run`. Other candidates were left
+  untriaged.

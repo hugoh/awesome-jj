@@ -149,7 +149,7 @@ Last updated: 2026-11-16
 - [jj-commit](https://github.com/Odonno/jj-commit) - Simplify the `jj commit` experience.
 - [jj-hunk](https://github.com/laulauland/jj-hunk) - Programmatic hunk selection for Jujutsu.
 - [jj-pre-push](https://github.com/acarapetis/jj-pre-push) - Run pre-commit before `jj git push`.
-- [jj-run](https://github.com/neongreen/mono/tree/main/jj-run) - A tool to execute shell commands across multiple repository changes in isolated workspaces using jj.
+- [jj-run](https://github.com/neongreen/jj-run) - A tool to execute shell commands across multiple repository changes in isolated workspaces using jj.
 - [jj-trim](https://github.com/hugoh/jj-trim) - Clean up merged bookmarks and abandoned anonymous commits in a jj repository.
 - [jj-workfuse](https://github.com/rektide/jj-workfuse) - Read-only lazy FUSE subtree projections of jj revisions, to mount just the sub-workspace you need without a checkout.
 - [jjq](https://github.com/paulsmith/jjq) - A local merge queue for jj.
