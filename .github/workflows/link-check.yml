@@ -2,14 +2,16 @@ name: link-check
 
 permissions: {}
 
-# No `concurrency` here: when ci.yml calls this workflow, `github.workflow` is
-# the caller's name, so a group of its own would collide with ci.yml's and
-# cancel the called run. ci.yml's group already covers the PR and push runs;
-# the schedule and manual runs do not overlap in practice.
+# The group is spelled out rather than built from `github.workflow`: when ci.yml
+# calls this workflow, `github.workflow` is the caller's name, and a group
+# identical to ci.yml's would cancel the called run.
+concurrency:
+  group: link-check-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 on: # yamllint disable-line rule:truthy
-  # Called from ci.yml on push and pull_request, so the Pages deploy can wait
-  # on it. It no longer triggers on those events itself.
+  # Called from ci.yml on pull requests, where it is part of the ci-gate check.
+  # It no longer triggers on push or pull_request itself.
   workflow_call:
   schedule:
     - cron: "0 6 1 * *" # monthly, 1st at 06:00 UTC
