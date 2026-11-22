@@ -120,7 +120,7 @@ Last updated: 2026-11-22
 
 - [hrd](https://github.com/hugoh/hrd) - Multi-repo manager (TUI & CLI) for Git and jj with parallel dispatch and live status.
 - [jj-mesh](https://github.com/baptiste0928/jj-mesh) - A peer-to-peer daemon that syncs jj repositories, bookmarks and operation logs between your machines without a remote.
-- [jj-musubi](https://www.serpentine.com/software/jj-musubi/) - Keeps a jj repository live-synced across your own machines over plain ssh, similar to commit-cloud setups.
+- [jj-musubi](https://github.com/bos/jj-musubi) - Keeps a jj repository live-synced across your own machines over plain ssh, similar to commit-cloud setups.
 - [jumux](https://github.com/richardcase/jumux) - Pairs a jj workspace with a tmux window per feature for working on multiple features in parallel with coding agents.
 - [renri](https://github.com/yukimemi/renri) - Unified manager for Git worktrees and Jujutsu workspaces.
 - [smth](https://github.com/amnn/smth) - A tmux-native session switcher for navigating between and opening new sessions based on Jujutsu repositories and workspaces.

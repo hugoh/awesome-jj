@@ -447,7 +447,7 @@ tools:
       url: https://github.com/richardcase/jumux
       description: Pairs a jj workspace with a tmux window per feature for working on multiple features in parallel with coding agents.
     - name: jj-musubi
-      url: https://www.serpentine.com/software/jj-musubi/
+      url: https://github.com/bos/jj-musubi
       description: Keeps a jj repository live-synced across your own machines over plain ssh, similar to commit-cloud setups.
     - name: jj-mesh
       url: https://github.com/baptiste0928/jj-mesh
