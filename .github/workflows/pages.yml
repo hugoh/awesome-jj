@@ -4,9 +4,9 @@ permissions:
   contents: read
 
 on: # yamllint disable-line rule:truthy
-  push:
-    branches:
-      - main
+  # Called from ci.yml after its checks pass; run by hand to redeploy without
+  # re-running them.
+  workflow_call:
   workflow_dispatch:
 
 concurrency:
