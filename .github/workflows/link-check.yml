@@ -2,15 +2,17 @@ name: link-check
 
 permissions: {}
 
+# The group is spelled out rather than built from `github.workflow`: when ci.yml
+# calls this workflow, `github.workflow` is the caller's name, and a group
+# identical to ci.yml's would cancel the called run.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: link-check-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 on: # yamllint disable-line rule:truthy
-  push:
-    branches:
-      - main
-  pull_request:
+  # Called from ci.yml on pull requests, where it is part of the ci-gate check.
+  # It no longer triggers on push or pull_request itself.
+  workflow_call:
   schedule:
     - cron: "0 6 1 * *" # monthly, 1st at 06:00 UTC
   workflow_dispatch:
