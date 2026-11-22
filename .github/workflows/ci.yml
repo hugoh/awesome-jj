@@ -23,8 +23,11 @@ jobs:
       statuses: write
 
   # link-check.yml is also run on a schedule and by hand, so it stays its own
-  # workflow; here it is called so the Pages deploy can wait on it.
+  # workflow; here it is called on pull requests, where it is a required check.
+  # It is skipped on push: the commit already passed it on its PR, and a flaky
+  # external link must not block a deploy.
   link-check:
+    if: github.event_name == 'pull_request'
     uses: ./.github/workflows/link-check.yml
     permissions:
       contents: read
@@ -43,6 +46,8 @@ jobs:
       - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # v1.3.0
         with:
           jobs: ${{ toJSON(needs) }}
+          # Skipped on push (see above); on a pull request it must pass.
+          allowed-skips: link-check
 
   # Publishing the site is this repo's release. pages.yml can still be run by
   # hand (workflow_dispatch) to redeploy without re-running the checks.
