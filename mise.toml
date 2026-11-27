@@ -1,7 +1,7 @@
 [tools]
 node = "26.13.1"
 uv = "0.13.9"
-hk = "2.12.0"
+hk = "2.13.0"
 jactionlint = "2.6.0"
 pinact = "5.0.2"
 ghalint = "1.6.0"
